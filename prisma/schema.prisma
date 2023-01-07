@@ -15,12 +15,6 @@ datasource db {
     relationMode = "prisma"
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -38,6 +32,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -46,7 +41,23 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+ enum Role {
+    PERSONAL
+    TRAINER
+    ADMIN
+ }
 
 model User {
     id            String    @id @default(cuid())
@@ -56,12 +67,190 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    role          Role      @default(PERSONAL)
+    trainer       User?     @relation("TrainerClients", fields: [trainerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    trainerId     String?
+    clients       User[]  @relation("TrainerClients")
+    profile       Profile? 
+
+    @@index([trainerId])
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+model Profile {
+  id     String  @id @default(cuid())
+  user   User @relation(fields: [userId], references: [id])
+  userId String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  goals String?
+  notes String?
+  tags ProfileTag[]
+  displayPlans Plan[] @relation("DisplayProfiles")
+  createdPlans Plan[] @relation("PlanCreatedBy")
+  createdWorkouts Workout[] @relation("WorkoutCreatedBy")
+}
 
-    @@unique([identifier, token])
+model ProfileTag {
+    id String @id @default(cuid())
+    profile Profile @relation(fields: [profileId], references: [id])
+    profileId String
+    name String
+
+    @@index([profileId])
+}
+
+enum PlanInterval {
+    WEEKS
+    MONTHS
+}
+model Plan {
+    id String @id @default(cuid()) 
+    displayProfiles Profile[] @relation("DisplayProfiles")
+    createdBy Profile @relation("PlanCreatedBy", fields: [profileId], references: [id])
+    profileId String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name String
+    description String?
+    startDate DateTime?
+    planInterval PlanInterval @default(WEEKS)
+    tags PlanTag[]
+    allowDisplayProfileEdit Boolean @default(false)
+    planSections PlanSection[]
+
+    @@index([profileId])
+}
+
+model PlanTag {
+    id String @id @default(cuid())
+    plan Plan @relation(fields: [planId], references: [id])
+    planId String
+    name String
+
+    @@index([planId])
+}
+
+model PlanSection {
+    id String @id @default(cuid())  
+    plan Plan @relation(fields: [planId], references: [id])
+    planId String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name String
+    order Int
+    workouts Workout[]
+
+    @@index([planId])
+}
+
+model Workout {
+    id String @id @default(cuid())
+    planSection PlanSection @relation(fields: [planSectionId], references: [id])
+    planSectionId String
+    createdBy Profile @relation("WorkoutCreatedBy", fields: [profileId], references: [id])
+    profileId String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name String
+    order Int
+    tags WorkoutTag[]
+    duration Int?
+    durationInterval WorkoutDurationInterval @default(SECONDS)
+    workoutType WorkoutType @relation(fields: [workoutTypeId], references: [id])
+    workoutTypeId String
+    workoutTargetArea WorkoutTargetArea? @relation(fields: [workoutTargetAreaId], references: [id])
+    workoutTargetAreaId String
+    workoutIntensity WorkoutIntensity? @relation(fields: [workoutIntensityId], references: [id])
+    workoutIntensityId String
+    allowDisplayProfileEdit Boolean @default(false)
+    workoutSections WorkoutSection[]
+
+    @@index([profileId])
+    @@index([planSectionId])
+    @@index([workoutTypeId])
+    @@index([workoutTargetAreaId])
+    @@index([workoutIntensityId])
+}
+
+model WorkoutTag {
+    id String @id @default(cuid())
+    workout Workout @relation(fields: [workoutId], references: [id])
+    workoutId String
+    name String
+
+    @@index([workoutId])
+}
+
+enum WorkoutDurationInterval {
+    SECONDS
+    METRES
+}
+
+// Strength, Cardio, Swim
+model WorkoutType {
+    id String @id @default(cuid())
+    name String @unique
+    workouts Workout[]
+    movements Movement[]
+}
+
+// Full, Upper, Lower, Core
+model WorkoutTargetArea {
+    id String @id @default(cuid())
+    name String @unique
+    workouts Workout[]
+    movements Movement[]
+}
+
+// Beginner, Intermediate, Advanced, All
+model WorkoutIntensity {
+    id String @id @default(cuid())
+    name String @unique
+    workouts Workout[]
+    movements Movement[]
+}
+
+model WorkoutSection {
+    id String @id @default(cuid())  
+    workout Workout @relation(fields: [workoutId], references: [id])
+    workoutId String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name String
+    order Int
+    exercises Exercise[]
+
+    @@index([workoutId])
+}
+
+model Exercise {
+    id String @id @default(cuid())  
+    workoutSection WorkoutSection @relation(fields: [workoutSectionId], references: [id])
+    workoutSectionId String
+    movement Movement @relation(fields: [movementId], references: [id])
+    movementId String
+    duration Int
+    rest Int
+
+    @@index([workoutSectionId])
+    @@index([movementId])
+}
+
+model Movement {
+    id String @id @default(cuid()) 
+    name String @unique
+    description String?
+    workoutType WorkoutType[]
+    workoutTargetArea WorkoutTargetArea[]
+    workoutIntensity WorkoutIntensity[]
+    workoutSectionType WorkoutSectionType[]
+    exercises Exercise[]
+    combinationMovement Boolean @default(false)
+}
+
+// Warmup, Main, Cooldown
+model WorkoutSectionType {
+    id String @id @default(cuid())
+    name String @unique
+    movements Movement[]
 }
