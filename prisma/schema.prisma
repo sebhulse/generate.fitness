@@ -94,7 +94,7 @@ model ProfileTag {
     id String @id @default(cuid())
     profile Profile @relation(fields: [profileId], references: [id])
     profileId String
-    name String
+    name String @unique
 
     @@index([profileId])
 }
@@ -125,7 +125,7 @@ model PlanTag {
     id String @id @default(cuid())
     plan Plan @relation(fields: [planId], references: [id])
     planId String
-    name String
+    name String @unique
 
     @@index([planId])
 }
@@ -176,7 +176,7 @@ model WorkoutTag {
     id String @id @default(cuid())
     workout Workout @relation(fields: [workoutId], references: [id])
     workoutId String
-    name String
+    name String @unique
 
     @@index([workoutId])
 }
