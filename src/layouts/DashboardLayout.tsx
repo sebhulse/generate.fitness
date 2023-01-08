@@ -2,12 +2,19 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Button } from "@mantine/core";
+import { Button, Container } from "@mantine/core";
 
 import { api } from "../utils/api";
 import HeaderMenu from "../components/index/HeaderMenu";
+import DashboardNavbar from "../components/dashboard/DashboardNavbar";
 
-const Home: NextPage = () => {
+type Props = {
+  children: JSX.Element | JSX.Element[];
+};
+const DashboardLayout = (props: Props): JSX.Element => {
+  const { children } = props;
+  const { data: sessionData } = useSession();
+
   return (
     <>
       <Head>
@@ -16,15 +23,12 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <HeaderMenu />
-      {/* <div> */}
-      {/* <AuthShowcase /> */}
-      {/* </div> */}
+      <div>
+        <DashboardNavbar />
+        <Container>{children}</Container>
+      </div>
     </>
   );
 };
 
-export default Home;
-
-// const AuthShowcase: React.FC = () => {
-
-// };
+export default DashboardLayout;
