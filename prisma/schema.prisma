@@ -155,7 +155,7 @@ model Workout {
     order Int
     tags WorkoutTag[]
     duration Int?
-    durationInterval WorkoutDurationInterval @default(SECONDS)
+    usesEquipment Boolean @default(false)
     workoutType WorkoutType @relation(fields: [workoutTypeId], references: [id])
     workoutTypeId String
     workoutTargetArea WorkoutTargetArea? @relation(fields: [workoutTargetAreaId], references: [id])
@@ -184,6 +184,7 @@ model WorkoutTag {
 enum WorkoutDurationInterval {
     SECONDS
     METRES
+    REPS
 }
 
 // Strength, Cardio, Swim
@@ -230,10 +231,15 @@ model Exercise {
     movement Movement @relation(fields: [movementId], references: [id])
     movementId String
     duration Int
+    durationInterval WorkoutDurationInterval @default(SECONDS)
+    equipment Equipment? @relation(fields: [equipmentId], references: [id])
+    equipmentId String?
+    equipmentIntensity EquipmentIntensity?
     rest Int
 
     @@index([workoutSectionId])
     @@index([movementId])
+    @@index([equipmentId])
 }
 
 model Movement {
@@ -253,4 +259,18 @@ model WorkoutSectionType {
     id String @id @default(cuid())
     name String @unique
     movements Movement[]
+}
+
+model Equipment {
+    id String @id @default(cuid())
+    name String @unique
+    exercises Exercise[]
+}
+
+enum EquipmentIntensity {
+    LIGHTEST
+    LIGHT
+    MEDIUM
+    HEAVY
+    HEAVIEST
 }
