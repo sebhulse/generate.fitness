@@ -142,7 +142,7 @@ model Workout {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
-    order Int
+    order Int?
     tags WorkoutTag[]
     duration Int?
     usesEquipment Boolean @default(false)
@@ -154,6 +154,7 @@ model Workout {
     workoutIntensityId String
     allowDisplayUserEdit Boolean @default(false)
     workoutSections WorkoutSection[]
+    isDone Boolean @default(false)
 
     @@index([userId])
     @@index([planSectionId])
