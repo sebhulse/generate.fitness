@@ -65,6 +65,11 @@ const HeaderMenu = () => {
     <Box>
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
+          <Group>
+            <Link href="/" className={classes.link}>
+              Fitness.live
+            </Link>
+          </Group>
           <Group
             sx={{ height: "100%" }}
             spacing={0}
@@ -91,7 +96,6 @@ const HeaderMenu = () => {
             >
               {sessionData ? "Sign out" : "Sign in"}
             </Button>
-            {/* <Button variant="filled">Sign up</Button> */}
           </Group>
 
           <Burger
@@ -106,7 +110,7 @@ const HeaderMenu = () => {
         opened={drawerOpened}
         onClose={closeDrawer}
         size="100%"
-        padding="md"
+        padding="sm"
         title="Navigation"
         className={classes.hiddenDesktop}
         zIndex={1000000}
