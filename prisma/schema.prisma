@@ -61,6 +61,8 @@ model VerificationToken {
 
 model User {
     id            String    @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -71,32 +73,20 @@ model User {
     trainer       User?     @relation("TrainerClients", fields: [trainerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     trainerId     String?
     clients       User[]  @relation("TrainerClients")
-    profile       Profile? 
+    goals String?
+    notes String?
+    tags UserTag[]
+    displayPlans Plan[] @relation("DisplayUsers")
+    createdPlans Plan[] @relation("PlanCreatedBy")
+    createdWorkouts Workout[] @relation("WorkoutCreatedBy")
 
     @@index([trainerId])
 }
 
-model Profile {
-  id     String  @id @default(cuid())
-  user   User @relation(fields: [userId], references: [id])
-  userId String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  goals String?
-  notes String?
-  tags ProfileTag[]
-  displayPlans Plan[] @relation("DisplayProfiles")
-  createdPlans Plan[] @relation("PlanCreatedBy")
-  createdWorkouts Workout[] @relation("WorkoutCreatedBy")
-}
-
-model ProfileTag {
+model UserTag {
     id String @id @default(cuid())
-    profile Profile @relation(fields: [profileId], references: [id])
-    profileId String
     name String @unique
-
-    @@index([profileId])
+    users User[]
 }
 
 enum PlanInterval {
@@ -105,9 +95,9 @@ enum PlanInterval {
 }
 model Plan {
     id String @id @default(cuid()) 
-    displayProfiles Profile[] @relation("DisplayProfiles")
-    createdBy Profile @relation("PlanCreatedBy", fields: [profileId], references: [id])
-    profileId String
+    displayUsers User[] @relation("DisplayUsers")
+    createdBy User @relation("PlanCreatedBy", fields: [userId], references: [id])
+    userId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
@@ -115,10 +105,10 @@ model Plan {
     startDate DateTime?
     planInterval PlanInterval @default(WEEKS)
     tags PlanTag[]
-    allowDisplayProfileEdit Boolean @default(false)
+    allowDisplayUserEdit Boolean @default(false)
     planSections PlanSection[]
 
-    @@index([profileId])
+    @@index([userId])
 }
 
 model PlanTag {
@@ -147,8 +137,8 @@ model Workout {
     id String @id @default(cuid())
     planSection PlanSection @relation(fields: [planSectionId], references: [id])
     planSectionId String
-    createdBy Profile @relation("WorkoutCreatedBy", fields: [profileId], references: [id])
-    profileId String
+    createdBy User @relation("WorkoutCreatedBy", fields: [userId], references: [id])
+    userId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
@@ -162,10 +152,10 @@ model Workout {
     workoutTargetAreaId String
     workoutIntensity WorkoutIntensity? @relation(fields: [workoutIntensityId], references: [id])
     workoutIntensityId String
-    allowDisplayProfileEdit Boolean @default(false)
+    allowDisplayUserEdit Boolean @default(false)
     workoutSections WorkoutSection[]
 
-    @@index([profileId])
+    @@index([userId])
     @@index([planSectionId])
     @@index([workoutTypeId])
     @@index([workoutTargetAreaId])
