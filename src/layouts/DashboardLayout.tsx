@@ -12,11 +12,10 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { signIn, signOut, useSession } from "next-auth/react";
-
+import { useRouter } from "next/router";
 import Link from "next/link";
 
-const useStyles = createStyles((theme, _params, getRef) => {
-  const icon = getRef("icon");
+const useStyles = createStyles((theme) => {
   return {
     header: {
       paddingBottom: theme.spacing.md,
@@ -48,10 +47,6 @@ const useStyles = createStyles((theme, _params, getRef) => {
             ? theme.colors.dark[6]
             : theme.colors.gray[0],
         color: theme.colorScheme === "dark" ? theme.white : theme.black,
-
-        [`& .${icon}`]: {
-          color: theme.colorScheme === "dark" ? theme.white : theme.black,
-        },
       },
     },
     linkActive: {
@@ -62,12 +57,6 @@ const useStyles = createStyles((theme, _params, getRef) => {
         }).background,
         color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
           .color,
-        [`& .${icon}`]: {
-          color: theme.fn.variant({
-            variant: "light",
-            color: theme.primaryColor,
-          }).color,
-        },
       },
     },
   };
@@ -79,32 +68,44 @@ type Props = {
 const DashboardLayout = (props: Props): JSX.Element => {
   const { children } = props;
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState("Overview");
+  const { pathname } = useRouter();
+  const setLinkActive = () => {
+    const urlWords = pathname.split("/");
+    let lastUrlsWord;
+    let capitalisedLastUrlWord;
+    urlWords ? (lastUrlsWord = urlWords[urlWords.length - 1]) : null;
+    lastUrlsWord
+      ? (capitalisedLastUrlWord =
+          lastUrlsWord.charAt(0).toUpperCase() + lastUrlsWord.slice(1))
+      : null;
+    if (capitalisedLastUrlWord === "Dashboard") {
+      return "Overview";
+    } else return capitalisedLastUrlWord;
+  };
+
+  const [active, setActive] = useState(setLinkActive());
   const { data: sessionData } = useSession();
 
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
 
   const data = [
-    { link: "", label: "Overview" },
-    { link: "", label: "Clients" },
-    { link: "", label: "Plans" },
-    { link: "", label: "Workouts" },
+    { link: "/dashboard/", label: "Overview" },
+    { link: "/dashboard/clients", label: "Clients" },
+    { link: "/dashboard/plans", label: "Plans" },
+    { link: "/dashboard/workouts", label: "Workouts" },
   ];
   const links = data.map((item) => (
-    <a
+    <Link
       className={cx(classes.link, {
         [classes.linkActive]: item.label === active,
       })}
       href={item.link}
       key={item.label}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(item.label);
-      }}
+      onClick={() => setActive(item.label)}
     >
       <span>{item.label}</span>
-    </a>
+    </Link>
   ));
 
   return (
