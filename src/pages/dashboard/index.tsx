@@ -14,6 +14,16 @@ const Dashboard: NextPage = () => {
   const [isCreatePlanModalOpen, setIsCreatePlanModalOpen] = useState(false);
   const [isCreateWorkoutModalOpen, setIsCreateWorkoutModalOpen] =
     useState(false);
+  // const mutation = api.profile.createProfile.useMutation();
+  // const createExampleMut = () => {
+  //   sessionData?.user?.id
+  //     ? mutation.mutate({ userId: sessionData.user.id })
+  //     : null;
+  // };
+
+  // const createPlan = () => {};
+
+  // const createWorkout = () => {};
 
   return (
     <>

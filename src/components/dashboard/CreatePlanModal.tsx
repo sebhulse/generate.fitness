@@ -19,7 +19,13 @@ type Props = {
 const CreatePlanModal = (props: Props): JSX.Element => {
   const { isCreatePlanModalOpen, setIsCreatePlanModalOpen } = props;
   const { data: sessionData } = useSession();
-
+  const router = useRouter();
+  const mutation = api.plan.create.useMutation({
+    onSuccess(data) {
+      setIsCreatePlanModalOpen(false);
+      router.push(`/dashboard/plans/${data.id}`);
+    },
+  });
   const form = useForm({
     initialValues: {
       name: "",
@@ -41,15 +47,9 @@ const CreatePlanModal = (props: Props): JSX.Element => {
     //   userId: sessionData?.user?.id,
     // }),
   });
-  const router = useRouter();
-  const mutation = api.plan.create.useMutation();
 
   const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
     mutation.mutate({ ...values });
-
-    setIsCreatePlanModalOpen(false);
-    router.push("/dashboard/plans");
   };
 
   return (

@@ -3,8 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Modal, Button, Group } from "@mantine/core";
-import { api } from "../../utils/api";
-import DashboardLayout from "../../layouts/DashboardLayout";
+import { api } from "../../../utils/api";
+import DashboardLayout from "../../../layouts/DashboardLayout";
 
 const Dashboard: NextPage = () => {
   const planQuery = api.plan.getManybyCreatedBy.useQuery();
