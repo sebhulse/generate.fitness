@@ -69,32 +69,28 @@ const DashboardLayout = (props: Props): JSX.Element => {
   const { children } = props;
   const { classes, cx } = useStyles();
   const { pathname } = useRouter();
-  const setLinkActive = () => {
-    const urlWords = pathname.split("/");
-    let lastUrlsWord;
-    let capitalisedLastUrlWord;
-    urlWords ? (lastUrlsWord = urlWords[urlWords.length - 1]) : null;
-    lastUrlsWord
-      ? (capitalisedLastUrlWord =
-          lastUrlsWord.charAt(0).toUpperCase() + lastUrlsWord.slice(1))
-      : null;
-    if (capitalisedLastUrlWord === "Dashboard") {
-      return "Overview";
-    } else return capitalisedLastUrlWord;
-  };
-
-  const [active, setActive] = useState(setLinkActive());
-  const { data: sessionData } = useSession();
-
-  const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
-
   const data = [
     { link: "/dashboard/", label: "Overview" },
     { link: "/dashboard/clients", label: "Clients" },
     { link: "/dashboard/plans", label: "Plans" },
     { link: "/dashboard/workouts", label: "Workouts" },
   ];
+  const setLinkActive = () => {
+    const urlWords = pathname.split("/");
+    let label = "Overview";
+    data.map((item) => {
+      if (urlWords.indexOf(item.label.toLowerCase()) > 0) {
+        label = item.label;
+      }
+    });
+    return label;
+  };
+  const [active, setActive] = useState(setLinkActive());
+  const { data: sessionData } = useSession();
+
+  const theme = useMantineTheme();
+  const [opened, setOpened] = useState(false);
+
   const links = data.map((item) => (
     <Link
       className={cx(classes.link, {
