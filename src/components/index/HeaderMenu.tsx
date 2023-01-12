@@ -11,8 +11,8 @@ import {
 } from "@mantine/core";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-
 import { useDisclosure } from "@mantine/hooks";
+import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -56,10 +56,16 @@ const useStyles = createStyles((theme) => ({
 
 const HeaderMenu = () => {
   const { data: sessionData } = useSession();
-
+  const { query } = useRouter();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { classes, theme } = useStyles();
+
+  const callbackUrl = query.trainer
+    ? `/dashboard/?trainer=${query.trainer}`
+    : `/dashboard`;
+
+  console.log(query.trainer);
 
   return (
     <Box>
@@ -87,11 +93,8 @@ const HeaderMenu = () => {
             <Button
               onClick={
                 sessionData
-                  ? () => signOut()
-                  : () =>
-                      signIn(undefined, {
-                        callbackUrl: "/dashboard",
-                      })
+                  ? () => signOut({ callbackUrl: "/" })
+                  : () => signIn(undefined, { callbackUrl: callbackUrl })
               }
             >
               {sessionData ? "Sign out" : "Sign in"}
@@ -137,11 +140,8 @@ const HeaderMenu = () => {
             <Button
               onClick={
                 sessionData
-                  ? () => signOut()
-                  : () =>
-                      signIn(undefined, {
-                        callbackUrl: "/dashboard",
-                      })
+                  ? () => signOut({ callbackUrl: "/" })
+                  : () => signIn(undefined, { callbackUrl: callbackUrl })
               }
             >
               {sessionData ? "Sign out" : "Sign in"}

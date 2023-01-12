@@ -2,6 +2,7 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
 
 import { api } from "../utils/api";
 
@@ -13,9 +14,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <NotificationsProvider>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </NotificationsProvider>
     </MantineProvider>
   );
 };
