@@ -127,7 +127,7 @@ model PlanSection {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
-    order Int
+    order Int?
     workouts Workout[]
 
     @@index([planId])
@@ -209,7 +209,7 @@ model WorkoutSection {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
-    order Int
+    order Int?
     exercises Exercise[]
 
     @@index([workoutId])
