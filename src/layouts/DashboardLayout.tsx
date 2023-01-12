@@ -155,7 +155,7 @@ const DashboardLayout = (props: Props): JSX.Element => {
                 <Button
                   onClick={
                     sessionData
-                      ? () => signOut()
+                      ? () => signOut({ callbackUrl: "/" })
                       : () =>
                           signIn(undefined, {
                             callbackUrl: "/dashboard",
