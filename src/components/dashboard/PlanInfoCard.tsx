@@ -1,9 +1,7 @@
 import { Loader, Card, Table, Alert } from "@mantine/core";
-import type { inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "../../server/api/root";
+import type { RouterOutputs } from "../../utils/api";
 
-type RouterOutput = inferRouterOutputs<AppRouter>;
-type PlanGetByIdOutput = RouterOutput["plan"]["getById"];
+type PlanGetByIdOutput = RouterOutputs["plan"]["getById"];
 
 type Props = {
   plan: PlanGetByIdOutput;

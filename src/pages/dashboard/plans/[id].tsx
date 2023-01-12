@@ -6,12 +6,12 @@ import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import PlanInfoCard from "../../../components/dashboard/PlanInfoCard";
-import DndTable from "../../../components/dashboard/DndTable";
-import { DndListHandle } from "../../../components/dashboard/DndListHandle";
+import SectionItemsDnd from "../../../components/dashboard/SectionItemsDnd";
+import SectionsDnd from "../../../components/dashboard/SectionsDnd";
 
 const Dashboard: NextPage = () => {
   const { query } = useRouter();
-  const { data: plan, isLoading } = api.plan.getById.useQuery(
+  const { data: plan, isLoading: isPlanLoading } = api.plan.getById.useQuery(
     query.id as string
   );
 
@@ -24,21 +24,6 @@ const Dashboard: NextPage = () => {
     </Anchor>
   ));
 
-  const data = [
-    {
-      position: 43214231,
-      mass: 9877,
-      symbol: "asda",
-      name: "saa",
-    },
-    {
-      position: 567657,
-      mass: 7765,
-      symbol: "ssd",
-      name: "dsaf",
-    },
-  ];
-
   return (
     <>
       <Head>
@@ -48,9 +33,13 @@ const Dashboard: NextPage = () => {
       </Head>
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
-        {isLoading ? <Loader variant="dots" /> : <></>}
+        {isPlanLoading ? <Loader variant="dots" /> : <></>}
         {plan ? <PlanInfoCard plan={plan}></PlanInfoCard> : <></>}
-        <DndListHandle data={data}></DndListHandle>
+        {plan?.planSections ? (
+          <SectionsDnd sections={plan}></SectionsDnd>
+        ) : (
+          <></>
+        )}
       </DashboardLayout>
     </>
   );

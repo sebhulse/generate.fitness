@@ -1,4 +1,4 @@
-import { PlanInterval } from "@prisma/client";
+import type { PlanInterval } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
@@ -8,6 +8,9 @@ export const planRouter = createTRPCRouter({
     return ctx.prisma.plan.findFirst({
       where: {
         id: input,
+      },
+      include: {
+        planSections: { include: { workouts: true } },
       },
     });
   }),

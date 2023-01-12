@@ -2,7 +2,8 @@ import { createStyles, Table, ScrollArea } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
-import { StrictModeDroppable } from "../react-dnd/StrictModeDroppable";
+import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
+import { Workout } from "@prisma/client";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -24,21 +25,18 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface DndTableProps {
-  data: {
-    position: number;
-    mass: number;
-    symbol: string;
-    name: string;
-  }[];
-}
+type Props = {
+  sectionItems: Workout[];
+};
 
-export default function DndTable({ data }: DndTableProps) {
+const SectionItemsDnd = (props: Props) => {
+  const { sectionItems } = props;
   const { classes } = useStyles();
-  const [state, handlers] = useListState(data);
+  const [sectionItemsData, setSectionItemsData] =
+    useListState<Workout>(sectionItems);
 
-  const items = state.map((item, index) => (
-    <Draggable key={item.symbol} index={index} draggableId={item.symbol}>
+  const items = sectionItemsData.map((sectionItem, index) => (
+    <Draggable key={sectionItem.id} index={index} draggableId={sectionItem.id}>
       {(provided) => (
         <tr
           className={classes.item}
@@ -50,10 +48,10 @@ export default function DndTable({ data }: DndTableProps) {
               <IconGripVertical size={18} stroke={1.5} />
             </div>
           </td>
-          <td style={{ width: 80 }}>{item.position}</td>
-          <td style={{ width: 120 }}>{item.name}</td>
-          <td style={{ width: 80 }}>{item.symbol}</td>
-          <td>{item.mass}</td>
+          <td style={{ width: 80 }}>{sectionItem.name}</td>
+          <td style={{ width: 120 }}>{sectionItem.name}</td>
+          <td style={{ width: 80 }}>{sectionItem.name}</td>
+          <td>{sectionItem.id}</td>
         </tr>
       )}
     </Draggable>
@@ -63,7 +61,10 @@ export default function DndTable({ data }: DndTableProps) {
     <ScrollArea>
       <DragDropContext
         onDragEnd={({ destination, source }) =>
-          handlers.reorder({ from: source.index, to: destination?.index || 0 })
+          setSectionItemsData.reorder({
+            from: source.index,
+            to: destination?.index || 0,
+          })
         }
       >
         <Table sx={{ minWidth: 420, "& tbody tr td": { borderBottom: 0 } }}>
@@ -88,4 +89,5 @@ export default function DndTable({ data }: DndTableProps) {
       </DragDropContext>
     </ScrollArea>
   );
-}
+};
+export default SectionItemsDnd;
