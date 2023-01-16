@@ -19,7 +19,7 @@ const Dashboard: NextPage = () => {
       <DashboardLayout>
         <div>
           {planQuery.data?.map((plan) => {
-            return <p key={plan.name}>{plan.name}</p>;
+            return <p key={plan.id}>{plan.id}</p>;
           })}
         </div>
       </DashboardLayout>
