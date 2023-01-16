@@ -1,4 +1,4 @@
-import { Modal, Button, TextInput, Group } from "@mantine/core";
+import { Modal, Button, TextInput, Group, Checkbox } from "@mantine/core";
 import { useForm, TransformedValues } from "@mantine/form";
 import { api } from "../../utils/api";
 
@@ -9,7 +9,7 @@ type Props = {
   nameSuggestion: string;
   refetch: () => void;
 };
-const CreatePlanSectionModal = (props: Props): JSX.Element => {
+const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
   const {
     isCreatePlanSectionModalOpen,
     setIsCreatePlanSectionModalOpen,
@@ -57,6 +57,9 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
             withAsterisk
             {...form.getInputProps("name")}
           />
+
+          <Checkbox mt="md" label="Uses equipment" />
+
           <Group position="center">
             <Button type="submit" mt="md">
               Submit
@@ -68,4 +71,4 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
   );
 };
 
-export default CreatePlanSectionModal;
+export default CreatePlanSectionItemModal;

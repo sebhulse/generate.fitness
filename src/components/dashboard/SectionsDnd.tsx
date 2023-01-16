@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createStyles, Text, Card, Button, Flex } from "@mantine/core";
+import { createStyles, Text, Card, Button, Box } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
@@ -11,6 +11,7 @@ import { api } from "../../utils/api";
 const useStyles = createStyles((theme) => ({
   item: {
     display: "flex",
+    justifyContent: "between",
     alignItems: "center",
     borderRadius: theme.radius.md,
     border: `1px solid ${
@@ -102,11 +103,9 @@ const SectionsDnd = (props: Props) => {
                 <IconGripVertical size={18} stroke={1.5} />
               </div>
               <Text className={classes.name}>{section.name}</Text>
-              <div>
-                <SectionItemsDnd
-                  sectionItems={section.workouts}
-                ></SectionItemsDnd>
-              </div>
+              <SectionItemsDnd
+                sectionItems={section.workouts}
+              ></SectionItemsDnd>
             </div>
           )}
         </Draggable>
