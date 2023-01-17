@@ -30,7 +30,7 @@ const CreatePlanModal = (props: Props): JSX.Element => {
     initialValues: {
       name: "",
       description: "",
-      planInterval: "WEEKS",
+      planInterval: "Weeks",
       allowEdit: false,
       userId: sessionData?.user ? sessionData.user.id : "",
     },
@@ -80,7 +80,7 @@ const CreatePlanModal = (props: Props): JSX.Element => {
           />
           <NativeSelect
             mt="md"
-            data={["WEEKS", "MONTHS"]}
+            data={["Weeks", "Months"]}
             label="Plan interval"
             {...form.getInputProps("planInterval")}
           />
