@@ -75,10 +75,20 @@ const SectionItemsDnd = (props: Props) => {
               ref={provided.innerRef}
               {...provided.draggableProps}
             >
-              <div {...provided.dragHandleProps} className={classes.dragHandle}>
-                <IconGripVertical size={18} stroke={1.5} />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  {...provided.dragHandleProps}
+                  className={classes.dragHandle}
+                >
+                  <IconGripVertical size={18} stroke={1.5} />
+                </div>
               </div>
-
               {sectionItem.name}
             </div>
           )}

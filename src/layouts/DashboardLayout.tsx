@@ -4,7 +4,8 @@ import {
   createStyles,
   Navbar,
   Header,
-  Text,
+  ActionIcon,
+  useMantineColorScheme,
   MediaQuery,
   Burger,
   Group,
@@ -14,6 +15,7 @@ import {
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { IconSun, IconMoonStars } from "@tabler/icons";
 
 const useStyles = createStyles((theme) => {
   return {
@@ -91,6 +93,9 @@ const DashboardLayout = (props: Props): JSX.Element => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
 
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
+
   const links = data.map((item) => (
     <Link
       className={cx(classes.link, {
@@ -165,6 +170,14 @@ const DashboardLayout = (props: Props): JSX.Element => {
                   {sessionData ? "Sign out" : "Sign in"}
                 </Button>
               </Group>
+              <ActionIcon
+                variant="outline"
+                color={dark ? "yellow" : "blue"}
+                onClick={() => toggleColorScheme()}
+                title="Toggle color scheme"
+              >
+                {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
+              </ActionIcon>
             </Group>
           </div>
         </Header>
