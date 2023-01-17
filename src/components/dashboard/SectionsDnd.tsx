@@ -10,8 +10,8 @@ import CreatePlanSectionModal from "./CreatePlanSectionModal";
 import { api } from "../../utils/api";
 const useStyles = createStyles((theme) => ({
   item: {
-    display: "flex",
-    justifyContent: "between",
+    display: "flex-column",
+    justifyContent: "center",
     alignItems: "center",
     borderRadius: theme.radius.md,
     border: `1px solid ${
@@ -61,16 +61,12 @@ const SectionsDnd = (props: Props) => {
   const { classes, cx } = useStyles();
   const [isCreatePlanSectionModalOpen, setIsCreatePlanSectionModalOpen] =
     useState(false);
+  const [newPlanSectionOrder, setNewPlanSectionOrder] = useState(0);
   const [sectionsData, setSectionsData] = useListState<
     PlanSection & {
       workouts: Workout[];
     }
   >(sections.planSections);
-
-  useEffect(() => {
-    console.log("I should reload now");
-    console.log(sectionsData);
-  }, [sectionsData]);
 
   const {
     data: plan,
@@ -78,15 +74,20 @@ const SectionsDnd = (props: Props) => {
     refetch,
   } = api.plan.getById.useQuery(sections.id, {
     onSuccess(data) {
-      console.log(sectionsData);
-      data ? setSectionsData.setState(data?.planSections) : null;
-      console.log(sectionsData);
+      data ? setSectionsData.setState(data.planSections) : null;
+      data ? setNewPlanSectionOrder(data.planSections.length) : null;
     },
   });
 
   const refetchPlan = () => {
     refetch();
   };
+
+  const mutationReorder = api.planSection.reorder.useMutation({
+    // onSuccess() {
+    //   refetch();
+    // },
+  });
 
   const sectionsComponents = sectionsData[0]
     ? sectionsData.map((section, index) => (
@@ -99,10 +100,21 @@ const SectionsDnd = (props: Props) => {
               ref={provided.innerRef}
               {...provided.draggableProps}
             >
-              <div {...provided.dragHandleProps} className={classes.dragHandle}>
-                <IconGripVertical size={18} stroke={1.5} />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  {...provided.dragHandleProps}
+                  className={classes.dragHandle}
+                >
+                  <IconGripVertical size={18} stroke={1.5} />
+                </div>
+                <Text className={classes.name}>{section.name}</Text>
               </div>
-              <Text className={classes.name}>{section.name}</Text>
               <SectionItemsDnd
                 sectionItems={section.workouts}
               ></SectionItemsDnd>
@@ -115,47 +127,40 @@ const SectionsDnd = (props: Props) => {
   return (
     <Card mt="md">
       <DragDropContext
-        onDragEnd={({ destination, source }) =>
+        onDragEnd={({ destination, source }) => {
+          if (!destination) return;
           setSectionsData.reorder({
             from: source.index,
-            to: destination?.index || 0,
-          })
-        }
+            to: destination.index,
+          });
+          sectionsData.map((item, index) => {
+            mutationReorder.mutate({ planSectionId: item.id, newOrder: index });
+          });
+        }}
       >
         <StrictModeDroppable droppableId="dnd-list" direction="vertical">
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {sectionsComponents}
-              <Draggable
-                key={"addItem"}
-                index={sectionsData.length}
-                draggableId={"addItem"}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    className={cx(classes.item, {
-                      [classes.itemDragging]: snapshot.isDragging,
-                    })}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
+              <div className={cx(classes.item, {})}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button
+                    onClick={() => {
+                      setNewPlanSectionOrder(sections.planSections.length);
+                      setIsCreatePlanSectionModalOpen(true);
+                    }}
                   >
-                    <div
-                      {...provided.dragHandleProps}
-                      className={classes.dragHandle}
-                    >
-                      <IconGripVertical size={18} stroke={1.5} />
-                    </div>
-                    <Text className={classes.name}>
-                      Week {sections.planSections.length + 1}
-                    </Text>
-                    <Button
-                      onClick={() => setIsCreatePlanSectionModalOpen(true)}
-                    >
-                      Add section
-                    </Button>
-                  </div>
-                )}
-              </Draggable>
+                    Add section
+                  </Button>
+                </div>
+              </div>
+
               {provided.placeholder}
             </div>
           )}
@@ -165,6 +170,7 @@ const SectionsDnd = (props: Props) => {
         isCreatePlanSectionModalOpen={isCreatePlanSectionModalOpen}
         setIsCreatePlanSectionModalOpen={setIsCreatePlanSectionModalOpen}
         planId={sections.id}
+        order={newPlanSectionOrder}
         nameSuggestion={`Week ${sections.planSections.length + 1}`}
         refetch={refetchPlan}
       />

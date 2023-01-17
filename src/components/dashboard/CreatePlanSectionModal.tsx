@@ -8,6 +8,7 @@ type Props = {
   planId: string;
   nameSuggestion: string;
   refetch: () => void;
+  order: number;
 };
 const CreatePlanSectionModal = (props: Props): JSX.Element => {
   const {
@@ -16,6 +17,7 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
     planId,
     nameSuggestion,
     refetch,
+    order,
   } = props;
 
   const mutation = api.planSection.create.useMutation({
@@ -24,15 +26,17 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
       refetch();
     },
   });
+
   const form = useForm({
     initialValues: {
       name: "",
       planId: planId,
+      order: order,
     },
 
     validate: {
       name: (value) =>
-        value.length < 2
+        value.length < 1
           ? `Please enter a Name e.g. '${nameSuggestion}'`
           : null,
     },
