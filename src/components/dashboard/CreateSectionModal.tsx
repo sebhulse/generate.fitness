@@ -3,15 +3,15 @@ import { useForm, TransformedValues } from "@mantine/form";
 import { api } from "../../utils/api";
 
 type Props = {
-  isCreatePlanSectionModalOpen: boolean;
-  setIsCreatePlanSectionModalOpen: (value: boolean) => void;
+  isCreateSectionModalOpen: boolean;
+  setIsCreateSectionModalOpen: (value: boolean) => void;
   parentId: string;
   refetch: () => void;
 };
-const CreatePlanSectionModal = (props: Props): JSX.Element => {
+const CreateSectionModal = (props: Props): JSX.Element => {
   const {
-    isCreatePlanSectionModalOpen,
-    setIsCreatePlanSectionModalOpen,
+    isCreateSectionModalOpen,
+    setIsCreateSectionModalOpen,
     parentId,
     refetch,
   } = props;
@@ -19,7 +19,7 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
   const mutation = api.planSection.create.useMutation({
     onSuccess() {
       refetch();
-      setIsCreatePlanSectionModalOpen(false);
+      setIsCreateSectionModalOpen(false);
     },
   });
 
@@ -41,8 +41,8 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
   return (
     <>
       <Modal
-        opened={isCreatePlanSectionModalOpen}
-        onClose={() => setIsCreatePlanSectionModalOpen(false)}
+        opened={isCreateSectionModalOpen}
+        onClose={() => setIsCreateSectionModalOpen(false)}
         title="Create Plan Section"
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
@@ -63,4 +63,4 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
   );
 };
 
-export default CreatePlanSectionModal;
+export default CreateSectionModal;
