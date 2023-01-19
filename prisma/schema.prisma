@@ -222,6 +222,7 @@ model Exercise {
     movement Movement @relation(fields: [movementId], references: [id])
     movementId String
     duration Int
+    order Int
     durationInterval WorkoutDurationInterval @default(Seconds)
     equipment Equipment? @relation(fields: [equipmentId], references: [id])
     equipmentId String?

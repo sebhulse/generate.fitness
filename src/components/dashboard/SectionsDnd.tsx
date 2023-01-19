@@ -11,9 +11,17 @@ import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
 import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
 import SectionItemsDnd from "./SectionItemsDnd";
-import type { PlanSection, Plan, Workout } from "@prisma/client";
-import CreatePlanSectionModal from "./CreatePlanSectionModal";
+import type {
+  PlanSection,
+  Plan,
+  Workout,
+  Exercise,
+  WorkoutSection,
+} from "@prisma/client";
+import CreateSectionModal from "./CreateSectionModal";
 import { api } from "../../utils/api";
+import type { WorkoutSectionType, PlanSectionType } from "./SectionItemsDnd";
+
 const useStyles = createStyles((theme) => ({
   item: {
     display: "flex-column",
@@ -54,41 +62,73 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+type WorkoutType = Workout & {
+  workoutSections: (WorkoutSection & {
+    exercises: Exercise[];
+  })[];
+};
+
+type PlanType = Plan & {
+  planSections: (PlanSection & {
+    workouts: Workout[];
+  })[];
+};
+
 type Props = {
-  parent: Plan & {
-    planSections: (PlanSection & {
-      workouts: Workout[];
-    })[];
-  };
+  parent: WorkoutType & PlanType;
 };
 
 const SectionsDnd = (props: Props) => {
   const { parent } = props;
   const { classes, cx } = useStyles();
-  const [isCreatePlanSectionModalOpen, setIsCreatePlanSectionModalOpen] =
+  const [isCreateSectionModalOpen, setIsCreateSectionModalOpen] =
     useState(false);
+
+  const isParentPlan = parent.planSections ? true : false;
+
+  const parentSections = isParentPlan
+    ? parent.planSections
+    : parent.workoutSections;
+
   const [sectionsData, setSectionsData] = useListState<
-    PlanSection & {
-      workouts: Workout[];
-    }
-  >(parent.planSections.sort((a, b) => (a.order < b.order ? -1 : 1)));
+    WorkoutSectionType | PlanSectionType
+  >(parentSections.sort((a, b) => (a.order < b.order ? -1 : 1)));
 
-  const { refetch: refetchPlan } = api.plan.getById.useQuery(parent.id, {
-    onSuccess(data) {
-      data
-        ? setSectionsData.setState(
-            data.planSections.sort((a, b) => (a.order < b.order ? -1 : 1))
-          )
-        : null;
-    },
-  });
+  const { refetch: refetch } = isParentPlan
+    ? api.plan.getById.useQuery(parent.id, {
+        onSuccess(data) {
+          data
+            ? setSectionsData.setState(
+                data.planSections.sort((a, b) => (a.order < b.order ? -1 : 1))
+              )
+            : null;
+        },
+      })
+    : api.workout.getById.useQuery(parent.id, {
+        onSuccess(data) {
+          data
+            ? setSectionsData.setState(
+                data.workoutSections.sort((a, b) =>
+                  a.order < b.order ? -1 : 1
+                )
+              )
+            : null;
+        },
+      });
 
-  const mutationReorder = api.planSection.reorder.useMutation();
+  const mutationReorder = isParentPlan
+    ? api.planSection.reorder.useMutation()
+    : api.workoutSection.reorder.useMutation();
 
   useEffect(() => {
     sectionsData.map((item, index) => {
       if (item.order !== index) {
-        mutationReorder.mutate({ planSectionId: item.id, newOrder: index });
+        isParentPlan
+          ? mutationReorder.mutate({ planSectionId: item.id, newOrder: index })
+          : mutationReorder.mutate({
+              workoutSectionId: item.id,
+              newOrder: index,
+            });
       }
     });
   }, [sectionsData]);
@@ -119,7 +159,9 @@ const SectionsDnd = (props: Props) => {
                 </div>
                 <Text className={classes.name}>{section.name}</Text>
               </div>
-              <SectionItemsDnd parent={section}></SectionItemsDnd>
+              <SectionItemsDnd
+                parent={section as WorkoutSectionType & PlanSectionType}
+              ></SectionItemsDnd>
             </div>
           )}
         </Draggable>
@@ -143,7 +185,6 @@ const SectionsDnd = (props: Props) => {
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {sectionsComponents}
-
               {provided.placeholder}
             </div>
           )}
@@ -159,18 +200,19 @@ const SectionsDnd = (props: Props) => {
         >
           <Button
             onClick={() => {
-              setIsCreatePlanSectionModalOpen(true);
+              setIsCreateSectionModalOpen(true);
             }}
           >
             Add section
           </Button>
         </div>
       </div>
-      <CreatePlanSectionModal
-        isCreatePlanSectionModalOpen={isCreatePlanSectionModalOpen}
-        setIsCreatePlanSectionModalOpen={setIsCreatePlanSectionModalOpen}
+      <CreateSectionModal
+        isCreateSectionModalOpen={isCreateSectionModalOpen}
+        setIsCreateSectionModalOpen={setIsCreateSectionModalOpen}
         parentId={parent.id}
-        refetch={refetchPlan}
+        refetch={refetch}
+        sectionType={sectionType}
       />
     </Card>
   );

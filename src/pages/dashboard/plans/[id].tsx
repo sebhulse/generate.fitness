@@ -35,7 +35,11 @@ const Dashboard: NextPage = () => {
         <Breadcrumbs>{items}</Breadcrumbs>
         {isPlanLoading ? <Loader variant="dots" /> : <></>}
         {plan ? <PlanInfoCard plan={plan}></PlanInfoCard> : <></>}
-        {plan?.planSections ? <SectionsDnd parent={plan}></SectionsDnd> : <></>}
+        {plan?.planSections ? (
+          <SectionsDnd parent={plan} sectionType="plan"></SectionsDnd>
+        ) : (
+          <></>
+        )}
       </DashboardLayout>
     </>
   );

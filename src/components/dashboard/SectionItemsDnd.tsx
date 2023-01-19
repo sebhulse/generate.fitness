@@ -13,7 +13,12 @@ import {
 } from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
 import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
-import { type Workout, type PlanSection } from "@prisma/client";
+import type {
+  Workout,
+  PlanSection,
+  WorkoutSection,
+  Exercise,
+} from "@prisma/client";
 import CreatePlanSectionItemModal from "./CreatePlanSectionItemModal";
 import { api } from "../../utils/api";
 
@@ -56,10 +61,16 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+export type WorkoutSectionType = WorkoutSection & {
+  exercises: Exercise[];
+};
+
+export type PlanSectionType = PlanSection & {
+  workouts: Workout[];
+};
+
 type Props = {
-  parent: PlanSection & {
-    workouts: Workout[];
-  };
+  parent: WorkoutSectionType & PlanSectionType;
 };
 
 const SectionItemsDnd = (props: Props) => {
@@ -68,32 +79,52 @@ const SectionItemsDnd = (props: Props) => {
   const [isCreateSectionItemModalOpen, setIsCreateSectionItemModalOpen] =
     useState(false);
 
-  const [sectionItemsData, setSectionItemsData] = useListState<Workout>(
-    parent.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
-  );
+  const isParentPlanSection = parent.workouts ? true : false;
 
-  const { refetch: refetchPlanSection } = api.planSection.getById.useQuery(
-    parent.id,
-    {
-      onSuccess(data) {
-        data
-          ? setSectionItemsData.setState(
-              data.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
-            )
-          : null;
-      },
-    }
-  );
+  const parentSections = isParentPlanSection
+    ? parent.workouts
+    : parent.exercises;
 
-  const mutationWorkoutReorder = api.workout.reorder.useMutation();
+  const [sectionItemsData, setSectionItemsData] = useListState<
+    Workout | Exercise
+  >(parentSections.sort((a, b) => (a.order < b.order ? -1 : 1)));
+
+  const { refetch: refetch } = isParentPlanSection
+    ? api.planSection.getById.useQuery(parent.id, {
+        onSuccess(data) {
+          data
+            ? setSectionItemsData.setState(
+                data.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
+              )
+            : null;
+        },
+      })
+    : api.workoutSection.getById.useQuery(parent.id, {
+        onSuccess(data) {
+          data
+            ? setSectionItemsData.setState(
+                data.exercises.sort((a, b) => (a.order < b.order ? -1 : 1))
+              )
+            : null;
+        },
+      });
+
+  const mutationReorder = isParentPlanSection
+    ? api.workout.reorder.useMutation()
+    : api.exercises.reorder.useMutation();
 
   useEffect(() => {
     sectionItemsData.map((item, index) => {
       if (item.order !== index) {
-        mutationWorkoutReorder.mutate({
-          workoutId: item.id,
-          newOrder: index,
-        });
+        isParentPlanSection
+          ? mutationReorder.mutate({
+              workoutId: item.id,
+              newOrder: index,
+            })
+          : mutationReorder.mutate({
+              exerciseId: item.id,
+              newOrder: index,
+            });
       }
     });
   }, [sectionItemsData]);
@@ -127,7 +158,7 @@ const SectionItemsDnd = (props: Props) => {
                   <IconGripVertical size={18} stroke={1.5} />
                 </div>
               </div>
-              {sectionItem.name}
+              {sectionItem.order}
             </div>
           )}
         </Draggable>
@@ -136,10 +167,7 @@ const SectionItemsDnd = (props: Props) => {
 
   return (
     <ScrollArea>
-      <LoadingOverlay
-        visible={mutationWorkoutReorder.isLoading}
-        overlayBlur={2}
-      />
+      <LoadingOverlay visible={mutationReorder.isLoading} overlayBlur={2} />
 
       <DragDropContext
         onDragEnd={({ destination, source }) => {
@@ -175,7 +203,7 @@ const SectionItemsDnd = (props: Props) => {
         isCreateSectionItemModalOpen={isCreateSectionItemModalOpen}
         setIsCreateSectionItemModalOpen={setIsCreateSectionItemModalOpen}
         parentId={parent.id}
-        refetch={refetchPlanSection}
+        refetch={refetch}
       />
     </ScrollArea>
   );
