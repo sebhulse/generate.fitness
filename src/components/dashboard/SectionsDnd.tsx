@@ -74,16 +74,28 @@ const SectionsDnd = (props: Props) => {
     PlanSection & {
       workouts: Workout[];
     }
-  >(parent.planSections);
+  >(parent.planSections.sort((a, b) => (a.order < b.order ? -1 : 1)));
 
-  const { refetch: refetchParent } = api.plan.getById.useQuery(parent.id, {
+  const { refetch: refetchPlan } = api.plan.getById.useQuery(parent.id, {
     onSuccess(data) {
-      data ? setSectionsData.setState(data.planSections) : null;
+      data
+        ? setSectionsData.setState(
+            data.planSections.sort((a, b) => (a.order < b.order ? -1 : 1))
+          )
+        : null;
       data ? setNewPlanSectionOrder(data.planSections.length) : null;
     },
   });
 
-  const mutationReorder = api.planSection.reorder.useMutation({});
+  const mutationReorder = api.planSection.reorder.useMutation();
+
+  useEffect(() => {
+    sectionsData.map((item, index) => {
+      if (item.order !== index) {
+        mutationReorder.mutate({ planSectionId: item.id, newOrder: index });
+      }
+    });
+  }, [sectionsData]);
 
   const sectionsComponents = sectionsData[0]
     ? sectionsData.map((section, index) => (
@@ -129,9 +141,6 @@ const SectionsDnd = (props: Props) => {
             from: source.index,
             to: destination.index,
           });
-          sectionsData.map((item, index) => {
-            mutationReorder.mutate({ planSectionId: item.id, newOrder: index });
-          });
         }}
       >
         <StrictModeDroppable droppableId="dnd-list" direction="vertical">
@@ -154,7 +163,6 @@ const SectionsDnd = (props: Props) => {
         >
           <Button
             onClick={() => {
-              setNewPlanSectionOrder(parent.planSections.length);
               setIsCreatePlanSectionModalOpen(true);
             }}
           >
@@ -167,7 +175,7 @@ const SectionsDnd = (props: Props) => {
         setIsCreatePlanSectionModalOpen={setIsCreatePlanSectionModalOpen}
         parentId={parent.id}
         order={newPlanSectionOrder}
-        refetch={refetchParent}
+        refetch={refetchPlan}
       />
     </Card>
   );

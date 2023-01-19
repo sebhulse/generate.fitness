@@ -20,8 +20,8 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
 
   const mutation = api.planSection.create.useMutation({
     onSuccess() {
-      setIsCreatePlanSectionModalOpen(false);
       refetch();
+      setIsCreatePlanSectionModalOpen(false);
     },
   });
 
