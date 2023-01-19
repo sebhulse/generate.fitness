@@ -68,14 +68,8 @@ const SectionItemsDnd = (props: Props) => {
   const [isCreateSectionItemModalOpen, setIsCreateSectionItemModalOpen] =
     useState(false);
 
-  const isFirstRender = useRef(true);
-
   const [sectionItemsData, setSectionItemsData] = useListState<Workout>(
     parent.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
-  );
-
-  const [newSectionItemOrder, setNewSectionItemOrder] = useState(
-    parent.workouts.length
   );
 
   const { refetch: refetchPlanSection } = api.planSection.getById.useQuery(
@@ -87,10 +81,10 @@ const SectionItemsDnd = (props: Props) => {
               data.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
             )
           : null;
-        data ? setNewSectionItemOrder(data.workouts.length) : null;
       },
     }
   );
+
   const mutationWorkoutReorder = api.workout.reorder.useMutation();
 
   useEffect(() => {
@@ -182,7 +176,6 @@ const SectionItemsDnd = (props: Props) => {
         setIsCreateSectionItemModalOpen={setIsCreateSectionItemModalOpen}
         parentId={parent.id}
         refetch={refetchPlanSection}
-        order={newSectionItemOrder}
       />
     </ScrollArea>
   );

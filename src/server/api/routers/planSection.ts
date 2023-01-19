@@ -32,14 +32,18 @@ export const planSectionRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         planId: z.string(),
-        order: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const planSectionCount = await ctx.prisma.planSection.count({
+        where: {
+          planId: input.planId,
+        },
+      });
       const plan = await ctx.prisma.planSection.create({
         data: {
           name: input.name,
-          order: input.order,
+          order: planSectionCount,
           plan: {
             connect: { id: input.planId },
           },

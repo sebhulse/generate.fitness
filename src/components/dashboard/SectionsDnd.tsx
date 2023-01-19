@@ -67,9 +67,6 @@ const SectionsDnd = (props: Props) => {
   const { classes, cx } = useStyles();
   const [isCreatePlanSectionModalOpen, setIsCreatePlanSectionModalOpen] =
     useState(false);
-  const [newPlanSectionOrder, setNewPlanSectionOrder] = useState(
-    parent.planSections.length
-  );
   const [sectionsData, setSectionsData] = useListState<
     PlanSection & {
       workouts: Workout[];
@@ -83,7 +80,6 @@ const SectionsDnd = (props: Props) => {
             data.planSections.sort((a, b) => (a.order < b.order ? -1 : 1))
           )
         : null;
-      data ? setNewPlanSectionOrder(data.planSections.length) : null;
     },
   });
 
@@ -174,7 +170,6 @@ const SectionsDnd = (props: Props) => {
         isCreatePlanSectionModalOpen={isCreatePlanSectionModalOpen}
         setIsCreatePlanSectionModalOpen={setIsCreatePlanSectionModalOpen}
         parentId={parent.id}
-        order={newPlanSectionOrder}
         refetch={refetchPlan}
       />
     </Card>
