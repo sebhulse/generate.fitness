@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
@@ -8,6 +7,7 @@ import {
   type ColorScheme,
 } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
+import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 
 import { api } from "../utils/api";
 
@@ -17,9 +17,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+    key: "mantine-color-scheme",
+    defaultValue: "light",
+    getInitialValueInEffect: true,
+  });
+
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
+  useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
   return (
     <ColorSchemeProvider

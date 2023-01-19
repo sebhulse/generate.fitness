@@ -31,7 +31,6 @@ export const planRouter = createTRPCRouter({
         startDate: z.date().optional(),
         planInterval: z.string().optional(),
         allowEdit: z.boolean().optional(),
-        userId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -43,7 +42,7 @@ export const planRouter = createTRPCRouter({
           allowDisplayUserEdit: input.allowEdit,
           planInterval: input.planInterval as PlanInterval,
           createdBy: {
-            connect: { id: input.userId },
+            connect: { id: ctx.session.user.id },
           },
         },
       });

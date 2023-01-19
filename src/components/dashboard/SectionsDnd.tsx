@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { createStyles, Text, Card, Button, Box } from "@mantine/core";
+import {
+  createStyles,
+  Text,
+  Card,
+  Button,
+  LoadingOverlay,
+} from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
@@ -49,7 +55,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 type Props = {
-  sections: Plan & {
+  parent: Plan & {
     planSections: (PlanSection & {
       workouts: Workout[];
     })[];
@@ -57,37 +63,27 @@ type Props = {
 };
 
 const SectionsDnd = (props: Props) => {
-  const { sections } = props;
+  const { parent } = props;
   const { classes, cx } = useStyles();
   const [isCreatePlanSectionModalOpen, setIsCreatePlanSectionModalOpen] =
     useState(false);
-  const [newPlanSectionOrder, setNewPlanSectionOrder] = useState(0);
+  const [newPlanSectionOrder, setNewPlanSectionOrder] = useState(
+    parent.planSections.length
+  );
   const [sectionsData, setSectionsData] = useListState<
     PlanSection & {
       workouts: Workout[];
     }
-  >(sections.planSections);
+  >(parent.planSections);
 
-  const {
-    data: plan,
-    isLoading: isPlanLoading,
-    refetch,
-  } = api.plan.getById.useQuery(sections.id, {
+  const { refetch: refetchParent } = api.plan.getById.useQuery(parent.id, {
     onSuccess(data) {
       data ? setSectionsData.setState(data.planSections) : null;
       data ? setNewPlanSectionOrder(data.planSections.length) : null;
     },
   });
 
-  const refetchPlan = () => {
-    refetch();
-  };
-
-  const mutationReorder = api.planSection.reorder.useMutation({
-    // onSuccess() {
-    //   refetch();
-    // },
-  });
+  const mutationReorder = api.planSection.reorder.useMutation({});
 
   const sectionsComponents = sectionsData[0]
     ? sectionsData.map((section, index) => (
@@ -115,9 +111,7 @@ const SectionsDnd = (props: Props) => {
                 </div>
                 <Text className={classes.name}>{section.name}</Text>
               </div>
-              <SectionItemsDnd
-                sectionItems={section.workouts}
-              ></SectionItemsDnd>
+              <SectionItemsDnd parent={section}></SectionItemsDnd>
             </div>
           )}
         </Draggable>
@@ -126,6 +120,8 @@ const SectionsDnd = (props: Props) => {
 
   return (
     <Card mt="md">
+      <LoadingOverlay visible={mutationReorder.isLoading} overlayBlur={2} />
+
       <DragDropContext
         onDragEnd={({ destination, source }) => {
           if (!destination) return;
@@ -142,37 +138,36 @@ const SectionsDnd = (props: Props) => {
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {sectionsComponents}
-              <div className={cx(classes.item, {})}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    alignItems: "center",
-                  }}
-                >
-                  <Button
-                    onClick={() => {
-                      setNewPlanSectionOrder(sections.planSections.length);
-                      setIsCreatePlanSectionModalOpen(true);
-                    }}
-                  >
-                    Add section
-                  </Button>
-                </div>
-              </div>
 
               {provided.placeholder}
             </div>
           )}
         </StrictModeDroppable>
       </DragDropContext>
+      <div className={cx(classes.item, {})}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            onClick={() => {
+              setNewPlanSectionOrder(parent.planSections.length);
+              setIsCreatePlanSectionModalOpen(true);
+            }}
+          >
+            Add section
+          </Button>
+        </div>
+      </div>
       <CreatePlanSectionModal
         isCreatePlanSectionModalOpen={isCreatePlanSectionModalOpen}
         setIsCreatePlanSectionModalOpen={setIsCreatePlanSectionModalOpen}
-        planId={sections.id}
+        parentId={parent.id}
         order={newPlanSectionOrder}
-        nameSuggestion={`Week ${sections.planSections.length + 1}`}
-        refetch={refetchPlan}
+        refetch={refetchParent}
       />
     </Card>
   );

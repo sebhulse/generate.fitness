@@ -8,6 +8,9 @@ export const planSectionRouter = createTRPCRouter({
       where: {
         id: input,
       },
+      include: {
+        workouts: true,
+      },
     });
   }),
 

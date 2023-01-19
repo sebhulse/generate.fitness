@@ -1,11 +1,21 @@
-import React, { useState } from "react";
-import { createStyles, Table, ScrollArea, Button } from "@mantine/core";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  createStyles,
+  ScrollArea,
+  Button,
+  LoadingOverlay,
+} from "@mantine/core";
 import { useListState } from "@mantine/hooks";
-import { DragDropContext, Draggable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Draggable,
+  DraggableLocation,
+} from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
 import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
-import { Workout } from "@prisma/client";
+import { type Workout, type PlanSection } from "@prisma/client";
 import CreatePlanSectionItemModal from "./CreatePlanSectionItemModal";
+import { api } from "../../utils/api";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -47,18 +57,53 @@ const useStyles = createStyles((theme) => ({
 }));
 
 type Props = {
-  sectionItems: Workout[];
+  parent: PlanSection & {
+    workouts: Workout[];
+  };
 };
 
 const SectionItemsDnd = (props: Props) => {
-  const { sectionItems } = props;
+  const { parent } = props;
   const { classes, cx } = useStyles();
-  const [
-    isCreatePlanSectionItemModalOpen,
-    setIsCreatePlanSectionItemModalOpen,
-  ] = useState(false);
-  const [sectionItemsData, setSectionItemsData] =
-    useListState<Workout>(sectionItems);
+  const [isCreateSectionItemModalOpen, setIsCreateSectionItemModalOpen] =
+    useState(false);
+
+  const isFirstRender = useRef(true);
+
+  const [sectionItemsData, setSectionItemsData] = useListState<Workout>(
+    parent.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
+  );
+
+  const [newSectionItemOrder, setNewSectionItemOrder] = useState(
+    parent.workouts.length
+  );
+
+  const { refetch: refetchParent } = api.planSection.getById.useQuery(
+    parent.id,
+    {
+      onSuccess(data) {
+        data
+          ? setSectionItemsData.setState(
+              parent.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
+            )
+          : null;
+        data ? setNewSectionItemOrder(data.workouts.length) : null;
+      },
+    }
+  );
+
+  useEffect(() => {
+    sectionItemsData.map((item, index) => {
+      if (index !== item.order) {
+        mutationWorkoutReorder.mutate({
+          workoutId: item.id,
+          newOrder: index,
+        });
+      }
+    });
+  }, [sectionItemsData]);
+
+  const mutationWorkoutReorder = api.workout.reorder.useMutation({});
 
   const items = sectionItemsData[0]
     ? sectionItemsData.map((sectionItem, index) => (
@@ -98,57 +143,47 @@ const SectionItemsDnd = (props: Props) => {
 
   return (
     <ScrollArea>
+      <LoadingOverlay
+        visible={mutationWorkoutReorder.isLoading}
+        overlayBlur={2}
+      />
+
       <DragDropContext
-        onDragEnd={({ destination, source }) =>
+        onDragEnd={({ destination, source }) => {
+          if (!destination) return;
           setSectionItemsData.reorder({
             from: source.index,
-            to: destination?.index || 0,
-          })
-        }
+            to: destination.index,
+          });
+        }}
       >
         <StrictModeDroppable droppableId="dnd-list" direction="vertical">
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {items}
-              <Draggable
-                key={"addItem"}
-                index={sectionItemsData.length}
-                draggableId={"addItem"}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    className={cx(classes.item, {
-                      [classes.itemDragging]: snapshot.isDragging,
-                    })}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                  >
-                    <div
-                      {...provided.dragHandleProps}
-                      className={classes.dragHandle}
-                    >
-                      <IconGripVertical size={18} stroke={1.5} />
-                    </div>
 
-                    <Button
-                      onClick={() => setIsCreatePlanSectionItemModalOpen(true)}
-                    >
-                      Add workout
-                    </Button>
-                  </div>
-                )}
-              </Draggable>
               {provided.placeholder}
             </div>
           )}
         </StrictModeDroppable>
       </DragDropContext>
+      <div className={cx(classes.item, {})}>
+        <div>
+          <Button
+            onClick={() => {
+              setIsCreateSectionItemModalOpen(true);
+            }}
+          >
+            Add workout
+          </Button>
+        </div>
+      </div>
       <CreatePlanSectionItemModal
-        isCreatePlanSectionModalOpen={isCreatePlanSectionItemModalOpen}
-        setIsCreatePlanSectionModalOpen={setIsCreatePlanSectionItemModalOpen}
-        planId={"fasfds"}
-        nameSuggestion={`Workout 1}`}
-        refetch={() => undefined}
+        isCreateSectionItemModalOpen={isCreateSectionItemModalOpen}
+        setIsCreateSectionItemModalOpen={setIsCreateSectionItemModalOpen}
+        parentId={parent.id}
+        refetch={refetchParent}
+        order={newSectionItemOrder}
       />
     </ScrollArea>
   );
