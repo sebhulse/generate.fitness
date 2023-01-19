@@ -7,7 +7,6 @@ type Props = {
   setIsCreateSectionItemModalOpen: (value: boolean) => void;
   parentId: string;
   refetch: () => void;
-  order: number;
 };
 const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
   const {
@@ -15,7 +14,6 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
     setIsCreateSectionItemModalOpen,
     parentId,
     refetch,
-    order,
   } = props;
 
   const mutation = api.workout.create.useMutation({
@@ -29,7 +27,6 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
     initialValues: {
       name: "",
       planSectionId: parentId,
-      order: order,
     },
 
     validate: {
