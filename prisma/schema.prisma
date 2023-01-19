@@ -136,7 +136,7 @@ model PlanSection {
 model Workout {
     id String @id @default(cuid())
     planSection PlanSection? @relation(fields: [planSectionId], references: [id])
-    planSectionId String
+    planSectionId String?
     createdBy User @relation("WorkoutCreatedBy", fields: [userId], references: [id])
     userId String
     createdAt DateTime @default(now())
@@ -147,11 +147,11 @@ model Workout {
     duration Int?
     usesEquipment Boolean @default(false)
     workoutType WorkoutType? @relation(fields: [workoutTypeId], references: [id])
-    workoutTypeId String
+    workoutTypeId String?
     workoutTargetArea WorkoutTargetArea? @relation(fields: [workoutTargetAreaId], references: [id])
-    workoutTargetAreaId String
+    workoutTargetAreaId String?
     workoutIntensity WorkoutIntensity? @relation(fields: [workoutIntensityId], references: [id])
-    workoutIntensityId String
+    workoutIntensityId String?
     allowDisplayUserEdit Boolean @default(false)
     workoutSections WorkoutSection[]
     isDone Boolean @default(false)

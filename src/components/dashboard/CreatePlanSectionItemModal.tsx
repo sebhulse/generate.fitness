@@ -3,38 +3,37 @@ import { useForm, TransformedValues } from "@mantine/form";
 import { api } from "../../utils/api";
 
 type Props = {
-  isCreatePlanSectionModalOpen: boolean;
-  setIsCreatePlanSectionModalOpen: (value: boolean) => void;
-  planId: string;
-  nameSuggestion: string;
+  isCreateSectionItemModalOpen: boolean;
+  setIsCreateSectionItemModalOpen: (value: boolean) => void;
+  parentId: string;
   refetch: () => void;
+  order: number;
 };
 const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
   const {
-    isCreatePlanSectionModalOpen,
-    setIsCreatePlanSectionModalOpen,
-    planId,
-    nameSuggestion,
+    isCreateSectionItemModalOpen,
+    setIsCreateSectionItemModalOpen,
+    parentId,
     refetch,
+    order,
   } = props;
 
-  const mutation = api.planSection.create.useMutation({
+  const mutation = api.workout.create.useMutation({
     onSuccess() {
-      setIsCreatePlanSectionModalOpen(false);
+      setIsCreateSectionItemModalOpen(false);
       refetch();
     },
   });
+
   const form = useForm({
     initialValues: {
       name: "",
-      planId: planId,
+      planSectionId: parentId,
+      order: order,
     },
 
     validate: {
-      name: (value) =>
-        value.length < 2
-          ? `Please enter a Name e.g. '${nameSuggestion}'`
-          : null,
+      name: (value) => (value.length < 2 ? `Please enter a Name` : null),
     },
   });
 
@@ -45,14 +44,13 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
   return (
     <>
       <Modal
-        opened={isCreatePlanSectionModalOpen}
-        onClose={() => setIsCreatePlanSectionModalOpen(false)}
-        title="Plan"
+        opened={isCreateSectionItemModalOpen}
+        onClose={() => setIsCreateSectionItemModalOpen(false)}
+        title="Create Workout"
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
             label="Name"
-            placeholder={nameSuggestion}
             inputWrapperOrder={["label", "input", "error"]}
             withAsterisk
             {...form.getInputProps("name")}

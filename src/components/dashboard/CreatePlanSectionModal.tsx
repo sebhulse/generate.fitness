@@ -5,8 +5,7 @@ import { api } from "../../utils/api";
 type Props = {
   isCreatePlanSectionModalOpen: boolean;
   setIsCreatePlanSectionModalOpen: (value: boolean) => void;
-  planId: string;
-  nameSuggestion: string;
+  parentId: string;
   refetch: () => void;
   order: number;
 };
@@ -14,8 +13,7 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
   const {
     isCreatePlanSectionModalOpen,
     setIsCreatePlanSectionModalOpen,
-    planId,
-    nameSuggestion,
+    parentId,
     refetch,
     order,
   } = props;
@@ -30,15 +28,12 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       name: "",
-      planId: planId,
+      planId: parentId,
       order: order,
     },
 
     validate: {
-      name: (value) =>
-        value.length < 1
-          ? `Please enter a Name e.g. '${nameSuggestion}'`
-          : null,
+      name: (value) => (value.length < 1 ? `Please enter a Name` : null),
     },
   });
 
@@ -51,12 +46,11 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
       <Modal
         opened={isCreatePlanSectionModalOpen}
         onClose={() => setIsCreatePlanSectionModalOpen(false)}
-        title="Plan"
+        title="Create Plan Section"
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
             label="Name"
-            placeholder={nameSuggestion}
             inputWrapperOrder={["label", "input", "error"]}
             withAsterisk
             {...form.getInputProps("name")}

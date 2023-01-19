@@ -65,8 +65,6 @@ const HeaderMenu = () => {
     ? `/dashboard/?trainer=${query.trainer}`
     : `/dashboard`;
 
-  console.log(query.trainer);
-
   return (
     <Box>
       <Header height={60} px="md">
