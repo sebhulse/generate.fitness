@@ -20,8 +20,8 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
 
   const mutation = api.workout.create.useMutation({
     onSuccess() {
-      setIsCreateSectionItemModalOpen(false);
       refetch();
+      setIsCreateSectionItemModalOpen(false);
     },
   });
 
@@ -33,7 +33,7 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
     },
 
     validate: {
-      name: (value) => (value.length < 2 ? `Please enter a Name` : null),
+      name: (value) => (value.length < 1 ? `Please enter a Name` : null),
     },
   });
 

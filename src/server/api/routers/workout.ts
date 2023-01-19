@@ -31,11 +31,17 @@ export const workoutRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const workoutCount = await ctx.prisma.workout.count({
+        where: {
+          planSectionId: input.planSectionId,
+        },
+      });
       const plan = await ctx.prisma.workout.create({
         data: {
           name: input.name,
           allowDisplayUserEdit: input.allowEdit,
           planSection: { connect: { id: input.planSectionId } },
+          order: workoutCount,
           createdBy: {
             connect: { id: ctx.session.user.id },
           },
