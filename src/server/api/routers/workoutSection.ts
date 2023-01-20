@@ -2,27 +2,27 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
-export const planSectionRouter = createTRPCRouter({
+export const workoutSectionRouter = createTRPCRouter({
   getById: protectedProcedure.input(z.string()).query(({ ctx, input }) => {
-    return ctx.prisma.planSection.findFirst({
+    return ctx.prisma.workoutSection.findFirst({
       where: {
         id: input,
       },
       include: {
-        workouts: true,
+        exercises: true,
       },
     });
   }),
 
-  getManyByPlanId: protectedProcedure
+  getManyByWorkoutId: protectedProcedure
     .input(z.string())
     .query(({ ctx, input }) => {
-      return ctx.prisma.planSection.findMany({
+      return ctx.prisma.workoutSection.findMany({
         where: {
-          planId: input,
+          workoutId: input,
         },
         include: {
-          workouts: true,
+          exercises: true,
         },
       });
     }),
@@ -31,43 +31,43 @@ export const planSectionRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        planId: z.string(),
+        workoutId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const planSectionCount = await ctx.prisma.planSection.count({
+      const workoutSectionCount = await ctx.prisma.workoutSection.count({
         where: {
-          planId: input.planId,
+          workoutId: input.workoutId,
         },
       });
-      const planSection = await ctx.prisma.planSection.create({
+      const workoutSection = await ctx.prisma.workoutSection.create({
         data: {
           name: input.name,
-          order: planSectionCount,
-          plan: {
-            connect: { id: input.planId },
+          order: workoutSectionCount,
+          workout: {
+            connect: { id: input.workoutId },
           },
         },
       });
-      return planSection;
+      return workoutSection;
     }),
 
   reorder: protectedProcedure
     .input(
       z.object({
-        planSectionId: z.string(),
+        workoutSectionId: z.string(),
         newOrder: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const plan = await ctx.prisma.planSection.update({
+      const workoutSection = await ctx.prisma.workoutSection.update({
         where: {
-          id: input.planSectionId,
+          id: input.workoutSectionId,
         },
         data: {
           order: input.newOrder,
         },
       });
-      return plan;
+      return workoutSection;
     }),
 });

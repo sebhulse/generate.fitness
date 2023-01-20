@@ -36,7 +36,7 @@ export const workoutRouter = createTRPCRouter({
           planSectionId: input.planSectionId,
         },
       });
-      const plan = await ctx.prisma.workout.create({
+      const workout = await ctx.prisma.workout.create({
         data: {
           name: input.name,
           allowDisplayUserEdit: input.allowEdit,
@@ -47,7 +47,7 @@ export const workoutRouter = createTRPCRouter({
           },
         },
       });
-      return plan;
+      return workout;
     }),
 
   reorder: protectedProcedure
@@ -58,7 +58,7 @@ export const workoutRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const plan = await ctx.prisma.workout.update({
+      const workout = await ctx.prisma.workout.update({
         where: {
           id: input.workoutId,
         },
@@ -66,6 +66,6 @@ export const workoutRouter = createTRPCRouter({
           order: input.newOrder,
         },
       });
-      return plan;
+      return workout;
     }),
 });

@@ -7,13 +7,15 @@ type Props = {
   setIsCreateSectionItemModalOpen: (value: boolean) => void;
   parentId: string;
   refetch: () => void;
+  sectionType: "Workout" | "Exercise";
 };
-const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
+const CreateSectionItemModal = (props: Props): JSX.Element => {
   const {
     isCreateSectionItemModalOpen,
     setIsCreateSectionItemModalOpen,
     parentId,
     refetch,
+    sectionType,
   } = props;
 
   const mutation = api.workout.create.useMutation({
@@ -43,7 +45,7 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
       <Modal
         opened={isCreateSectionItemModalOpen}
         onClose={() => setIsCreateSectionItemModalOpen(false)}
-        title="Create Workout"
+        title={`Create ${sectionType}`}
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
@@ -52,9 +54,7 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
             withAsterisk
             {...form.getInputProps("name")}
           />
-
           <Checkbox mt="md" label="Uses equipment" />
-
           <Group position="center">
             <Button type="submit" mt="md">
               Submit
@@ -66,4 +66,4 @@ const CreatePlanSectionItemModal = (props: Props): JSX.Element => {
   );
 };
 
-export default CreatePlanSectionItemModal;
+export default CreateSectionItemModal;

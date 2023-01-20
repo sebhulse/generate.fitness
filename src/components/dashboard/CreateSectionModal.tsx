@@ -7,6 +7,7 @@ type Props = {
   setIsCreateSectionModalOpen: (value: boolean) => void;
   parentId: string;
   refetch: () => void;
+  sectionType: "Plan" | "Workout";
 };
 const CreateSectionModal = (props: Props): JSX.Element => {
   const {
@@ -14,6 +15,7 @@ const CreateSectionModal = (props: Props): JSX.Element => {
     setIsCreateSectionModalOpen,
     parentId,
     refetch,
+    sectionType,
   } = props;
 
   const mutation = api.planSection.create.useMutation({
@@ -43,7 +45,7 @@ const CreateSectionModal = (props: Props): JSX.Element => {
       <Modal
         opened={isCreateSectionModalOpen}
         onClose={() => setIsCreateSectionModalOpen(false)}
-        title="Create Plan Section"
+        title={`Create ${sectionType} Section`}
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput

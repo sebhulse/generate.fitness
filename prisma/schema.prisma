@@ -227,7 +227,7 @@ model Exercise {
     equipment Equipment? @relation(fields: [equipmentId], references: [id])
     equipmentId String?
     equipmentIntensity EquipmentIntensity?
-    rest Int
+    rest Int @default(0)
 
     @@index([workoutSectionId])
     @@index([movementId])
