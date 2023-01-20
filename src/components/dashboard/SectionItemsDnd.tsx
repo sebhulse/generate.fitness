@@ -155,7 +155,7 @@ const SectionItemsDnd = (props: Props) => {
                   <IconGripVertical size={18} stroke={1.5} />
                 </div>
               </div>
-              {sectionItem.order}
+              {"name" in sectionItem ? sectionItem.name : sectionItem.order}
             </div>
           )}
         </Draggable>
