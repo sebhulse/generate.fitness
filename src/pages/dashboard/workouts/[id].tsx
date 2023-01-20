@@ -11,13 +11,12 @@ import SectionsDnd from "../../../components/dashboard/SectionsDnd";
 
 const Dashboard: NextPage = () => {
   const { query } = useRouter();
-  const { data: plan, isLoading: isPlanLoading } = api.plan.getById.useQuery(
-    query.id as string
-  );
+  const { data: workout, isLoading: isWorkoutLoading } =
+    api.workout.getById.useQuery(query.id as string);
 
   const items = [
     { title: "Overview", href: "/dashboard" },
-    { title: "Plans", href: "/dashboard/plans" },
+    { title: "Workouts", href: "/dashboard/workouts" },
   ].map((item, index) => (
     <Anchor href={item.href} key={index}>
       {item.title}
@@ -27,15 +26,19 @@ const Dashboard: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Plans</title>
-        <meta name="Plans" content="Dashboard to manage Plans" />
+        <title>Workouts</title>
+        <meta name="Workouts" content="Dashboard to manage Workouts" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
-        {isPlanLoading ? <Loader variant="dots" /> : <></>}
-        {plan ? <PlanInfoCard plan={plan}></PlanInfoCard> : <></>}
-        {plan?.planSections ? <SectionsDnd parent={plan}></SectionsDnd> : <></>}
+        {isWorkoutLoading ? <Loader variant="dots" /> : <></>}
+        {/* {workout ? <PlanInfoCard plan={workout}></PlanInfoCard> : <></>} */}
+        {workout?.workoutSections ? (
+          <SectionsDnd parent={workout}></SectionsDnd>
+        ) : (
+          <></>
+        )}
       </DashboardLayout>
     </>
   );
