@@ -75,7 +75,7 @@ type PlanType = Plan & {
 };
 
 type Props = {
-  parent: WorkoutType & PlanType;
+  parent: WorkoutType | PlanType;
 };
 
 const SectionsDnd = (props: Props) => {
@@ -84,48 +84,48 @@ const SectionsDnd = (props: Props) => {
   const [isCreateSectionModalOpen, setIsCreateSectionModalOpen] =
     useState(false);
 
-  const isParentPlan = parent.planSections ? true : false;
-
-  const parentSections = isParentPlan
-    ? parent.planSections
-    : parent.workoutSections;
+  const parentSections =
+    "planSections" in parent ? parent.planSections : parent.workoutSections;
 
   const [sectionsData, setSectionsData] = useListState<
     WorkoutSectionType | PlanSectionType
   >(parentSections.sort((a, b) => (a.order < b.order ? -1 : 1)));
 
-  const { refetch: refetch } = isParentPlan
-    ? api.plan.getById.useQuery(parent.id, {
-        onSuccess(data) {
-          data
-            ? setSectionsData.setState(
-                data.planSections.sort((a, b) => (a.order < b.order ? -1 : 1))
-              )
-            : null;
-        },
-      })
-    : api.workout.getById.useQuery(parent.id, {
-        onSuccess(data) {
-          data
-            ? setSectionsData.setState(
-                data.workoutSections.sort((a, b) =>
-                  a.order < b.order ? -1 : 1
+  const { refetch: refetch } =
+    "planSections" in parent
+      ? api.plan.getById.useQuery(parent.id, {
+          onSuccess(data) {
+            data
+              ? setSectionsData.setState(
+                  data.planSections.sort((a, b) => (a.order < b.order ? -1 : 1))
                 )
-              )
-            : null;
-        },
-      });
+              : null;
+          },
+        })
+      : api.workout.getById.useQuery(parent.id, {
+          onSuccess(data) {
+            data
+              ? setSectionsData.setState(
+                  data.workoutSections.sort((a, b) =>
+                    a.order < b.order ? -1 : 1
+                  )
+                )
+              : null;
+          },
+        });
 
-  const mutationReorder = isParentPlan
-    ? api.planSection.reorder.useMutation()
-    : api.workoutSection.reorder.useMutation();
+  const mutationReorderPlan = api.planSection.reorder.useMutation();
+  const mutationReorderWorkout = api.workoutSection.reorder.useMutation();
 
   useEffect(() => {
     sectionsData.map((item, index) => {
       if (item.order !== index) {
-        isParentPlan
-          ? mutationReorder.mutate({ planSectionId: item.id, newOrder: index })
-          : mutationReorder.mutate({
+        "planSections" in parent
+          ? mutationReorderPlan.mutate({
+              planSectionId: item.id,
+              newOrder: index,
+            })
+          : mutationReorderWorkout.mutate({
               workoutSectionId: item.id,
               newOrder: index,
             });
@@ -170,7 +170,12 @@ const SectionsDnd = (props: Props) => {
 
   return (
     <Card mt="md">
-      <LoadingOverlay visible={mutationReorder.isLoading} overlayBlur={2} />
+      <LoadingOverlay
+        visible={
+          mutationReorderWorkout.isLoading || mutationReorderPlan.isLoading
+        }
+        overlayBlur={2}
+      />
 
       <DragDropContext
         onDragEnd={({ destination, source }) => {
@@ -203,7 +208,7 @@ const SectionsDnd = (props: Props) => {
               setIsCreateSectionModalOpen(true);
             }}
           >
-            Add section
+            {`Add ${"planSections" in parent ? "Plan" : "Workout"} section`}
           </Button>
         </div>
       </div>
@@ -212,7 +217,7 @@ const SectionsDnd = (props: Props) => {
         setIsCreateSectionModalOpen={setIsCreateSectionModalOpen}
         parentId={parent.id}
         refetch={refetch}
-        sectionType={sectionType}
+        sectionType={"planSections" in parent ? "Plan" : "Workout"}
       />
     </Card>
   );

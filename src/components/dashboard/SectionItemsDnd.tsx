@@ -19,7 +19,7 @@ import type {
   WorkoutSection,
   Exercise,
 } from "@prisma/client";
-import CreatePlanSectionItemModal from "./CreatePlanSectionItemModal";
+import CreateSectionItemModal from "./CreateSectionItemModal";
 import { api } from "../../utils/api";
 
 const useStyles = createStyles((theme) => ({
@@ -70,7 +70,7 @@ export type PlanSectionType = PlanSection & {
 };
 
 type Props = {
-  parent: WorkoutSectionType & PlanSectionType;
+  parent: WorkoutSectionType | PlanSectionType;
 };
 
 const SectionItemsDnd = (props: Props) => {
@@ -79,49 +79,46 @@ const SectionItemsDnd = (props: Props) => {
   const [isCreateSectionItemModalOpen, setIsCreateSectionItemModalOpen] =
     useState(false);
 
-  const isParentPlanSection = parent.workouts ? true : false;
-
-  const parentSections = isParentPlanSection
-    ? parent.workouts
-    : parent.exercises;
+  const parentSections =
+    "workouts" in parent ? parent.workouts : parent.exercises;
 
   const [sectionItemsData, setSectionItemsData] = useListState<
     Workout | Exercise
   >(parentSections.sort((a, b) => (a.order < b.order ? -1 : 1)));
 
-  const { refetch: refetch } = isParentPlanSection
-    ? api.planSection.getById.useQuery(parent.id, {
-        onSuccess(data) {
-          data
-            ? setSectionItemsData.setState(
-                data.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
-              )
-            : null;
-        },
-      })
-    : api.workoutSection.getById.useQuery(parent.id, {
-        onSuccess(data) {
-          data
-            ? setSectionItemsData.setState(
-                data.exercises.sort((a, b) => (a.order < b.order ? -1 : 1))
-              )
-            : null;
-        },
-      });
+  const { refetch: refetch } =
+    "workouts" in parent
+      ? api.planSection.getById.useQuery(parent.id, {
+          onSuccess(data) {
+            data
+              ? setSectionItemsData.setState(
+                  data.workouts.sort((a, b) => (a.order < b.order ? -1 : 1))
+                )
+              : null;
+          },
+        })
+      : api.workoutSection.getById.useQuery(parent.id, {
+          onSuccess(data) {
+            data
+              ? setSectionItemsData.setState(
+                  data.exercises.sort((a, b) => (a.order < b.order ? -1 : 1))
+                )
+              : null;
+          },
+        });
 
-  const mutationReorder = isParentPlanSection
-    ? api.workout.reorder.useMutation()
-    : api.exercises.reorder.useMutation();
+  const mutationReorderWorkout = api.workout.reorder.useMutation();
+  const mutationReorderExercise = api.exercise.reorder.useMutation();
 
   useEffect(() => {
     sectionItemsData.map((item, index) => {
       if (item.order !== index) {
-        isParentPlanSection
-          ? mutationReorder.mutate({
+        "workouts" in parent
+          ? mutationReorderWorkout.mutate({
               workoutId: item.id,
               newOrder: index,
             })
-          : mutationReorder.mutate({
+          : mutationReorderExercise.mutate({
               exerciseId: item.id,
               newOrder: index,
             });
@@ -167,7 +164,12 @@ const SectionItemsDnd = (props: Props) => {
 
   return (
     <ScrollArea>
-      <LoadingOverlay visible={mutationReorder.isLoading} overlayBlur={2} />
+      <LoadingOverlay
+        visible={
+          mutationReorderExercise.isLoading || mutationReorderWorkout.isLoading
+        }
+        overlayBlur={2}
+      />
 
       <DragDropContext
         onDragEnd={({ destination, source }) => {
@@ -182,7 +184,6 @@ const SectionItemsDnd = (props: Props) => {
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {items}
-
               {provided.placeholder}
             </div>
           )}
@@ -195,15 +196,16 @@ const SectionItemsDnd = (props: Props) => {
               setIsCreateSectionItemModalOpen(true);
             }}
           >
-            Add workout
+            {`Add ${"workouts" in parent ? "Workout" : "Exercise"}`}
           </Button>
         </div>
       </div>
-      <CreatePlanSectionItemModal
+      <CreateSectionItemModal
         isCreateSectionItemModalOpen={isCreateSectionItemModalOpen}
         setIsCreateSectionItemModalOpen={setIsCreateSectionItemModalOpen}
         parentId={parent.id}
         refetch={refetch}
+        sectionType={"workouts" in parent ? "Workout" : "Exercise"}
       />
     </ScrollArea>
   );
