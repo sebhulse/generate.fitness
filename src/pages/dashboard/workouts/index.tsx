@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Modal, Button, Group } from "@mantine/core";
 import { api } from "../../../utils/api";
+
 import DashboardLayout from "../../../layouts/DashboardLayout";
 
-const Plans: NextPage = () => {
-  const planQuery = api.plan.getManybyCreatedBy.useQuery();
+const Workouts: NextPage = () => {
+  const workoutQuery = api.workout.getManybyCreatedBy.useQuery();
 
   return (
     <>
@@ -18,8 +19,8 @@ const Plans: NextPage = () => {
       </Head>
       <DashboardLayout>
         <div>
-          {planQuery.data?.map((plan) => {
-            return <p key={plan.id}>{plan.id}</p>;
+          {workoutQuery.data?.map((workout) => {
+            return <p key={workout.id}>{workout.id}</p>;
           })}
         </div>
       </DashboardLayout>
@@ -27,4 +28,4 @@ const Plans: NextPage = () => {
   );
 };
 
-export default Plans;
+export default Workouts;
