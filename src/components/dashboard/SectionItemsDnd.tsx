@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   createStyles,
   ScrollArea,
@@ -6,11 +6,7 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
-import {
-  DragDropContext,
-  Draggable,
-  DraggableLocation,
-} from "react-beautiful-dnd";
+import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
 import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
 import type {
@@ -19,7 +15,8 @@ import type {
   WorkoutSection,
   Exercise,
 } from "@prisma/client";
-import CreateSectionItemModal from "./CreateSectionItemModal";
+import CreateWorkoutModal from "./CreateWorkoutModal";
+import CreateExerciseModal from "./CreateExerciseModal";
 import { api } from "../../utils/api";
 
 const useStyles = createStyles((theme) => ({
@@ -155,7 +152,9 @@ const SectionItemsDnd = (props: Props) => {
                   <IconGripVertical size={18} stroke={1.5} />
                 </div>
               </div>
-              {"name" in sectionItem ? sectionItem.name : sectionItem.order}
+              {"name" in sectionItem
+                ? sectionItem.name
+                : sectionItem.movementId}
             </div>
           )}
         </Draggable>
@@ -200,13 +199,21 @@ const SectionItemsDnd = (props: Props) => {
           </Button>
         </div>
       </div>
-      <CreateSectionItemModal
-        isCreateSectionItemModalOpen={isCreateSectionItemModalOpen}
-        setIsCreateSectionItemModalOpen={setIsCreateSectionItemModalOpen}
-        parentId={parent.id}
-        refetch={refetch}
-        sectionType={"workouts" in parent ? "Workout" : "Exercise"}
-      />
+      {"workouts" in parent ? (
+        <CreateWorkoutModal
+          isCreateWorkoutModalOpen={isCreateSectionItemModalOpen}
+          setIsCreateWorkoutModalOpen={setIsCreateSectionItemModalOpen}
+          parentId={parent.id}
+          refetch={refetch}
+        />
+      ) : (
+        <CreateExerciseModal
+          isCreateExerciseModalOpen={isCreateSectionItemModalOpen}
+          setIsCreateExerciseModalOpen={setIsCreateSectionItemModalOpen}
+          parentId={parent.id}
+          refetch={refetch}
+        />
+      )}
     </ScrollArea>
   );
 };

@@ -1,34 +1,34 @@
 import { Modal, Button, TextInput, Group, Checkbox } from "@mantine/core";
-import { useForm, TransformedValues } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { api } from "../../utils/api";
 
 type Props = {
-  isCreateSectionItemModalOpen: boolean;
-  setIsCreateSectionItemModalOpen: (value: boolean) => void;
+  isCreateExerciseModalOpen: boolean;
+  setIsCreateExerciseModalOpen: (value: boolean) => void;
   parentId: string;
   refetch: () => void;
-  sectionType: "Workout" | "Exercise";
 };
-const CreateSectionItemModal = (props: Props): JSX.Element => {
+const CreateExerciseModal = (props: Props): JSX.Element => {
   const {
-    isCreateSectionItemModalOpen,
-    setIsCreateSectionItemModalOpen,
+    isCreateExerciseModalOpen,
+    setIsCreateExerciseModalOpen,
     parentId,
     refetch,
-    sectionType,
   } = props;
 
-  const mutation = api.workout.create.useMutation({
+  const mutation = api.exercise.create.useMutation({
     onSuccess() {
       refetch();
-      setIsCreateSectionItemModalOpen(false);
+      setIsCreateExerciseModalOpen(false);
     },
   });
 
   const form = useForm({
     initialValues: {
       name: "",
-      planSectionId: parentId,
+      workoutSectionId: parentId,
+      movementId: "clcmf2ez900006msl5opl7z49",
+      duration: 0,
     },
 
     validate: {
@@ -43,9 +43,9 @@ const CreateSectionItemModal = (props: Props): JSX.Element => {
   return (
     <>
       <Modal
-        opened={isCreateSectionItemModalOpen}
-        onClose={() => setIsCreateSectionItemModalOpen(false)}
-        title={`Create ${sectionType}`}
+        opened={isCreateExerciseModalOpen}
+        onClose={() => setIsCreateExerciseModalOpen(false)}
+        title="Create Workout"
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
@@ -66,4 +66,4 @@ const CreateSectionItemModal = (props: Props): JSX.Element => {
   );
 };
 
-export default CreateSectionItemModal;
+export default CreateExerciseModal;

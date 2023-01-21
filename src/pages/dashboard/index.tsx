@@ -54,10 +54,6 @@ const Dashboard: NextPage = () => {
             isCreatePlanModalOpen={isCreatePlanModalOpen}
             setIsCreatePlanModalOpen={setIsCreatePlanModalOpen}
           />
-          <CreateWorkoutModal
-            isCreateWorkoutModalOpen={isCreateWorkoutModalOpen}
-            setIsCreateWorkoutModalOpen={setIsCreateWorkoutModalOpen}
-          />
 
           <Group>
             <Button onClick={() => setIsCreatePlanModalOpen(true)}>
