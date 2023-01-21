@@ -62,13 +62,13 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-type WorkoutType = Workout & {
+export type WorkoutType = Workout & {
   workoutSections: (WorkoutSection & {
     exercises: Exercise[];
   })[];
 };
 
-type PlanType = Plan & {
+export type PlanType = Plan & {
   planSections: (PlanSection & {
     workouts: Workout[];
   })[];
@@ -215,9 +215,8 @@ const SectionsDnd = (props: Props) => {
       <CreateSectionModal
         isCreateSectionModalOpen={isCreateSectionModalOpen}
         setIsCreateSectionModalOpen={setIsCreateSectionModalOpen}
-        parentId={parent.id}
+        parent={parent}
         refetch={refetch}
-        sectionType={"planSections" in parent ? "Plan" : "Workout"}
       />
     </Card>
   );

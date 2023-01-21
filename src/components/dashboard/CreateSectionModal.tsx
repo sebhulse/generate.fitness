@@ -1,24 +1,29 @@
 import { Modal, Button, TextInput, Group } from "@mantine/core";
-import { useForm, TransformedValues } from "@mantine/form";
+import { useForm, type TransformedValues } from "@mantine/form";
 import { api } from "../../utils/api";
+import type { WorkoutType, PlanType } from "./SectionsDnd";
 
 type Props = {
   isCreateSectionModalOpen: boolean;
   setIsCreateSectionModalOpen: (value: boolean) => void;
-  parentId: string;
+  parent: WorkoutType | PlanType;
   refetch: () => void;
-  sectionType: "Plan" | "Workout";
 };
 const CreateSectionModal = (props: Props): JSX.Element => {
   const {
     isCreateSectionModalOpen,
     setIsCreateSectionModalOpen,
-    parentId,
+    parent,
     refetch,
-    sectionType,
   } = props;
 
-  const mutation = api.planSection.create.useMutation({
+  const mutationCreatePlanSection = api.planSection.create.useMutation({
+    onSuccess() {
+      refetch();
+      setIsCreateSectionModalOpen(false);
+    },
+  });
+  const mutationCreateWorkoutSection = api.workoutSection.create.useMutation({
     onSuccess() {
       refetch();
       setIsCreateSectionModalOpen(false);
@@ -28,16 +33,23 @@ const CreateSectionModal = (props: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       name: "",
-      planId: parentId,
     },
-
     validate: {
       name: (value) => (value.length < 1 ? `Please enter a Name` : null),
     },
+    transformValues: (values) =>
+      "Plan" in parent
+        ? {
+            ...values,
+            planId: parent.id,
+          }
+        : { ...values, workoutId: parent.id },
   });
 
-  const handleSubmit = (values: typeof form.values) => {
-    mutation.mutate({ ...values });
+  const handleSubmit = (values: TransformedValues<typeof form>) => {
+    "planId" in values
+      ? mutationCreatePlanSection.mutate({ ...values })
+      : mutationCreateWorkoutSection.mutate({ ...values });
   };
 
   return (
@@ -45,7 +57,7 @@ const CreateSectionModal = (props: Props): JSX.Element => {
       <Modal
         opened={isCreateSectionModalOpen}
         onClose={() => setIsCreateSectionModalOpen(false)}
-        title={`Create ${sectionType} Section`}
+        title={`Create ${"Plan" in parent ? "Plan" : "Workout"} Section`}
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
