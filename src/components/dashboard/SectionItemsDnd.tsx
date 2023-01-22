@@ -9,15 +9,11 @@ import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { IconGripVertical } from "@tabler/icons";
 import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
-import type {
-  Workout,
-  PlanSection,
-  WorkoutSection,
-  Exercise,
-} from "@prisma/client";
+import type { Workout, Exercise, Movement } from "@prisma/client";
 import CreateWorkoutModal from "./CreateWorkoutModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import { api } from "../../utils/api";
+import type { WorkoutSectionType, PlanSectionType } from "./SectionsDnd";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -58,12 +54,8 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export type WorkoutSectionType = WorkoutSection & {
-  exercises: Exercise[];
-};
-
-export type PlanSectionType = PlanSection & {
-  workouts: Workout[];
+type ExerciseType = Exercise & {
+  movement: Movement;
 };
 
 type Props = {
@@ -80,7 +72,7 @@ const SectionItemsDnd = (props: Props) => {
     "workouts" in parent ? parent.workouts : parent.exercises;
 
   const [sectionItemsData, setSectionItemsData] = useListState<
-    Workout | Exercise
+    Workout | ExerciseType
   >(parentSections.sort((a, b) => (a.order < b.order ? -1 : 1)));
 
   const { refetch: refetch } =
@@ -154,7 +146,7 @@ const SectionItemsDnd = (props: Props) => {
               </div>
               {"name" in sectionItem
                 ? sectionItem.name
-                : sectionItem.movementId}
+                : sectionItem.movement.name}
             </div>
           )}
         </Draggable>

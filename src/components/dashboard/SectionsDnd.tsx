@@ -17,10 +17,10 @@ import type {
   Workout,
   Exercise,
   WorkoutSection,
+  Movement,
 } from "@prisma/client";
 import CreateSectionModal from "./CreateSectionModal";
 import { api } from "../../utils/api";
-import type { WorkoutSectionType, PlanSectionType } from "./SectionItemsDnd";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -64,7 +64,9 @@ const useStyles = createStyles((theme) => ({
 
 export type WorkoutType = Workout & {
   workoutSections: (WorkoutSection & {
-    exercises: Exercise[];
+    exercises: (Exercise & {
+      movement: Movement;
+    })[];
   })[];
 };
 
@@ -72,6 +74,16 @@ export type PlanType = Plan & {
   planSections: (PlanSection & {
     workouts: Workout[];
   })[];
+};
+
+export type WorkoutSectionType = WorkoutSection & {
+  exercises: (Exercise & {
+    movement: Movement;
+  })[];
+};
+
+export type PlanSectionType = PlanSection & {
+  workouts: Workout[];
 };
 
 type Props = {
@@ -159,9 +171,7 @@ const SectionsDnd = (props: Props) => {
                 </div>
                 <Text className={classes.name}>{section.name}</Text>
               </div>
-              <SectionItemsDnd
-                parent={section as WorkoutSectionType & PlanSectionType}
-              ></SectionItemsDnd>
+              <SectionItemsDnd parent={section}></SectionItemsDnd>
             </div>
           )}
         </Draggable>
