@@ -76,11 +76,11 @@ export const workoutSectionRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const deleteExercises = ctx.prisma.exercise.deleteMany({
-        where: {
-          workoutSectionId: input.workoutSectionId,
-        },
-      });
+      // const deleteExercises = ctx.prisma.exercise.deleteMany({
+      //   where: {
+      //     workoutSectionId: input.workoutSectionId,
+      //   },
+      // });
 
       const deleteWorkoutSection = ctx.prisma.workoutSection.delete({
         where: {
@@ -88,10 +88,10 @@ export const workoutSectionRouter = createTRPCRouter({
         },
       });
 
-      const transaction = await ctx.prisma.$transaction([
-        deleteExercises,
-        deleteWorkoutSection,
-      ]);
-      return transaction;
+      // const transaction = await ctx.prisma.$transaction([
+      //   deleteExercises,
+      //   deleteWorkoutSection,
+      // ]);
+      return deleteWorkoutSection;
     }),
 });

@@ -205,7 +205,7 @@ model WorkoutIntensity {
 
 model WorkoutSection {
     id String @id @default(cuid())  
-    workout Workout @relation(fields: [workoutId], references: [id])
+    workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
     workoutId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -218,7 +218,7 @@ model WorkoutSection {
 
 model Exercise {
     id String @id @default(cuid())  
-    workoutSection WorkoutSection @relation(fields: [workoutSectionId], references: [id])
+    workoutSection WorkoutSection @relation(fields: [workoutSectionId], references: [id], onDelete: Cascade)
     workoutSectionId String
     movement Movement @relation(fields: [movementId], references: [id])
     movementId String
