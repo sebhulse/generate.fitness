@@ -185,7 +185,7 @@ const SectionsDnd = (props: Props) => {
                 </div>
 
                 <SectionOptionMenu
-                  section={"Plan"}
+                  section={"planSections" in parent ? "Plan" : "Workout"}
                   parentId={section.id}
                   refetch={refetch}
                 />

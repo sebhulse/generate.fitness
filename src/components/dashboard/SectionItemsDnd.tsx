@@ -16,7 +16,7 @@ import CreateWorkoutModal from "./CreateWorkoutModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import { api } from "../../utils/api";
 import type { WorkoutSectionType, PlanSectionType } from "./SectionsDnd";
-import SectionOptionMenu from "./SectionOptionMenu";
+import SectionItemOptionMenu from "./SectionItemOptionMenu";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -154,8 +154,8 @@ const SectionItemsDnd = (props: Props) => {
                   </Text>
                 </div>
 
-                <SectionOptionMenu
-                  section={"Workout"}
+                <SectionItemOptionMenu
+                  section={"workouts" in parent ? "Workout" : "Exercise"}
                   parentId={sectionItem.id}
                   refetch={refetch}
                 />

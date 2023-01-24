@@ -70,4 +70,19 @@ export const workoutRouter = createTRPCRouter({
       });
       return workout;
     }),
+
+  delete: protectedProcedure
+    .input(
+      z.object({
+        workoutId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const deleteWorkout = ctx.prisma.workout.delete({
+        where: {
+          id: input.workoutId,
+        },
+      });
+      return deleteWorkout;
+    }),
 });
