@@ -5,10 +5,22 @@ import {
   Card,
   Button,
   LoadingOverlay,
+  ActionIcon,
+  Menu,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
-import { IconGripVertical } from "@tabler/icons";
+import {
+  IconGripVertical,
+  IconDotsVertical,
+  IconSettings,
+  IconMessageCircle,
+  IconPhoto,
+  IconSearch,
+  IconArrowsLeftRight,
+  IconTrash,
+  IconEdit,
+} from "@tabler/icons";
 import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
 import SectionItemsDnd from "./SectionItemsDnd";
 import type {
@@ -21,6 +33,7 @@ import type {
 } from "@prisma/client";
 import CreateSectionModal from "./CreateSectionModal";
 import { api } from "../../utils/api";
+import SectionOptionMenu from "./SectionOptionMenu";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -159,7 +172,7 @@ const SectionsDnd = (props: Props) => {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "between",
+                  justifyContent: "space-between",
                   alignItems: "center",
                 }}
               >
@@ -168,8 +181,14 @@ const SectionsDnd = (props: Props) => {
                   className={classes.dragHandle}
                 >
                   <IconGripVertical size={18} stroke={1.5} />
+                  <Text className={classes.name}>{section.name}</Text>
                 </div>
-                <Text className={classes.name}>{section.name}</Text>
+
+                <SectionOptionMenu
+                  section={"Plan"}
+                  parentId={section.id}
+                  refetch={refetch}
+                />
               </div>
               <SectionItemsDnd parent={section}></SectionItemsDnd>
             </div>

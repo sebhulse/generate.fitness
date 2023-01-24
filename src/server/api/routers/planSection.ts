@@ -60,7 +60,7 @@ export const planSectionRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const plan = await ctx.prisma.planSection.update({
+      const planSection = await ctx.prisma.planSection.update({
         where: {
           id: input.planSectionId,
         },
@@ -68,6 +68,21 @@ export const planSectionRouter = createTRPCRouter({
           order: input.newOrder,
         },
       });
-      return plan;
+      return planSection;
+    }),
+
+  delete: protectedProcedure
+    .input(
+      z.object({
+        planSectionId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const planSection = await ctx.prisma.planSection.delete({
+        where: {
+          id: input.planSectionId,
+        },
+      });
+      return planSection;
     }),
 });
