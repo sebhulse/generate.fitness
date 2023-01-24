@@ -68,4 +68,30 @@ export const workoutSectionRouter = createTRPCRouter({
       });
       return workoutSection;
     }),
+
+  delete: protectedProcedure
+    .input(
+      z.object({
+        workoutSectionId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const deleteExercises = ctx.prisma.exercise.deleteMany({
+        where: {
+          workoutSectionId: input.workoutSectionId,
+        },
+      });
+
+      const deleteWorkoutSection = ctx.prisma.workoutSection.delete({
+        where: {
+          id: input.workoutSectionId,
+        },
+      });
+
+      const transaction = await ctx.prisma.$transaction([
+        deleteExercises,
+        deleteWorkoutSection,
+      ]);
+      return transaction;
+    }),
 });

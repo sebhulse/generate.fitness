@@ -4,6 +4,8 @@ import {
   ScrollArea,
   Button,
   LoadingOverlay,
+  Text,
+  Group,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
@@ -14,11 +16,13 @@ import CreateWorkoutModal from "./CreateWorkoutModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import { api } from "../../utils/api";
 import type { WorkoutSectionType, PlanSectionType } from "./SectionsDnd";
+import SectionOptionMenu from "./SectionOptionMenu";
 
 const useStyles = createStyles((theme) => ({
   item: {
-    display: "flex",
+    display: "flex-column",
     alignItems: "center",
+    justifyContent: "center",
     borderRadius: theme.radius.md,
     border: `1px solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
@@ -133,20 +137,30 @@ const SectionItemsDnd = (props: Props) => {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "between",
+                  justifyContent: "space-between",
                   alignItems: "center",
                 }}
               >
+                {/* <Group position="apart"> */}
                 <div
                   {...provided.dragHandleProps}
                   className={classes.dragHandle}
                 >
                   <IconGripVertical size={18} stroke={1.5} />
+                  <Text>
+                    {"name" in sectionItem
+                      ? sectionItem.name
+                      : sectionItem.movement.name}
+                  </Text>
                 </div>
+
+                <SectionOptionMenu
+                  section={"Workout"}
+                  parentId={sectionItem.id}
+                  refetch={refetch}
+                />
               </div>
-              {"name" in sectionItem
-                ? sectionItem.name
-                : sectionItem.movement.name}
+              {/* </Group> */}
             </div>
           )}
         </Draggable>

@@ -93,6 +93,7 @@ enum PlanInterval {
     Weeks
     Months
 }
+
 model Plan {
     id String @id @default(cuid()) 
     displayUsers User[] @relation("DisplayUsers")
