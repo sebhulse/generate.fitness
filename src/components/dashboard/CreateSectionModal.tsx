@@ -38,7 +38,7 @@ const CreateSectionModal = (props: Props): JSX.Element => {
       name: (value) => (value.length < 1 ? `Please enter a Name` : null),
     },
     transformValues: (values) =>
-      "Plan" in parent
+      "planSections" in parent
         ? {
             ...values,
             planId: parent.id,
