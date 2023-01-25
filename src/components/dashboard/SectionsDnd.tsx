@@ -5,22 +5,10 @@ import {
   Card,
   Button,
   LoadingOverlay,
-  ActionIcon,
-  Menu,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
-import {
-  IconGripVertical,
-  IconDotsVertical,
-  IconSettings,
-  IconMessageCircle,
-  IconPhoto,
-  IconSearch,
-  IconArrowsLeftRight,
-  IconTrash,
-  IconEdit,
-} from "@tabler/icons";
+import { IconGripVertical } from "@tabler/icons";
 import StrictModeDroppable from "../react-dnd/StrictModeDroppable";
 import SectionItemsDnd from "./SectionItemsDnd";
 import type {

@@ -2,9 +2,10 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Modal, Button, Group } from "@mantine/core";
+import { Modal, Button, LoadingOverlay, Grid } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
+import SectionCard from "../../../components/dashboard/SectionCard";
 
 const Plans: NextPage = () => {
   const planQuery = api.plan.getManybyCreatedBy.useQuery();
@@ -17,11 +18,16 @@ const Plans: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <div>
+        <Grid>
+          <LoadingOverlay visible={planQuery.isLoading} />
           {planQuery.data?.map((plan) => {
-            return <p key={plan.id}>{plan.id}</p>;
+            return (
+              <Grid.Col key={plan.id} md={6} lg={4}>
+                <SectionCard key={plan.id} section={plan} />
+              </Grid.Col>
+            );
           })}
-        </div>
+        </Grid>
       </DashboardLayout>
     </>
   );
