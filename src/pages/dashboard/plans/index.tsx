@@ -19,7 +19,7 @@ const Plans: NextPage = () => {
       </Head>
       <DashboardLayout>
         <Grid>
-          <LoadingOverlay visible={planQuery.isLoading} />
+          {/* <LoadingOverlay visible={planQuery.isLoading} /> */}
           {planQuery.data?.map((plan) => {
             return (
               <Grid.Col key={plan.id} md={6} lg={4}>

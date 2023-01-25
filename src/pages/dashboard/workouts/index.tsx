@@ -2,10 +2,11 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Modal, Button, Group } from "@mantine/core";
+import { Modal, Button, Group, Grid, LoadingOverlay } from "@mantine/core";
 import { api } from "../../../utils/api";
 
 import DashboardLayout from "../../../layouts/DashboardLayout";
+import SectionCard from "../../../components/dashboard/SectionCard";
 
 const Workouts: NextPage = () => {
   const workoutQuery = api.workout.getManybyCreatedBy.useQuery();
@@ -18,11 +19,16 @@ const Workouts: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <div>
+        <Grid>
+          {/* <LoadingOverlay visible={workoutQuery.isLoading} /> */}
           {workoutQuery.data?.map((workout) => {
-            return <p key={workout.id}>{workout.id}</p>;
+            return (
+              <Grid.Col key={workout.id} md={6} lg={4}>
+                <SectionCard key={workout.id} section={workout} />
+              </Grid.Col>
+            );
           })}
-        </div>
+        </Grid>
       </DashboardLayout>
     </>
   );
