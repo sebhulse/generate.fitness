@@ -21,7 +21,7 @@ export const exerciseRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const exerciseCount = await ctx.prisma.exercise.count({
+      const exerciseCount: number = await ctx.prisma.exercise.count({
         where: {
           workoutSectionId: input.workoutSectionId,
         },

@@ -33,6 +33,7 @@ const Dashboard: NextPage = () => {
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
         {isWorkoutLoading ? <Loader variant="dots" /> : <></>}
+        <h1>{workout?.name}</h1>
         {/* {workout ? <PlanInfoCard plan={workout}></PlanInfoCard> : <></>} */}
         {workout?.workoutSections ? (
           <SectionsDnd parent={workout}></SectionsDnd>
