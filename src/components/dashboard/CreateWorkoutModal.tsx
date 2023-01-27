@@ -52,6 +52,9 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
             withAsterisk
             {...form.getInputProps("name")}
           />
+          {/* workoutType */}
+          {/* workoutTargetArea */}
+          {/* workoutIntensity */}
           <Checkbox mt="md" label="Uses equipment" />
           <Group position="center">
             <Button type="submit" mt="md">
