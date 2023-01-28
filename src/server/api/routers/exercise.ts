@@ -1,3 +1,4 @@
+import type { WorkoutDurationInterval } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
@@ -18,6 +19,7 @@ export const exerciseRouter = createTRPCRouter({
         movement: z.string(),
         duration: z.number(),
         rest: z.number().optional(),
+        interval: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -33,6 +35,7 @@ export const exerciseRouter = createTRPCRouter({
           duration: input.duration,
           order: exerciseCount,
           rest: input.rest,
+          durationInterval: input.interval as WorkoutDurationInterval,
         },
       });
       return exercise;
