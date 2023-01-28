@@ -22,6 +22,7 @@ const CreatePlanModal = (props: Props): JSX.Element => {
   const router = useRouter();
   const mutation = api.plan.create.useMutation({
     onSuccess(data) {
+      form.reset();
       setIsCreatePlanModalOpen(false);
       router.push(`/dashboard/plans/${data.id}`);
     },

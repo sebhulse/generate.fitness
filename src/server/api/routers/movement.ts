@@ -1,3 +1,5 @@
+import { InputLabel } from "@mantine/core/lib/Input/InputLabel/InputLabel";
+import { Workout } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
@@ -84,13 +86,13 @@ export const movementRouter = createTRPCRouter({
       return ctx.prisma.movement.findMany({
         where: {
           workoutType: {
-            every: { id: input.workoutTypeId },
+            some: { id: input.workoutTypeId },
           },
           workoutTargetArea: {
-            every: { id: input.workoutTargetAreaId },
+            some: { id: input.workoutTargetAreaId },
           },
           workoutIntensity: {
-            every: { id: input.workoutIntensityId },
+            some: { id: input.workoutIntensityId },
           },
         },
       });

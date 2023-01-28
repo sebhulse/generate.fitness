@@ -15,7 +15,7 @@ export const exerciseRouter = createTRPCRouter({
     .input(
       z.object({
         workoutSectionId: z.string(),
-        movementId: z.string(),
+        movement: z.string(),
         duration: z.number(),
         rest: z.number().optional(),
       })
@@ -29,7 +29,7 @@ export const exerciseRouter = createTRPCRouter({
       const exercise = await ctx.prisma.exercise.create({
         data: {
           workoutSection: { connect: { id: input.workoutSectionId } },
-          movement: { connect: { id: input.movementId } },
+          movement: { connect: { name: input.movement } },
           duration: input.duration,
           order: exerciseCount,
           rest: input.rest,

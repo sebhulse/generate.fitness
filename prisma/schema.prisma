@@ -147,12 +147,12 @@ model Workout {
     tags WorkoutTag[]
     duration Int?
     usesEquipment Boolean @default(false)
-    workoutType WorkoutType? @relation(fields: [workoutTypeId], references: [id])
-    workoutTypeId String?
-    workoutTargetArea WorkoutTargetArea? @relation(fields: [workoutTargetAreaId], references: [id])
-    workoutTargetAreaId String?
-    workoutIntensity WorkoutIntensity? @relation(fields: [workoutIntensityId], references: [id])
-    workoutIntensityId String?
+    workoutType WorkoutType @relation(fields: [workoutTypeId], references: [id])
+    workoutTypeId String
+    workoutTargetArea WorkoutTargetArea @relation(fields: [workoutTargetAreaId], references: [id])
+    workoutTargetAreaId String
+    workoutIntensity WorkoutIntensity @relation(fields: [workoutIntensityId], references: [id])
+    workoutIntensityId String
     allowDisplayUserEdit Boolean @default(false)
     workoutSections WorkoutSection[]
     isDone Boolean @default(false)
