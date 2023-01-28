@@ -28,8 +28,11 @@ export const workoutRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        allowEdit: z.boolean().optional(),
+        usesEquipment: z.boolean().optional(),
         planSectionId: z.string().optional(),
+        workoutType: z.string(),
+        workoutTargetArea: z.string(),
+        workoutIntensity: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -41,11 +44,20 @@ export const workoutRouter = createTRPCRouter({
       const workout = await ctx.prisma.workout.create({
         data: {
           name: input.name,
-          allowDisplayUserEdit: input.allowEdit,
+          usesEquipment: input.usesEquipment,
           planSection: { connect: { id: input.planSectionId } },
           order: workoutCount,
           createdBy: {
             connect: { id: ctx.session.user.id },
+          },
+          workoutType: {
+            connect: { name: input.workoutType },
+          },
+          workoutTargetArea: {
+            connect: { name: input.workoutTargetArea },
+          },
+          workoutIntensity: {
+            connect: { name: input.workoutIntensity },
           },
         },
       });

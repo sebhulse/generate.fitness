@@ -5,6 +5,11 @@ import { userRouter } from "./routers/user";
 import { workoutRouter } from "./routers/workout";
 import { exerciseRouter } from "./routers/exercise";
 import { workoutSectionRouter } from "./routers/workoutSection";
+import { workoutSectionTypeRouter } from "./routers/workoutSectionType";
+import { movementRouter } from "./routers/movement";
+import { workoutTypeRouter } from "./routers/workoutType";
+import { workoutIntensityRouter } from "./routers/workoutIntensity";
+import { workoutTargetAreaRouter } from "./routers/workoutTargetArea";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +23,11 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   workout: workoutRouter,
   workoutSection: workoutSectionRouter,
+  workoutSectionType: workoutSectionTypeRouter,
+  movement: movementRouter,
+  workoutIntensity: workoutIntensityRouter,
+  workoutTargetArea: workoutTargetAreaRouter,
+  workoutType: workoutTypeRouter,
 });
 
 // export type definition of API

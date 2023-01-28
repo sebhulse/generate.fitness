@@ -20,12 +20,14 @@ const CreateSectionModal = (props: Props): JSX.Element => {
   const mutationCreatePlanSection = api.planSection.create.useMutation({
     onSuccess() {
       refetch();
+      form.reset();
       setIsCreateSectionModalOpen(false);
     },
   });
   const mutationCreateWorkoutSection = api.workoutSection.create.useMutation({
     onSuccess() {
       refetch();
+      form.reset();
       setIsCreateSectionModalOpen(false);
     },
   });

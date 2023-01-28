@@ -178,7 +178,10 @@ const SectionsDnd = (props: Props) => {
                   refetch={refetch}
                 />
               </div>
-              <SectionItemsDnd parent={section}></SectionItemsDnd>
+              <SectionItemsDnd
+                grandparent={parent}
+                parent={section}
+              ></SectionItemsDnd>
             </div>
           )}
         </Draggable>

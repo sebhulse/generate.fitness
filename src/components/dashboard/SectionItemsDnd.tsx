@@ -15,7 +15,12 @@ import type { Workout, Exercise, Movement } from "@prisma/client";
 import CreateWorkoutModal from "./CreateWorkoutModal";
 import CreateExerciseModal from "./CreateExerciseModal";
 import { api } from "../../utils/api";
-import type { WorkoutSectionType, PlanSectionType } from "./SectionsDnd";
+import type {
+  WorkoutSectionType,
+  PlanSectionType,
+  PlanType,
+  WorkoutType,
+} from "./SectionsDnd";
 import SectionItemOptionMenu from "./SectionItemOptionMenu";
 
 const useStyles = createStyles((theme) => ({
@@ -63,11 +68,12 @@ type ExerciseType = Exercise & {
 };
 
 type Props = {
+  grandparent: WorkoutType | PlanType;
   parent: WorkoutSectionType | PlanSectionType;
 };
 
 const SectionItemsDnd = (props: Props) => {
-  const { parent } = props;
+  const { parent, grandparent } = props;
   const { classes, cx } = useStyles();
   const [isCreateSectionItemModalOpen, setIsCreateSectionItemModalOpen] =
     useState(false);
@@ -212,14 +218,16 @@ const SectionItemsDnd = (props: Props) => {
           parentId={parent.id}
           refetch={refetch}
         />
-      ) : (
+      ) : null}
+      {"workoutSections" in grandparent ? (
         <CreateExerciseModal
+          grandparent={grandparent}
           isCreateExerciseModalOpen={isCreateSectionItemModalOpen}
           setIsCreateExerciseModalOpen={setIsCreateSectionItemModalOpen}
           parentId={parent.id}
           refetch={refetch}
         />
-      )}
+      ) : null}
     </ScrollArea>
   );
 };

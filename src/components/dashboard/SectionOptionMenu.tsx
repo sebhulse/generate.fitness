@@ -64,7 +64,7 @@ const SectionOptionMenu = (props: Props) => {
         isDeleteSectionModalOpen={isDeleteSectionModalOpen}
         setIsDeleteSectionModalOpen={setIsDeleteSectionModalOpen}
         title={`Delete ${section} Section`}
-        message="Are you sure you want to delete this section?"
+        message={`Are you sure you want to delete this ${section} section?`}
       />
     </>
   );

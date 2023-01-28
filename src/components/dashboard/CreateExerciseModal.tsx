@@ -1,8 +1,18 @@
-import { Modal, Button, TextInput, Group, Checkbox } from "@mantine/core";
+import {
+  Modal,
+  Button,
+  TextInput,
+  Group,
+  Checkbox,
+  Select,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
+import type { Workout } from "@prisma/client";
 import { api } from "../../utils/api";
+import type { PlanType, WorkoutSectionType, WorkoutType } from "./SectionsDnd";
 
 type Props = {
+  grandparent: WorkoutType;
   isCreateExerciseModalOpen: boolean;
   setIsCreateExerciseModalOpen: (value: boolean) => void;
   parentId: string;
@@ -13,12 +23,21 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
     isCreateExerciseModalOpen,
     setIsCreateExerciseModalOpen,
     parentId,
+    grandparent,
     refetch,
   } = props;
+
+  const { data: movements, isLoading: isMovementsLoading } =
+    api.movement.filter.useQuery({
+      workoutTypeId: grandparent.workoutTypeId,
+      workoutTargetAreaId: grandparent.workoutTargetAreaId,
+      workoutIntensityId: grandparent.workoutIntensityId,
+    });
 
   const mutation = api.exercise.create.useMutation({
     onSuccess() {
       refetch();
+      form.reset();
       setIsCreateExerciseModalOpen(false);
     },
   });
@@ -27,7 +46,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
     initialValues: {
       name: "",
       workoutSectionId: parentId,
-      movementId: "clcmf2ez900006msl5opl7z49",
+      movement: "",
       duration: 0,
     },
 
@@ -45,7 +64,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
       <Modal
         opened={isCreateExerciseModalOpen}
         onClose={() => setIsCreateExerciseModalOpen(false)}
-        title="Create Workout"
+        title="Create Exercise"
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
@@ -54,6 +73,22 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
             withAsterisk
             {...form.getInputProps("name")}
           />
+          {movements ? (
+            <Select
+              mt="md"
+              label="Choose movement"
+              searchable
+              required
+              nothingFound="No options"
+              data={movements.map(({ name }) => {
+                return { value: name, label: name };
+              })}
+              filter={(value, item) =>
+                item.value.toLowerCase().includes(value.toLowerCase().trim())
+              }
+              {...form.getInputProps("movement")}
+            />
+          ) : null}
           <Checkbox mt="md" label="Uses equipment" />
           <Group position="center">
             <Button type="submit" mt="md">
