@@ -42,11 +42,6 @@ const CreatePlanModal = (props: Props): JSX.Element => {
           ? "Please enter a Name e.g. 'Sam's Workout Plan'"
           : null,
     },
-    // transformValues: (values) => ({
-    //   ...values,
-    //   planInterval: values.planInterval.toUpperCase(),
-    //   userId: sessionData?.user?.id,
-    // }),
   });
 
   const handleSubmit = (values: typeof form.values) => {

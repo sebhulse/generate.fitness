@@ -5,6 +5,8 @@ import {
   Group,
   Checkbox,
   Select,
+  NumberInput,
+  NativeSelect,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import type { Workout } from "@prisma/client";
@@ -44,14 +46,11 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
 
   const form = useForm({
     initialValues: {
-      name: "",
       workoutSectionId: parentId,
       movement: "",
-      duration: 0,
-    },
-
-    validate: {
-      name: (value) => (value.length < 1 ? `Please enter a Name` : null),
+      duration: 30,
+      interval: "Seconds",
+      rest: 15,
     },
   });
 
@@ -67,12 +66,6 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
         title="Create Exercise"
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Name"
-            inputWrapperOrder={["label", "input", "error"]}
-            withAsterisk
-            {...form.getInputProps("name")}
-          />
           {movements ? (
             <Select
               mt="md"
@@ -89,7 +82,40 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
               {...form.getInputProps("movement")}
             />
           ) : null}
-          <Checkbox mt="md" label="Uses equipment" />
+          <div
+            style={{
+              maxWidth: "300px",
+              display: "flex",
+              justifyContent: "center",
+              margin: "auto",
+            }}
+          >
+            <Group position="apart">
+              <div style={{ maxWidth: "100px" }}>
+                <NumberInput
+                  mt="md"
+                  label="Duration"
+                  {...form.getInputProps("duration")}
+                />
+              </div>
+              <NativeSelect
+                mt="md"
+                data={["Seconds", "Reps"]}
+                label="Interval"
+                {...form.getInputProps("interval")}
+              />
+            </Group>
+          </div>
+          <Group position="center">
+            <div style={{ maxWidth: "100px" }}>
+              <NumberInput
+                mt="md"
+                label="Rest"
+                {...form.getInputProps("rest")}
+              />
+            </div>
+            <p>Seconds</p>
+          </Group>
           <Group position="center">
             <Button type="submit" mt="md">
               Submit
