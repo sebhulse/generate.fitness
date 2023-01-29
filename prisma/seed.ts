@@ -3,9 +3,14 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const workoutTargetAreas = ["full", "upper", "lower", "core"];
-const workoutIntensitys = ["beginner", "intermediate", "advanced", "all"];
-const workoutSectionTypes = ["warmup", "main", "cooldown"];
+const workoutTargetAreas = ["Full Body", "Upper Body", "Lower Body", "Core"];
+const workoutIntensitys = [
+  "Beginner",
+  "Intermediate",
+  "Advanced",
+  "All Levels",
+];
+const workoutSectionTypes = ["Warmup", "Main", "Cooldown"];
 
 async function main() {
   await prisma.workoutType.deleteMany();
