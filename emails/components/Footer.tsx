@@ -23,75 +23,30 @@ export default function Footer({ includeUnsubscribe = false }: FooterProps) {
         borderBottom={`2px solid ${colors.black}`}
       >
         <MjmlSection>
-          <MjmlGroup>
-            <MjmlColumn
-              padding={"48px 0"}
-              borderRight={`2px solid ${colors.black}`}
+          <MjmlColumn
+            padding={"30px 0"}
+            borderRight={`2px solid ${colors.black}`}
+          >
+            <MjmlText
+              align="center"
+              fontSize={fontSize.xs}
+              color={colors.slate400}
+              fontWeight={fontWeight.bold}
+              paddingBottom={8}
+              textTransform="uppercase"
             >
-              <MjmlText
-                align="center"
-                fontSize={fontSize.xs}
-                color={colors.slate400}
-                fontWeight={fontWeight.bold}
-                paddingBottom={8}
-                textTransform="uppercase"
+              Help & Bugs
+            </MjmlText>
+            <MjmlText align="center">
+              <Link
+                color={colors.white}
+                fontSize={fontSize.sm}
+                href="mailto:hi@sebhulse.com"
               >
-                Help & Bugs
-              </MjmlText>
-              <MjmlText align="center">
-                <Link
-                  color={colors.white}
-                  fontSize={fontSize.sm}
-                  href="https://discord.gg/fdSzmY46wY"
-                >
-                  <img
-                    height={12}
-                    width={16}
-                    src={"https://mailing.run/welcome-template/discord.png"}
-                    alt=""
-                    style={{
-                      verticalAlign: "text-bottom",
-                      paddingRight: 6,
-                      paddingBottom: 4,
-                    }}
-                  />
-                  Discord
-                </Link>
-              </MjmlText>
-            </MjmlColumn>
-            <MjmlColumn padding={"48px 0"}>
-              <MjmlText
-                align="center"
-                fontSize={fontSize.xs}
-                color={colors.slate400}
-                fontWeight={fontWeight.bold}
-                paddingBottom={8}
-                textTransform="uppercase"
-              >
-                What we&rsquo;re up to
-              </MjmlText>
-              <MjmlText align="center">
-                <Link
-                  fontSize={fontSize.sm}
-                  color={colors.white}
-                  href="https://github.com/sofn-xyz/mailing/issues"
-                >
-                  <img
-                    height={16}
-                    width={16}
-                    src={"https://mailing.run/welcome-template/github.png"}
-                    alt=""
-                    style={{
-                      verticalAlign: "text-bottom",
-                      paddingRight: 6,
-                      paddingBottom: 2,
-                    }}
-                  />
-                  Issues
-                </Link>
-              </MjmlText>
-            </MjmlColumn>
-          </MjmlGroup>
+                hi@sebhulse.com
+              </Link>
+            </MjmlText>
+          </MjmlColumn>
         </MjmlSection>
       </MjmlWrapper>
 
@@ -105,7 +60,16 @@ export default function Footer({ includeUnsubscribe = false }: FooterProps) {
               fontWeight={fontWeight.bold}
               textTransform="uppercase"
             >
-              Mailing {new Date().getFullYear()}
+              Fitness.live {new Date().getFullYear()}
+            </MjmlText>
+            <MjmlText align="center">
+              <Link
+                color={colors.white}
+                fontSize={fontSize.sm}
+                href="https://fitness.live"
+              >
+                fitness.live
+              </Link>
             </MjmlText>
 
             {includeUnsubscribe && (
@@ -127,17 +91,6 @@ export default function Footer({ includeUnsubscribe = false }: FooterProps) {
                 </Link>
               </MjmlText>
             )}
-          </MjmlColumn>
-        </MjmlSection>
-
-        <MjmlSection paddingBottom={40}>
-          <MjmlColumn>
-            <MjmlImage
-              height={16}
-              width={13}
-              src={"https://mailing.run/welcome-template/logo.png"}
-              href="https://mailing.run"
-            />
           </MjmlColumn>
         </MjmlSection>
       </MjmlWrapper>

@@ -18,17 +18,7 @@ export default function Header() {
                 href="https://mailing.run"
                 textDecoration="none"
               >
-                <img
-                  height={24}
-                  width={112}
-                  src={"https://mailing.run/welcome-template/logo-full.png"}
-                  alt=""
-                  style={{
-                    verticalAlign: "text-bottom",
-                    paddingRight: 10,
-                    paddingBottom: 2,
-                  }}
-                />
+                fitness.live
               </Link>
             </Text>
           </MjmlColumn>
@@ -38,11 +28,7 @@ export default function Header() {
               fontSize={fontSize.xs}
               lineHeight={lineHeight.tight}
               fontWeight={fontWeight.bold}
-            >
-              The open source email
-              <br />
-              platform for teams that code
-            </Text>
+            ></Text>
           </MjmlColumn>
         </MjmlGroup>
       </MjmlSection>
