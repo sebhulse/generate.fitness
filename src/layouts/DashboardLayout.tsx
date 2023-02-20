@@ -180,7 +180,7 @@ const DashboardLayout = (props: Props): JSX.Element => {
             <Group position="apart" sx={{ height: "100%" }}>
               <Group>
                 <Link href="/" className={classes.link}>
-                  Fitness.live
+                  generate.fitness
                 </Link>
               </Group>
 

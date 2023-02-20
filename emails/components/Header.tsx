@@ -9,7 +9,7 @@ export default function Header() {
     <MjmlWrapper padding="40px 0 64px" backgroundColor={colors.black}>
       <MjmlSection cssClass="gutter">
         <MjmlGroup>
-          <MjmlColumn width="42%">
+          <MjmlColumn width="100%">
             <Text align="left">
               <Link
                 color={colors.white}
@@ -18,7 +18,7 @@ export default function Header() {
                 href="https://mailing.run"
                 textDecoration="none"
               >
-                fitness.live
+                generate.fitness
               </Link>
             </Text>
           </MjmlColumn>
