@@ -6,7 +6,7 @@ import Footer from "./components/Footer";
 import Heading from "./components/Heading";
 import Header from "./components/Header";
 import Text from "./components/Text";
-import { fontSize, colors, spacing, fontFamily, screens } from "./theme";
+import { fontSize, colors, spacing, screens } from "./theme";
 
 const welcomeStyle = `
   .h1 > * {
@@ -94,5 +94,5 @@ const UserWelcome = ({ includeUnsubscribe, firstName }: WelcomeProps) => {
     </BaseLayout>
   );
 };
-UserWelcome.subject = "Welcome to generate.fitness";
+// UserWelcome.subject = "Welcome to generate.fitness";
 export default UserWelcome;
