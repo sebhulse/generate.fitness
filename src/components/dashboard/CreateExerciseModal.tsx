@@ -1,30 +1,27 @@
 import {
   Modal,
   Button,
-  TextInput,
   Group,
-  Checkbox,
   Select,
   NumberInput,
   NativeSelect,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { Workout } from "@prisma/client";
 import { api } from "../../utils/api";
-import type { PlanType, WorkoutSectionType, WorkoutType } from "./SectionsDnd";
+import type { WorkoutSectionType, WorkoutType } from "./SectionsDnd";
 
 type Props = {
   grandparent: WorkoutType;
   isCreateExerciseModalOpen: boolean;
   setIsCreateExerciseModalOpen: (value: boolean) => void;
-  parentId: string;
+  parent: WorkoutSectionType;
   refetch: () => void;
 };
 const CreateExerciseModal = (props: Props): JSX.Element => {
   const {
     isCreateExerciseModalOpen,
     setIsCreateExerciseModalOpen,
-    parentId,
+    parent,
     grandparent,
     refetch,
   } = props;
@@ -34,6 +31,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
       workoutTypeId: grandparent.workoutTypeId,
       workoutTargetAreaId: grandparent.workoutTargetAreaId,
       workoutIntensityId: grandparent.workoutIntensityId,
+      workoutSectionTypeId: parent.workoutSectionTypeId,
     });
 
   const mutation = api.exercise.create.useMutation({
@@ -46,7 +44,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
 
   const form = useForm({
     initialValues: {
-      workoutSectionId: parentId,
+      workoutSectionId: parent.id,
       movement: "",
       duration: 30,
       interval: "Seconds",
