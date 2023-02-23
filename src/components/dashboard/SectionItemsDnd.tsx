@@ -219,12 +219,12 @@ const SectionItemsDnd = (props: Props) => {
           refetch={refetch}
         />
       ) : null}
-      {"workoutSections" in grandparent ? (
+      {"exercises" in parent && "workoutSections" in grandparent ? (
         <CreateExerciseModal
           grandparent={grandparent}
           isCreateExerciseModalOpen={isCreateSectionItemModalOpen}
           setIsCreateExerciseModalOpen={setIsCreateSectionItemModalOpen}
-          parentId={parent.id}
+          parent={parent}
           refetch={refetch}
         />
       ) : null}

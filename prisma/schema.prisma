@@ -220,6 +220,8 @@ model WorkoutSection {
     id String @id @default(cuid())  
     workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
     workoutId String
+    workoutSectionType WorkoutSectionType @relation(fields: [workoutSectionTypeId], references: [id])
+    workoutSectionTypeId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
@@ -227,6 +229,7 @@ model WorkoutSection {
     exercises Exercise[]
 
     @@index([workoutId])
+    @@index([workoutSectionTypeId])
 }
 
 model Exercise {
@@ -267,6 +270,7 @@ model WorkoutSectionType {
     id String @id @default(cuid())
     name String @unique
     movements Movement[]
+    workoutSections WorkoutSection[]
 }
 
 model Equipment {

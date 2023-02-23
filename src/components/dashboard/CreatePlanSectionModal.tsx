@@ -9,7 +9,7 @@ type Props = {
   parent: WorkoutType | PlanType;
   refetch: () => void;
 };
-const CreateSectionModal = (props: Props): JSX.Element => {
+const CreatePlanSectionModal = (props: Props): JSX.Element => {
   const {
     isCreateSectionModalOpen,
     setIsCreateSectionModalOpen,
@@ -24,13 +24,6 @@ const CreateSectionModal = (props: Props): JSX.Element => {
       setIsCreateSectionModalOpen(false);
     },
   });
-  const mutationCreateWorkoutSection = api.workoutSection.create.useMutation({
-    onSuccess() {
-      refetch();
-      form.reset();
-      setIsCreateSectionModalOpen(false);
-    },
-  });
 
   const form = useForm({
     initialValues: {
@@ -39,19 +32,14 @@ const CreateSectionModal = (props: Props): JSX.Element => {
     validate: {
       name: (value) => (value.length < 1 ? `Please enter a Name` : null),
     },
-    transformValues: (values) =>
-      "planSections" in parent
-        ? {
-            ...values,
-            planId: parent.id,
-          }
-        : { ...values, workoutId: parent.id },
+    transformValues: (values) => ({
+      name: values.name,
+      planId: parent.id,
+    }),
   });
 
   const handleSubmit = (values: TransformedValues<typeof form>) => {
-    "planId" in values
-      ? mutationCreatePlanSection.mutate({ ...values })
-      : mutationCreateWorkoutSection.mutate({ ...values });
+    mutationCreatePlanSection.mutate({ ...values });
   };
 
   return (
@@ -79,4 +67,4 @@ const CreateSectionModal = (props: Props): JSX.Element => {
   );
 };
 
-export default CreateSectionModal;
+export default CreatePlanSectionModal;

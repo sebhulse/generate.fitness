@@ -19,7 +19,8 @@ import type {
   WorkoutSection,
   Movement,
 } from "@prisma/client";
-import CreateSectionModal from "./CreateSectionModal";
+import CreatePlanSectionModal from "./CreatePlanSectionModal";
+import CreateWorkoutSectionModal from "./CreateWorkoutSectionModal";
 import { api } from "../../utils/api";
 import SectionOptionMenu from "./SectionOptionMenu";
 
@@ -232,12 +233,21 @@ const SectionsDnd = (props: Props) => {
           </Button>
         </div>
       </div>
-      <CreateSectionModal
-        isCreateSectionModalOpen={isCreateSectionModalOpen}
-        setIsCreateSectionModalOpen={setIsCreateSectionModalOpen}
-        parent={parent}
-        refetch={refetch}
-      />
+      {"planSections" in parent ? (
+        <CreatePlanSectionModal
+          isCreateSectionModalOpen={isCreateSectionModalOpen}
+          setIsCreateSectionModalOpen={setIsCreateSectionModalOpen}
+          parent={parent}
+          refetch={refetch}
+        />
+      ) : (
+        <CreateWorkoutSectionModal
+          isCreateSectionModalOpen={isCreateSectionModalOpen}
+          setIsCreateSectionModalOpen={setIsCreateSectionModalOpen}
+          parent={parent}
+          refetch={refetch}
+        />
+      )}
     </Card>
   );
 };
