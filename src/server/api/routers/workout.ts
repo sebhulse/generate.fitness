@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { WorkoutBuilder } from "../generators/workout";
+import { api } from "../../../utils/api";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
@@ -116,6 +118,53 @@ export const workoutRouter = createTRPCRouter({
           planSectionId: input.planSectionId,
         },
       });
+      const filter = async (sectionType: string) => {
+        const response = await ctx.prisma.movement.findMany({
+          where: {
+            workoutType: {
+              some: { name: input.workoutType },
+            },
+            workoutTargetArea: {
+              some: { name: input.workoutTargetArea },
+            },
+            workoutIntensity: {
+              some: { name: input.workoutIntensity },
+            },
+            workoutSectionType: {
+              some: { name: sectionType },
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+        return response;
+      };
+      const warmupMovementsRes = await filter("Warmup");
+      const warmupMovements = warmupMovementsRes?.map((movement) => {
+        return movement.id;
+      });
+      const mainMovementsRes = await filter("Main");
+      const mainMovements = mainMovementsRes?.map((movement) => {
+        return movement.id;
+      });
+      const cooldownMovementsRes = await filter("Cooldown");
+      const cooldownMovements = cooldownMovementsRes?.map((movement) => {
+        return movement.id;
+      });
+
+      const generated = new WorkoutBuilder(
+        input.name,
+        600,
+        input.workoutType,
+        input.workoutTargetArea,
+        input.workoutIntensity,
+        warmupMovements,
+        mainMovements,
+        cooldownMovements
+      ).generate();
+      console.log("before");
+      console.log(generated);
       const workout = await ctx.prisma.workout.create({
         data: {
           name: input.name,
@@ -134,79 +183,7 @@ export const workoutRouter = createTRPCRouter({
           workoutIntensity: {
             connect: { name: input.workoutIntensity },
           },
-          workoutSections: {
-            create: [
-              {
-                name: "Warmup",
-                workoutSectionType: { connect: { name: "Warmup" } },
-                order: 0,
-                exercises: {
-                  create: [
-                    {
-                      duration: 60,
-                      order: 0,
-                      movement: {
-                        connect: { name: "Jumping Jacks" },
-                      },
-                    },
-                    {
-                      duration: 30,
-                      order: 0,
-                      movement: {
-                        connect: { name: "Push Up" },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                name: "Main",
-                workoutSectionType: { connect: { name: "Main" } },
-                order: 0,
-                exercises: {
-                  create: [
-                    {
-                      duration: 25,
-                      order: 0,
-                      movement: {
-                        connect: { name: "Squats" },
-                      },
-                    },
-                    {
-                      duration: 30,
-                      order: 0,
-                      movement: {
-                        connect: { name: "Sit Up" },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                name: "Cooldown",
-                workoutSectionType: { connect: { name: "Cooldown" } },
-                order: 0,
-                exercises: {
-                  create: [
-                    {
-                      duration: 35,
-                      order: 0,
-                      movement: {
-                        connect: { name: "Reach Up Reach Down" },
-                      },
-                    },
-                    {
-                      duration: 15,
-                      order: 0,
-                      movement: {
-                        connect: { name: "Lateral Lunge" },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
+          workoutSections: generated,
         },
       });
       return workout;
