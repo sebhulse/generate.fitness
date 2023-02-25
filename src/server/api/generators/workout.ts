@@ -118,53 +118,72 @@ export class WorkoutBuilder {
     this.usedWorkoutMovements.push(movement);
     return movement;
   }
-  //   private generateWarmupWorkoutSection() {}
-  private generateMainFunWorkoutSection() {
-    // const sectionDuration = this.getDuration() / this.getNumberOfSections();
+
+  private generateFunWorkoutSection(sectionNumber: number) {
+    const exercises = [];
+    const funSectionLength = (this.duration * 0.7) / this.numberOfSections;
+    const exerciseSectionDuration = this.exerciseDuration + this.exerciseRest;
+    let currentFunSectionDuration = 0;
+    let exerciseNumber = 0;
+
+    do {
+      const activityBody = {
+        duration: this.exerciseDuration,
+        rest: this.exerciseRest,
+        order: exerciseNumber,
+        movement: {
+          connect: {
+            id: this.getNewUniqueExercise(this.mainMovements),
+          },
+        },
+      };
+      exerciseNumber++;
+      currentFunSectionDuration += exerciseSectionDuration;
+      if (currentFunSectionDuration >= funSectionLength) {
+        activityBody.rest = 0;
+        exercises.push(activityBody);
+      } else {
+        exercises.push(activityBody);
+      }
+    } while (currentFunSectionDuration < funSectionLength);
+    // transitionBody = {
+    //   ex: "transition",
+    //   du: transiDur,
+    // };
+    // activitySection.push(transitionBody);
     return {
-      name: "Fun 1",
+      name: `Fun ${sectionNumber + 1}`,
       workoutSectionType: { connect: { name: "Main" } },
-      order: 0,
+      order: sectionNumber,
       exercises: {
-        create: [
-          {
-            duration: this.roundToNearestFive(this.getRandomInt(5, 60)),
-            order: 0,
-            movement: {
-              connect: {
-                id: this.getNewUniqueExercise(this.mainMovements),
-              },
-            },
-          },
-          {
-            duration: this.roundToNearestFive(this.getRandomInt(5, 60)),
-            order: 0,
-            movement: {
-              connect: {
-                id: this.getNewUniqueExercise(this.mainMovements),
-              },
-            },
-          },
-        ],
+        create: exercises,
       },
     };
   }
+  //   private generateWarmupWorkoutSection() {}
+  private generateMainWorkoutSection() {
+    const mainWorkoutSections = [];
+
+    for (let i = 0; i < this.numberOfSections; i++) {
+      mainWorkoutSections.push(this.generateFunWorkoutSection(i));
+    }
+
+    return mainWorkoutSections;
+  }
   //   private generateCooldownWorkoutSection() {}
   public generate() {
-    console.log("before setup");
-    try {
-      this.setNumberOfSections();
-      this.setRestPeriods();
-    } catch (error) {
-      console.log(error);
-    }
-    console.log("after setup");
-
+    this.setNumberOfSections();
+    this.setRestPeriods();
     const workoutSections = [];
-    workoutSections.push(this.generateMainFunWorkoutSection());
+    // workoutSections.push(this.generateWarmupWorkoutSection());
+    const f = this.generateMainWorkoutSection();
+    console.log(f);
+    workoutSections.push(f);
+    // workoutSections.push(this.generateCooldownWorkoutSection());
     const workoutSectionsBody = {
-      create: workoutSections,
+      create: f,
     };
+    // console.log(workoutSectionsBody);
     return workoutSectionsBody;
   }
 }
