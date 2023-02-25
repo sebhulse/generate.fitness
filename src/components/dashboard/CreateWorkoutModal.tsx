@@ -25,7 +25,7 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
     refetch,
   } = props;
 
-  const mutation = api.workout.create.useMutation({
+  const mutation = api.workout.generate.useMutation({
     onSuccess() {
       refetch();
       form.reset();
