@@ -163,8 +163,6 @@ export const workoutRouter = createTRPCRouter({
         mainMovements,
         cooldownMovements
       ).generate();
-      console.log("before");
-      console.log(generated);
       const workout = await ctx.prisma.workout.create({
         data: {
           name: input.name,
