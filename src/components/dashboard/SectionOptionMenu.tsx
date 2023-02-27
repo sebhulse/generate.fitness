@@ -39,7 +39,7 @@ const SectionOptionMenu = (props: Props) => {
 
   return (
     <>
-      <Menu shadow="md" width={200} position="left">
+      <Menu shadow="md" width={180} position="left">
         <Menu.Target>
           <ActionIcon>
             <IconDotsVertical size={18} stroke={1.5} />
