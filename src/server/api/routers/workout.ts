@@ -104,7 +104,7 @@ export const workoutRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        duration: z.number().optional(),
+        duration: z.number(),
         usesEquipment: z.boolean().optional(),
         planSectionId: z.string().optional(),
         workoutType: z.string(),
@@ -164,7 +164,7 @@ export const workoutRouter = createTRPCRouter({
 
       const generated = new WorkoutBuilder(
         input.name,
-        600,
+        input.duration,
         input.workoutType,
         input.workoutTargetArea,
         input.workoutIntensity,

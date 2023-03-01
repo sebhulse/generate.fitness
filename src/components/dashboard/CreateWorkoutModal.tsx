@@ -5,8 +5,11 @@ import {
   TextInput,
   Group,
   Checkbox,
-  Select,
-  LoadingOverlay,
+  Text,
+  Slider,
+  SegmentedControl,
+  Badge,
+  Input,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { api } from "../../utils/api";
@@ -25,7 +28,14 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
     refetch,
   } = props;
 
-  const mutation = api.workout.generate.useMutation({
+  const mutationGenerate = api.workout.generate.useMutation({
+    onSuccess() {
+      refetch();
+      form.reset();
+      setIsCreateWorkoutModalOpen(false);
+    },
+  });
+  const mutationCreate = api.workout.create.useMutation({
     onSuccess() {
       refetch();
       form.reset();
@@ -43,20 +53,32 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       name: "",
-      planSectionId: parentId,
       workoutType: "Cardio",
-      workoutTargetArea: "Full Body",
-      workoutIntensity: "Intermediate",
+      workoutTargetArea: "Core",
+      workoutIntensity: "Advanced",
       usesEquipment: false,
+      duration: 0,
+      generate: "Generate",
     },
 
     validate: {
       name: (value) => (value.length < 1 ? `Please enter a Name` : null),
     },
+    transformValues: (values) => {
+      return {
+        ...values,
+        planSectionId: parentId,
+        duration: values.duration * 60,
+      };
+    },
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    mutation.mutate({ ...values });
+    if (values.generate === "Generate") {
+      mutationGenerate.mutate({ ...values });
+    } else {
+      mutationCreate.mutate({ ...values });
+    }
   };
 
   if (!workoutTypes) {
@@ -78,62 +100,100 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
             {...form.getInputProps("name")}
           />
           {workoutTypes ? (
-            <Select
-              mt="md"
-              label="Choose workout type"
-              searchable
-              required
-              nothingFound="No options"
-              data={workoutTypes.map(({ name }) => {
-                return { value: name, label: name };
-              })}
-              filter={(value, item) =>
-                item.value.toLowerCase().includes(value.toLowerCase().trim())
-              }
-              {...form.getInputProps("workoutType")}
-            />
+            <Input.Wrapper label="Type" mt="md">
+              <SegmentedControl
+                title="Workout type"
+                fullWidth
+                data={workoutTypes.map(({ name }) => {
+                  return name;
+                })}
+                {...form.getInputProps("workoutType")}
+              ></SegmentedControl>
+            </Input.Wrapper>
           ) : null}
           {workoutTargetAreas ? (
-            <Select
-              mt="md"
-              label="Choose workout target area"
-              searchable
-              required
-              nothingFound="No options"
-              data={workoutTargetAreas.map(({ name }) => {
-                return { value: name, label: name };
-              })}
-              filter={(value, item) =>
-                item.value.toLowerCase().includes(value.toLowerCase().trim())
-              }
-              {...form.getInputProps("workoutTargetArea")}
-            />
+            <Input.Wrapper label="Target Area" mt="md">
+              <SegmentedControl
+                title="Workout target area"
+                fullWidth
+                data={workoutTargetAreas.map(({ name }) => {
+                  return {
+                    value: name,
+                    label: name.replace(" Body", ""),
+                  };
+                })}
+                {...form.getInputProps("workoutTargetArea")}
+              ></SegmentedControl>
+            </Input.Wrapper>
           ) : null}
           {workoutIntensitys ? (
-            <Select
-              mt="md"
-              label="Choose workout level"
-              searchable
-              required
-              nothingFound="No options"
-              data={workoutIntensitys.map(({ name }) => {
-                return { value: name, label: name };
-              })}
-              filter={(value, item) =>
-                item.value.toLowerCase().includes(value.toLowerCase().trim())
-              }
-              {...form.getInputProps("workoutIntensity")}
-            />
+            <Input.Wrapper label="Intensity" mt="md">
+              <SegmentedControl
+                title="Workout intensity"
+                fullWidth
+                data={workoutIntensitys.map(({ name }) => {
+                  let label;
+                  if (name === "Beginner") {
+                    label = "Beg";
+                  } else if (name === "Intermediate") {
+                    label = "Int";
+                  } else if (name === "Advanced") {
+                    label = "Adv";
+                  } else label = "Int";
+                  return {
+                    value: name,
+                    label: label,
+                  };
+                })}
+                {...form.getInputProps("workoutIntensity")}
+              ></SegmentedControl>
+            </Input.Wrapper>
           ) : null}
-          <Checkbox
+          {/* <Checkbox
             mt="md"
             label="Uses equipment"
             {...form.getInputProps("usesEquipment")}
+          /> */}
+
+          <SegmentedControl
+            mt="xl"
+            color="cyan"
+            data={["Generate", "Blank"]}
+            fullWidth
+            {...form.getInputProps("generate")}
           />
+          {form.getInputProps("generate").value === "Generate" ? (
+            <Input.Wrapper label="Duration" mt="md">
+              <Slider
+                thumbSize={20}
+                min={10}
+                max={50}
+                {...form.getInputProps("duration")}
+              />
+              <Group mt="md" position="center" align="center">
+                <Badge id="durationBadge" size="lg">
+                  {form.getInputProps("duration").value}
+                </Badge>
+                <Text>Min</Text>
+              </Group>
+            </Input.Wrapper>
+          ) : null}
+
           <Group position="center">
-            <Button type="submit" mt="md">
-              Submit
-            </Button>
+            {form.getInputProps("generate").value === "Generate" ? (
+              <Button
+                type="submit"
+                mt="md"
+                variant="gradient"
+                gradient={{ from: "indigo", to: "cyan" }}
+              >
+                Generate
+              </Button>
+            ) : (
+              <Button type="submit" mt="md">
+                Create
+              </Button>
+            )}
           </Group>
         </form>
       </Modal>
