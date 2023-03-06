@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { animate, timeline, stagger } from "motion";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Breadcrumbs, Anchor, Loader } from "@mantine/core";
+import { Breadcrumbs, Anchor, Loader, Button, Group } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
@@ -33,7 +34,19 @@ const Dashboard: NextPage = () => {
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
         {isWorkoutLoading ? <Loader variant="dots" /> : <></>}
-        <h1>{workout?.name}</h1>
+        <Group position="apart">
+          <h1>{workout?.name}</h1>
+          <Button
+            variant="gradient"
+            gradient={{ from: "indigo", to: "cyan" }}
+            onClick={() => {
+              console.log("realtime");
+            }}
+          >
+            Realtime
+          </Button>
+        </Group>
+
         {/* {workout ? <PlanInfoCard plan={workout}></PlanInfoCard> : <></>} */}
         {workout?.workoutSections ? (
           <SectionsDnd parent={workout}></SectionsDnd>
