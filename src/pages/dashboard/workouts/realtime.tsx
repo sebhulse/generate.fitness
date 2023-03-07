@@ -1,6 +1,7 @@
 import React from "react";
 
 import { timeline, stagger } from "motion";
+import HeaderMenu from "../../../components/index/HeaderMenu";
 
 const Realtime = () => {
   const divRef = React.useRef(null);
@@ -16,15 +17,19 @@ const Realtime = () => {
   }, [divRef]);
 
   return (
-    <div
-      ref={divRef}
-      style={{
-        width: "100vw",
-        height: "100vh",
-        background: "red",
-        zIndex: 0,
-      }}
-    ></div>
+    <>
+      <div
+        ref={divRef}
+        style={{
+          width: "100vw",
+          height: "100vh",
+          background: "red",
+          zIndex: 999999,
+          position: "relative",
+        }}
+      ></div>
+      <HeaderMenu />
+    </>
   );
 };
 export default Realtime;
