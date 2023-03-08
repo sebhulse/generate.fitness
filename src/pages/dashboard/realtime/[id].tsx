@@ -1,58 +1,147 @@
 import React, { useLayoutEffect, useState, useRef } from "react";
 import { gsap } from "gsap";
-import { type NextPage } from "next";
-import Head from "next/head";
-import { Breadcrumbs, Anchor, Loader, Button, Group } from "@mantine/core";
+import { createStyles } from "@mantine/core";
 import { api } from "../../../utils/api";
-import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
-import PlanInfoCard from "../../../components/dashboard/PlanInfoCard";
-import SectionItemsDnd from "../../../components/dashboard/SectionItemsDnd";
-import SectionsDnd from "../../../components/dashboard/SectionsDnd";
+
+const useStyles = createStyles((theme, _params, getRef) => ({
+  wrapper: {
+    margin: 0,
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  },
+}));
 
 const Realtime = () => {
+  const { classes } = useStyles();
+
   const { query } = useRouter();
-  const { data: workout, isLoading: isWorkoutLoading } =
-    api.workout.getById.useQuery(query.id as string);
-  const el = useRef(null);
-  const tlExercises = useRef();
-  const tlTimer = useRef();
+  const { data: workout } = api.workout.getById.useQuery(query.id as string, {
+    refetchOnWindowFocus: false,
+  });
+  const [exerciseName, setExerciseName] = useState("");
+  const [sectionName, setSectionName] = useState("");
+
+  const realtimeContainer = useRef(null);
+  const exerciseNameTl = useRef();
+  const sectionNameTl = useRef();
+  const exerciseTimerTl = useRef();
+  const workoutTimerTl = useRef();
 
   useLayoutEffect(() => {
-    const ctx1 = gsap.context(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      tlExercises.current = gsap.timeline().to(
-        "#box",
-        {
-          yPercent: -100,
-          duration: 2,
-          ease: "linear",
-        },
-        0
-      );
-    }, el);
-    const ctx2 = gsap.context(() => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      tlTimer.current = gsap.timeline().to("#totalTimer", {
-        yPercent: 100,
-        duration: 5,
-        ease: "linear",
-      });
-    }, el);
+    if (workout) {
+      console.log(workout);
+      let workoutTotalDuration = 0;
+      const exerciseTimerTlCtx = gsap.context(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        exerciseTimerTl.current = gsap.timeline();
+        let scaleY = 100;
+        workout.workoutSections.forEach((section) => {
+          section.exercises.forEach((exercise) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            exerciseTimerTl.current.to("#exerciseTimer", {
+              yPercent: scaleY,
+              duration: exercise.duration / 10,
+              ease: "linear",
+            });
+            if (scaleY === 100) {
+              scaleY = 0;
+            } else {
+              scaleY = 100;
+            }
+            if (exercise.rest > 0) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              exerciseTimerTl.current.to("#exerciseTimer", {
+                yPercent: scaleY,
+                duration: exercise.rest / 10,
+                ease: "linear",
+              });
+              if (scaleY === 100) {
+                scaleY = 0;
+              } else {
+                scaleY = 100;
+              }
+            }
 
-    return () => {
-      ctx1.revert();
-      ctx2.revert();
-    };
-  }, []);
+            workoutTotalDuration =
+              workoutTotalDuration + (exercise.duration + exercise.rest) / 10;
+          });
+        }, realtimeContainer);
+      });
+      const workoutTimerTlCtx = gsap.context(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        workoutTimerTl.current = gsap.timeline().to("#workoutTimer", {
+          yPercent: 100,
+          duration: workoutTotalDuration,
+          ease: "linear",
+        });
+      }, realtimeContainer);
+      const exerciseNameTlCtx = gsap.context(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        exerciseNameTl.current = gsap.timeline();
+        workout.workoutSections.forEach((section) => {
+          section.exercises.forEach((exercise) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            exerciseNameTl.current
+              .to("#exerciseName", {
+                ease: "elastic",
+                onStart: () => setExerciseName(exercise.movement.name),
+                duration: exercise.duration / 10,
+              })
+              .to("#exerciseName", {
+                ease: "elastic",
+                onStart: () => setExerciseName("Rest"),
+                duration: exercise.rest / 10,
+              });
+          });
+        });
+      }, realtimeContainer);
+      const sectionNameTlCtx = gsap.context(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        sectionNameTl.current = gsap.timeline();
+        workout.workoutSections.forEach((section) => {
+          let sectionLength = 0;
+          section.exercises.forEach((exercise) => {
+            sectionLength =
+              sectionLength + (exercise.duration + exercise.rest) / 10;
+          });
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          sectionNameTl.current.to("#sectionName", {
+            ease: "elastic",
+            onStart: () => setSectionName(section.name),
+            duration: sectionLength,
+          });
+        });
+      }, realtimeContainer);
+
+      return () => {
+        exerciseTimerTlCtx.revert();
+        workoutTimerTlCtx.revert();
+        exerciseNameTlCtx.revert();
+        sectionNameTlCtx.revert();
+      };
+    }
+  }, [workout]);
 
   return (
     <>
-      <svg className="app" ref={el} style={{ width: "100vw", height: "100vh" }}>
+      <div className={classes.wrapper}>
+        <h1 id="sectionName">{sectionName}</h1>
+        <h1 id="exerciseName">{exerciseName}</h1>
+      </div>
+      <svg ref={realtimeContainer} style={{ width: "100vw", height: "100vh" }}>
         <rect
-          id="box"
+          id="exerciseTimer"
           style={{
             width: "100%",
             height: "100%",
@@ -61,7 +150,7 @@ const Realtime = () => {
           }}
         ></rect>
         <rect
-          id="totalTimer"
+          id="workoutTimer"
           style={{
             width: "100%",
             height: "100%",
