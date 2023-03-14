@@ -1,17 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
-import { animate, timeline, stagger } from "motion";
+import React from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { Breadcrumbs, Anchor, Loader, Button, Group } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
-import PlanInfoCard from "../../../components/dashboard/PlanInfoCard";
-import SectionItemsDnd from "../../../components/dashboard/SectionItemsDnd";
 import SectionsDnd from "../../../components/dashboard/SectionsDnd";
 
 const Dashboard: NextPage = () => {
   const { query } = useRouter();
+  const router = useRouter();
   const { data: workout, isLoading: isWorkoutLoading } =
     api.workout.getById.useQuery(query.id as string);
 
@@ -39,9 +37,10 @@ const Dashboard: NextPage = () => {
           <Button
             variant="gradient"
             gradient={{ from: "indigo", to: "cyan" }}
-            onClick={() => {
-              console.log("realtime");
-            }}
+            onClick={() =>
+              router.push(`/dashboard/realtime/${query.id as string}`)
+            }
+            size="lg"
           >
             Realtime
           </Button>
