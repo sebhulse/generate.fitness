@@ -4,6 +4,7 @@ import { Button, Center, createStyles, Overlay } from "@mantine/core";
 import { api } from "../../../utils/api";
 import { useRouter } from "next/router";
 import { IconRun } from "@tabler/icons";
+import { useSession } from "next-auth/react";
 
 const useStyles = createStyles({
   wrapper: {
@@ -16,10 +17,13 @@ const useStyles = createStyles({
 });
 
 const Realtime = () => {
-  const { classes } = useStyles();
-
-  const { query } = useRouter();
   const router = useRouter();
+  const { status } = useSession();
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
+  const { classes } = useStyles();
+  const { query } = useRouter();
   const { data: workout } = api.workout.getById.useQuery(query.id as string, {
     refetchOnWindowFocus: false,
   });

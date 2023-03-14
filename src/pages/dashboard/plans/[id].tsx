@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { Breadcrumbs, Anchor, Loader } from "@mantine/core";
@@ -6,10 +6,15 @@ import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import PlanInfoCard from "../../../components/dashboard/PlanInfoCard";
-import SectionItemsDnd from "../../../components/dashboard/SectionItemsDnd";
 import SectionsDnd from "../../../components/dashboard/SectionsDnd";
+import { useSession } from "next-auth/react";
 
 const Dashboard: NextPage = () => {
+  const router = useRouter();
+  const { status } = useSession();
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
   const { query } = useRouter();
   const { data: plan, isLoading: isPlanLoading } = api.plan.getById.useQuery(
     query.id as string

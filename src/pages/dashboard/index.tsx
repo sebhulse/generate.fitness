@@ -12,7 +12,11 @@ import { IconCheck } from "@tabler/icons";
 import { showNotification } from "@mantine/notifications";
 
 const Dashboard: NextPage = () => {
-  const { data: sessionData } = useSession();
+  const router = useRouter();
+  const { data: sessionData, status } = useSession();
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
   const [isCreatePlanModalOpen, setIsCreatePlanModalOpen] = useState(false);
   const [isCreateWorkoutModalOpen, setIsCreateWorkoutModalOpen] =
     useState(false);
