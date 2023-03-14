@@ -6,10 +6,15 @@ import { Modal, Button, LoadingOverlay, Grid } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import SectionCard from "../../../components/dashboard/SectionCard";
+import { useRouter } from "next/router";
 
 const Plans: NextPage = () => {
+  const router = useRouter();
+  const { status } = useSession();
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
   const planQuery = api.plan.getManybyCreatedBy.useQuery();
-
   return (
     <>
       <Head>

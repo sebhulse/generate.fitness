@@ -6,13 +6,17 @@ import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import SectionsDnd from "../../../components/dashboard/SectionsDnd";
+import { useSession } from "next-auth/react";
 
 const Dashboard: NextPage = () => {
-  const { query } = useRouter();
   const router = useRouter();
+  const { status } = useSession();
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
+  const { query } = useRouter();
   const { data: workout, isLoading: isWorkoutLoading } =
     api.workout.getById.useQuery(query.id as string);
-
   const items = [
     { title: "Overview", href: "/dashboard" },
     { title: "Workouts", href: "/dashboard/workouts" },
