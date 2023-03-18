@@ -2,11 +2,11 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Modal, Button, LoadingOverlay, Grid } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
-import SectionCard from "../../../components/dashboard/SectionCard";
 import { useRouter } from "next/router";
+import ItemCard from "../../../components/dashboard/ItemCard";
 
 const Plans: NextPage = () => {
   const router = useRouter();
@@ -23,16 +23,12 @@ const Plans: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <Grid>
+        <Stack>
           {/* <LoadingOverlay visible={planQuery.isLoading} /> */}
           {planQuery.data?.map((plan) => {
-            return (
-              <Grid.Col key={plan.id} md={6} lg={4}>
-                <SectionCard key={plan.id} section={plan} />
-              </Grid.Col>
-            );
+            return <ItemCard key={plan.id} item={plan} />;
           })}
-        </Grid>
+        </Stack>
       </DashboardLayout>
     </>
   );

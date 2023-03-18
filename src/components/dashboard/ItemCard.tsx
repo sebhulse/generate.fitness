@@ -1,10 +1,11 @@
 import { createStyles, Paper, Text, Title, Button } from "@mantine/core";
 import type { Plan, Workout } from "@prisma/client";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
 const useStyles = createStyles((theme) => ({
   card: {
-    height: 200,
+    height: 100,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -37,34 +38,35 @@ const useStyles = createStyles((theme) => ({
 }));
 
 type Props = {
-  section: Plan | Workout;
+  item: Plan | Workout;
 };
 
-const SectionCard = (props: Props) => {
-  const { section } = props;
+const ItemCard = (props: Props) => {
+  const { item } = props;
   const { classes } = useStyles();
-  const router = useRouter();
-
-  const handleEdit = () => {
-    "planInterval" in section
-      ? router.push(`/dashboard/plans/${section.id}`)
-      : router.push(`/dashboard/workouts/${section.id}`);
-  };
 
   return (
-    <Paper shadow="md" p="xl" radius="md" className={classes.card}>
+    <Paper
+      component={Link}
+      href={
+        "planInterval" in item
+          ? `/dashboard/plans/${item.id}`
+          : `/dashboard/workouts/${item.id}`
+      }
+      shadow="md"
+      p="xl"
+      radius="md"
+      className={classes.card}
+    >
       <div>
         <Text className={classes.category} size="xs">
-          {section.id}
+          {item.id}
         </Text>
         <Title order={3} className={classes.title}>
-          {section.name}
+          {item.name}
         </Title>
       </div>
-      <Button variant="white" color="dark" onClick={handleEdit}>
-        Edit
-      </Button>
     </Paper>
   );
 };
-export default SectionCard;
+export default ItemCard;

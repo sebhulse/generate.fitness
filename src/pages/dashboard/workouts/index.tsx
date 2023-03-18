@@ -2,12 +2,20 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Modal, Button, Group, Grid, LoadingOverlay } from "@mantine/core";
+import {
+  Modal,
+  Button,
+  Group,
+  Stack,
+  LoadingOverlay,
+  Loader,
+  Center,
+} from "@mantine/core";
 import { api } from "../../../utils/api";
 
 import DashboardLayout from "../../../layouts/DashboardLayout";
-import SectionCard from "../../../components/dashboard/SectionCard";
 import { useRouter } from "next/router";
+import ItemCard from "../../../components/dashboard/ItemCard";
 
 const Workouts: NextPage = () => {
   const router = useRouter();
@@ -15,7 +23,14 @@ const Workouts: NextPage = () => {
   if (status === "unauthenticated") {
     router.push("/");
   }
-  const workoutQuery = api.workout.getManybyCreatedBy.useQuery();
+  const workoutQuery = api.workout.getManybyCreatedBy.useInfiniteQuery(
+    {
+      limit: 10,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
   return (
     <>
       <Head>
@@ -24,16 +39,30 @@ const Workouts: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <Grid>
-          {/* <LoadingOverlay visible={workoutQuery.isLoading} /> */}
-          {workoutQuery.data?.map((workout) => {
-            return (
-              <Grid.Col key={workout.id} md={6} lg={4}>
-                <SectionCard key={workout.id} section={workout} />
-              </Grid.Col>
-            );
+        <Stack>
+          {workoutQuery.data?.pages.map((page) => {
+            const itemCards = page.items?.map((workout) => {
+              return <ItemCard key={workout.id} item={workout} />;
+            });
+            return itemCards;
           })}
-        </Grid>
+        </Stack>
+
+        {workoutQuery.isLoading ? (
+          <Center mt="lg">
+            <Loader />
+          </Center>
+        ) : (
+          <Center mt="lg">
+            <Button
+              onClick={() => {
+                workoutQuery.fetchNextPage();
+              }}
+            >
+              Load More
+            </Button>
+          </Center>
+        )}
       </DashboardLayout>
     </>
   );
