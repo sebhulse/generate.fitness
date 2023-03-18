@@ -8,7 +8,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import CreatePlanModal from "../../components/dashboard/CreatePlanModal";
 import CreateWorkoutModal from "../../components/dashboard/CreateWorkoutModal";
 import { useRouter } from "next/router";
-import { IconCheck } from "@tabler/icons";
+import { IconCheck, IconCross, IconX } from "@tabler/icons";
 import { showNotification } from "@mantine/notifications";
 
 const Dashboard: NextPage = () => {
@@ -30,6 +30,16 @@ const Dashboard: NextPage = () => {
         message: `Your trainer ${data.trainer?.name} was successfully linked to your account.`,
         color: "green",
         icon: <IconCheck />,
+      });
+    },
+    onError() {
+      showNotification({
+        id: "trainer-link-error",
+        autoClose: false,
+        title: "Trainer link error",
+        message: `There was an error linking your trainer to your account. Please try again later.`,
+        color: "red",
+        icon: <IconX />,
       });
     },
   });
