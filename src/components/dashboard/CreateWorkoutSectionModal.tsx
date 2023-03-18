@@ -61,7 +61,7 @@ const CreateSectionModal = (props: Props): JSX.Element => {
           {"planSections" in parent ? null : (
             <NativeSelect
               mt="md"
-              data={["Warmup", "Workout", "Cooldown"]}
+              data={["Warmup", "Main", "Cooldown"]}
               label="Section Type"
               {...form.getInputProps("workoutSectionType")}
             />

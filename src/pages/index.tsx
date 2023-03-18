@@ -3,8 +3,17 @@ import Head from "next/head";
 import HeaderMenu from "../components/index/HeaderMenu";
 import { Button, Center, Text } from "@mantine/core";
 import { IconPencil, IconPlus, IconPlayerPlay } from "@tabler/icons";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
+  const { data: sessionData } = useSession();
+  const router = useRouter();
+  const { query } = useRouter();
+
+  const callbackUrl = query.trainer
+    ? `/dashboard/?trainer=${query.trainer}`
+    : `/dashboard`;
   return (
     <>
       <Head>
@@ -15,30 +24,53 @@ const Home: NextPage = () => {
       <HeaderMenu />
 
       <Text
-        variant="gradient"
-        gradient={{ from: "indigo", to: "cyan", deg: 45 }}
         ta="center"
         fz="xl"
         fw={700}
-        style={{ fontSize: "6rem", marginTop: "10rem", marginBottom: "1rem" }}
+        style={{ fontSize: "3rem", marginTop: "10rem", marginBottom: "1rem" }}
       >
-        Generate Fitness.
+        Organise your fitness journey <br />
+        with{" "}
+        <Text
+          variant="gradient"
+          gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+          ta="center"
+          fz="xl"
+          fw={700}
+          style={{ fontSize: "3rem", display: "inline" }}
+        >
+          Generate Fitness
+        </Text>
+        .
       </Text>
       <Center>
-        <Text ta="center" style={{ maxWidth: "800px", marginBottom: "2rem" }}>
-          Start creating customised training plans and generating unique
-          workouts now!
+        <Text
+          ta="center"
+          style={{
+            fontSize: "1.4rem",
+            maxWidth: "600px",
+            marginBottom: "2rem",
+          }}
+        >
+          Create custom training plans, generate varied workouts, and smash your
+          real-time workouts.
         </Text>
       </Center>
       <Center>
         <Button
           type="submit"
-          mt="md"
+          mt="sm"
           size="lg"
+          radius="xl"
           variant="gradient"
           gradient={{ from: "indigo", to: "cyan" }}
+          onClick={() => {
+            sessionData?.user
+              ? router.push("/dashboard")
+              : signIn(undefined, { callbackUrl: callbackUrl });
+          }}
         >
-          Go
+          Start for free
         </Button>
       </Center>
 
