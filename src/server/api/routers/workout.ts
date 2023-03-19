@@ -21,17 +21,20 @@ export const workoutRouter = createTRPCRouter({
   getManybyCreatedBy: protectedProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(), // <-- "cursor" needs to exist, but can be any type
+        limit: z.number().min(1).max(20).nullish(),
+        cursor: z.string().nullish(),
       })
     )
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 10;
       const { cursor } = input;
       const items = await ctx.prisma.workout.findMany({
-        take: limit + 1, // get an extra item at the end which we'll use as next cursor
+        take: limit + 1,
         where: {
           userId: ctx.session.user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
         cursor: cursor ? { id: cursor } : undefined,
       });

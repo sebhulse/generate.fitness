@@ -1,7 +1,7 @@
 import React from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Breadcrumbs, Anchor, Loader } from "@mantine/core";
+import { Breadcrumbs, Anchor, Loader, Center } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
@@ -38,7 +38,13 @@ const Dashboard: NextPage = () => {
       </Head>
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
-        {isPlanLoading ? <Loader variant="dots" /> : <></>}
+        {isPlanLoading ? (
+          <Center>
+            <Loader />
+          </Center>
+        ) : (
+          <></>
+        )}
         {plan ? <PlanInfoCard plan={plan}></PlanInfoCard> : <></>}
         {plan?.planSections ? <SectionsDnd parent={plan}></SectionsDnd> : <></>}
       </DashboardLayout>

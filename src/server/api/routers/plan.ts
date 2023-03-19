@@ -15,13 +15,33 @@ export const planRouter = createTRPCRouter({
     });
   }),
 
-  getManybyCreatedBy: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.plan.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-    });
-  }),
+  getManybyCreatedBy: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(20).nullish(),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 10;
+      const { cursor } = input;
+      const items = await ctx.prisma.plan.findMany({
+        take: limit + 1,
+        where: {
+          userId: ctx.session.user.id,
+        },
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop();
+        nextCursor = nextItem ? nextItem.id : undefined;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
 
   create: protectedProcedure
     .input(

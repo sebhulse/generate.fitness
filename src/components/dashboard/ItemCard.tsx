@@ -2,6 +2,7 @@ import { createStyles, Paper, Text, Title, Button } from "@mantine/core";
 import type { Plan, Workout } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -64,7 +65,14 @@ const ItemCard = (props: Props) => {
         </Text>
         <Title order={3} className={classes.title}>
           {item.name}
+          {item.createdAt.toLocaleDateString(undefined, {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "2-digit",
+          })}
         </Title>
+        <Title className={classes.title}></Title>
       </div>
     </Paper>
   );
