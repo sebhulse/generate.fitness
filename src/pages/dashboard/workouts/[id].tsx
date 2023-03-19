@@ -1,7 +1,14 @@
 import React from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Breadcrumbs, Anchor, Loader, Button, Group } from "@mantine/core";
+import {
+  Breadcrumbs,
+  Anchor,
+  Loader,
+  Button,
+  Group,
+  Center,
+} from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
@@ -35,7 +42,13 @@ const Dashboard: NextPage = () => {
       </Head>
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
-        {isWorkoutLoading ? <Loader variant="dots" /> : <></>}
+        {isWorkoutLoading ? (
+          <Center>
+            <Loader />
+          </Center>
+        ) : (
+          <></>
+        )}
         <Group position="apart">
           <h1>{workout?.name}</h1>
           <Button

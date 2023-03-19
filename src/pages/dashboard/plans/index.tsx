@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Stack } from "@mantine/core";
+import { Button, Center, Loader, Text, Stack } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
@@ -14,7 +14,18 @@ const Plans: NextPage = () => {
   if (status === "unauthenticated") {
     router.push("/");
   }
-  const planQuery = api.plan.getManybyCreatedBy.useQuery();
+  const planQuery = api.plan.getManybyCreatedBy.useInfiniteQuery(
+    {
+      limit: 10,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    }
+  );
+  {
+    console.log(planQuery.data?.pages.map((page) => page.nextCursor));
+  }
+
   return (
     <>
       <Head>
@@ -24,11 +35,28 @@ const Plans: NextPage = () => {
       </Head>
       <DashboardLayout>
         <Stack>
-          {/* <LoadingOverlay visible={planQuery.isLoading} /> */}
-          {planQuery.data?.map((plan) => {
-            return <ItemCard key={plan.id} item={plan} />;
+          {planQuery.data?.pages.map((page) => {
+            const itemCards = page.items?.map((plan) => {
+              return <ItemCard key={plan.id} item={plan} />;
+            });
+            return itemCards;
           })}
         </Stack>
+
+        {planQuery.isFetching ? (
+          <Center mt="lg">
+            <Loader />
+          </Center>
+        ) : planQuery.data?.pages[planQuery.data?.pages.length - 1]
+            ?.nextCursor ? (
+          <Center mt="lg">
+            <Button onClick={() => planQuery.fetchNextPage()}>Load more</Button>
+          </Center>
+        ) : (
+          <Center mt="lg">
+            <Text color={"gray"}>That&#39;s all, folks!</Text>
+          </Center>
+        )}
       </DashboardLayout>
     </>
   );

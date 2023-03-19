@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import {
   Modal,
   Button,
-  Group,
+  Text,
   Stack,
   LoadingOverlay,
   Loader,
@@ -47,20 +47,20 @@ const Workouts: NextPage = () => {
             return itemCards;
           })}
         </Stack>
-
-        {workoutQuery.isLoading ? (
+        {workoutQuery.isFetching ? (
           <Center mt="lg">
             <Loader />
           </Center>
+        ) : workoutQuery.data?.pages[workoutQuery.data?.pages.length - 1]
+            ?.nextCursor ? (
+          <Center mt="lg">
+            <Button onClick={() => workoutQuery.fetchNextPage()}>
+              Load more
+            </Button>
+          </Center>
         ) : (
           <Center mt="lg">
-            <Button
-              onClick={() => {
-                workoutQuery.fetchNextPage();
-              }}
-            >
-              Load More
-            </Button>
+            <Text color={"gray"}>That&#39;s all, folks!</Text>
           </Center>
         )}
       </DashboardLayout>
