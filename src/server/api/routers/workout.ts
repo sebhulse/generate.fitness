@@ -33,6 +33,17 @@ export const workoutRouter = createTRPCRouter({
         where: {
           userId: ctx.session.user.id,
         },
+        include: {
+          planSection: {
+            select: {
+              plan: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
         orderBy: {
           createdAt: "desc",
         },
@@ -48,6 +59,14 @@ export const workoutRouter = createTRPCRouter({
         nextCursor,
       };
     }),
+
+  getTotalByCreatedBy: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.workout.count({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+  }),
 
   create: protectedProcedure
     .input(

@@ -8,12 +8,14 @@ import {
   Button,
   Group,
   Center,
+  Title,
 } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import SectionsDnd from "../../../components/dashboard/SectionsDnd";
 import { useSession } from "next-auth/react";
+import ItemOptionMenu from "../../../components/dashboard/ItemOptionMenu";
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
@@ -33,6 +35,15 @@ const Dashboard: NextPage = () => {
     </Anchor>
   ));
 
+  if (isWorkoutLoading)
+    return (
+      <DashboardLayout>
+        <Center>
+          <Loader />
+        </Center>
+      </DashboardLayout>
+    );
+
   return (
     <>
       <Head>
@@ -42,26 +53,26 @@ const Dashboard: NextPage = () => {
       </Head>
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
-        {isWorkoutLoading ? (
-          <Center>
-            <Loader />
-          </Center>
-        ) : (
-          <></>
-        )}
         <Group position="apart">
-          <h1>{workout?.name}</h1>
-          <Button
-            variant="gradient"
-            gradient={{ from: "indigo", to: "cyan" }}
-            onClick={() =>
-              router.push(`/dashboard/realtime/${query.id as string}`)
-            }
-            size="lg"
-          >
-            Realtime
-          </Button>
+          <Title mb="md" mt="md">
+            {workout?.name}
+          </Title>
+          <ItemOptionMenu
+            item="Workout"
+            parentId={query.id as string}
+            onDelete={() => router.push("/dashboard/workouts")}
+          />
         </Group>
+        <Button
+          variant="gradient"
+          gradient={{ from: "indigo", to: "cyan" }}
+          onClick={() =>
+            router.push(`/dashboard/realtime/${query.id as string}`)
+          }
+          size="lg"
+        >
+          Start workout
+        </Button>
 
         {/* {workout ? <PlanInfoCard plan={workout}></PlanInfoCard> : <></>} */}
         {workout?.workoutSections ? (

@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Button, Center, Loader, Text, Stack } from "@mantine/core";
+import { Button, Center, Loader, Text, Stack, Title } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
@@ -22,9 +22,7 @@ const Plans: NextPage = () => {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-  {
-    console.log(planQuery.data?.pages.map((page) => page.nextCursor));
-  }
+  const totalPlans = api.plan.getTotalByCreatedBy.useQuery();
 
   return (
     <>
@@ -34,7 +32,8 @@ const Plans: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <Stack>
+        <Title>{totalPlans.data} Plans</Title>
+        <Stack mt="lg">
           {planQuery.data?.pages.map((page) => {
             const itemCards = page.items?.map((plan) => {
               return <ItemCard key={plan.id} item={plan} />;

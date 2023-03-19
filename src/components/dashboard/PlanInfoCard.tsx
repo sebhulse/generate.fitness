@@ -1,4 +1,5 @@
-import { Loader, Card, Table, Alert } from "@mantine/core";
+import { Progress, Card, Table, Alert } from "@mantine/core";
+import { useEffect, useState } from "react";
 import type { RouterOutputs } from "../../utils/api";
 
 type PlanGetByIdOutput = RouterOutputs["plan"]["getById"];
@@ -9,21 +10,53 @@ type Props = {
 
 const PlanInfoCard = (props: Props) => {
   const { plan } = props;
+  const [totalWorkouts, setTotalWorkouts] = useState(0);
+
+  useEffect(() => {
+    console.log("plan changed");
+    setTotalWorkouts(calculateTotalWorkouts());
+  }, [plan]);
+
+  const calculateTotalWorkouts = () => {
+    let totalWorkouts = 0;
+    plan
+      ? plan.planSections.forEach((section) => {
+          totalWorkouts += section.workouts.length;
+        })
+      : null;
+    return totalWorkouts;
+  };
+
+  const calculatePlanProgress = () => {
+    let completeWorkouts = 0;
+    plan
+      ? plan.planSections.forEach((section) => {
+          section.workouts.forEach((workout) => {
+            if (workout.isDone) {
+              completeWorkouts++;
+            }
+          });
+        })
+      : null;
+    return completeWorkouts / totalWorkouts;
+  };
 
   return (
     <>
-      {plan ? <h1>{plan.name}</h1> : null}
       {plan ? (
         <Card mt="md" radius="md">
           <Table>
             <tbody>
-              <tr key={plan.name}>
-                <td>Name</td>
-                <td>{plan.name}</td>
-              </tr>
               <tr key={plan.createdAt.toISOString()}>
                 <td>Created</td>
-                <td>{plan.createdAt.toISOString()}</td>
+                <td>
+                  {plan.createdAt.toLocaleDateString(undefined, {
+                    weekday: "short",
+                    year: "numeric",
+                    month: "short",
+                    day: "2-digit",
+                  })}
+                </td>
               </tr>
               {plan.description ? (
                 <tr key={plan.description}>
@@ -39,11 +72,31 @@ const PlanInfoCard = (props: Props) => {
               ) : null}
               <tr key={plan.planInterval}>
                 <td>Plan Interval</td>
-                <td>{plan.planInterval.toLowerCase()}</td>
+                <td style={{ textTransform: "capitalize" }}>
+                  {plan.planInterval.toLowerCase()}
+                </td>
               </tr>
-              <tr key={"allowDisplayUserEdit"}>
-                <td>Allow Edit</td>
-                <td>{plan.allowDisplayUserEdit ? "Yes" : "No"}</td>
+              <tr key="totalDuration">
+                <td>Duration</td>
+                <td style={{ textTransform: "capitalize" }}>
+                  {`${
+                    plan.planSections.length
+                  } ${plan.planInterval.toLowerCase()}`}
+                </td>
+              </tr>
+              <tr key="totalWorkouts">
+                <td>Total Workouts</td>
+                <td style={{ textTransform: "capitalize" }}>{totalWorkouts}</td>
+              </tr>
+              <tr>
+                <td colSpan={2} style={{ paddingTop: "1rem" }}>
+                  <Progress
+                    value={calculatePlanProgress() * 100}
+                    color="cyan"
+                    size="xl"
+                    radius="xl"
+                  />
+                </td>
               </tr>
             </tbody>
           </Table>

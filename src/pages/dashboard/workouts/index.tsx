@@ -10,6 +10,7 @@ import {
   LoadingOverlay,
   Loader,
   Center,
+  Title,
 } from "@mantine/core";
 import { api } from "../../../utils/api";
 
@@ -31,6 +32,9 @@ const Workouts: NextPage = () => {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
+
+  const totalWorkouts = api.workout.getTotalByCreatedBy.useQuery();
+
   return (
     <>
       <Head>
@@ -39,7 +43,8 @@ const Workouts: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <Stack>
+        <Title>{totalWorkouts.data} Workouts</Title>
+        <Stack mt="lg">
           {workoutQuery.data?.pages.map((page) => {
             const itemCards = page.items?.map((workout) => {
               return <ItemCard key={workout.id} item={workout} />;
