@@ -43,6 +43,14 @@ export const planRouter = createTRPCRouter({
       };
     }),
 
+  getTotalByCreatedBy: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.plan.count({
+      where: {
+        userId: ctx.session.user.id,
+      },
+    });
+  }),
+
   create: protectedProcedure
     .input(
       z.object({
@@ -67,5 +75,19 @@ export const planRouter = createTRPCRouter({
         },
       });
       return plan;
+    }),
+
+  delete: protectedProcedure
+    .input(
+      z.object({
+        planId: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.plan.delete({
+        where: {
+          id: input.planId,
+        },
+      });
     }),
 });

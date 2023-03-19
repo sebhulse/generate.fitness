@@ -1,13 +1,21 @@
 import React from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Breadcrumbs, Anchor, Loader, Center } from "@mantine/core";
+import {
+  Breadcrumbs,
+  Anchor,
+  Loader,
+  Center,
+  Group,
+  Title,
+} from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import PlanInfoCard from "../../../components/dashboard/PlanInfoCard";
 import SectionsDnd from "../../../components/dashboard/SectionsDnd";
 import { useSession } from "next-auth/react";
+import ItemOptionMenu from "../../../components/dashboard/ItemOptionMenu";
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
@@ -29,6 +37,15 @@ const Dashboard: NextPage = () => {
     </Anchor>
   ));
 
+  if (isPlanLoading)
+    return (
+      <DashboardLayout>
+        <Center>
+          <Loader />
+        </Center>
+      </DashboardLayout>
+    );
+
   return (
     <>
       <Head>
@@ -38,13 +55,16 @@ const Dashboard: NextPage = () => {
       </Head>
       <DashboardLayout>
         <Breadcrumbs>{items}</Breadcrumbs>
-        {isPlanLoading ? (
-          <Center>
-            <Loader />
-          </Center>
-        ) : (
-          <></>
-        )}
+        <Group position="apart">
+          <Title mb="md" mt="md" style={{ textTransform: "capitalize" }}>
+            {plan?.name}
+          </Title>
+          <ItemOptionMenu
+            item="Plan"
+            parentId={query.id as string}
+            onDelete={() => router.push("/dashboard/plans")}
+          />
+        </Group>
         {plan ? <PlanInfoCard plan={plan}></PlanInfoCard> : <></>}
         {plan?.planSections ? <SectionsDnd parent={plan}></SectionsDnd> : <></>}
       </DashboardLayout>
