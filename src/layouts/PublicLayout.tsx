@@ -10,6 +10,7 @@ import {
   Burger,
   Group,
   Button,
+  Drawer,
 } from "@mantine/core";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -82,11 +83,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
   };
 });
 
-type Props = {
-  children: JSX.Element | JSX.Element[];
-};
-const DashboardLayout = (props: Props): JSX.Element => {
-  const { children } = props;
+const DashboardLayout = (): JSX.Element => {
   const { classes, cx } = useStyles();
   const { pathname } = useRouter();
   const data = [
@@ -130,20 +127,19 @@ const DashboardLayout = (props: Props): JSX.Element => {
   );
 
   return (
-    <AppShell
-      navbarOffsetBreakpoint="sm"
-      asideOffsetBreakpoint="sm"
-      navbar={
-        <Navbar
-          p="md"
-          hiddenBreakpoint="sm"
-          hidden={!opened}
-          width={{ sm: 200, lg: 300 }}
-          color={dark ? "black" : "white"}
+    <>
+      {opened ? (
+        <Drawer
+          opened={opened}
+          onClose={() => setOpened(false)}
+          title="Menu"
+          padding="md"
+          size="md"
         >
           {links}
           <Button
             mt="xl"
+            style={{ width: "100%" }}
             onClick={
               sessionData
                 ? () => signOut({ callbackUrl: "/" })
@@ -155,39 +151,38 @@ const DashboardLayout = (props: Props): JSX.Element => {
           >
             {sessionData ? "Sign out" : "Sign in"}
           </Button>
-        </Navbar>
-      }
-      header={
-        <Header height={60} px="md">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <Group position="apart" sx={{ height: "100%", width: "100%" }}>
-              <Group>
-                <Link href="/" className={classes.link}>
-                  generate.fitness
+        </Drawer>
+      ) : null}
+
+      <Header height={60} px="md">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Group position="apart" sx={{ height: "100%", width: "100%" }}>
+            <Group>
+              <Link href="/" className={classes.link}>
+                generate.fitness
+              </Link>
+            </Group>
+            {sessionData?.user ? (
+              <Group className={classes.hiddenMobile}>
+                <Link className={classes.link} href="/" key="Home">
+                  <span>Home</span>
+                </Link>
+                <Link
+                  className={classes.link}
+                  href="/dashboard"
+                  key="Dashboard"
+                >
+                  <span>Dashboard</span>
                 </Link>
               </Group>
-
-              <Group>
-                <Button
-                  onClick={
-                    sessionData
-                      ? () => signOut({ callbackUrl: "/" })
-                      : () =>
-                          signIn(undefined, {
-                            callbackUrl: "/dashboard",
-                          })
-                  }
-                  className={classes.hiddenMobile}
-                >
-                  {sessionData ? "Sign out" : "Sign in"}
-                </Button>
-              </Group>
+            ) : null}
+            <Group>
               <ActionIcon
                 variant="outline"
                 onClick={() => toggleColorScheme()}
@@ -195,21 +190,33 @@ const DashboardLayout = (props: Props): JSX.Element => {
               >
                 {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
               </ActionIcon>
-              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-                <Burger
-                  opened={opened}
-                  onClick={() => setOpened((o) => !o)}
-                  size="sm"
-                  mr="xs"
-                />
-              </MediaQuery>
+              <Button
+                onClick={
+                  sessionData
+                    ? () => signOut({ callbackUrl: "/" })
+                    : () =>
+                        signIn(undefined, {
+                          callbackUrl: "/dashboard",
+                        })
+                }
+                className={classes.hiddenMobile}
+              >
+                {sessionData ? "Sign out" : "Sign in"}
+              </Button>
             </Group>
-          </div>
-        </Header>
-      }
-    >
-      {children}
-    </AppShell>
+
+            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => setOpened((o) => !o)}
+                size="sm"
+                mr="xs"
+              />
+            </MediaQuery>
+          </Group>
+        </div>
+      </Header>
+    </>
   );
 };
 export default DashboardLayout;

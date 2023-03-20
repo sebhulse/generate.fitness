@@ -22,100 +22,99 @@ const Home: NextPage = () => {
         <meta name="description" content="Fitness planning app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <PublicLayout>
+      <PublicLayout />
+      <Text
+        ta="center"
+        fz="xl"
+        fw={700}
+        style={{ fontSize: "3rem", marginTop: "10rem", marginBottom: "1rem" }}
+      >
+        Organise your fitness journey <br />
+        with{" "}
         <Text
+          variant="gradient"
+          gradient={{ from: "indigo", to: "cyan", deg: 45 }}
           ta="center"
           fz="xl"
           fw={700}
-          style={{ fontSize: "3rem", marginTop: "10rem", marginBottom: "1rem" }}
+          style={{ fontSize: "3rem", display: "inline" }}
         >
-          Organise your fitness journey <br />
-          with{" "}
-          <Text
-            variant="gradient"
-            gradient={{ from: "indigo", to: "cyan", deg: 45 }}
-            ta="center"
-            fz="xl"
-            fw={700}
-            style={{ fontSize: "3rem", display: "inline" }}
-          >
-            Generate Fitness
-          </Text>
-          .
+          Generate Fitness
         </Text>
-        <Center>
-          <Text
-            ta="center"
-            style={{
-              fontSize: "1.4rem",
-              maxWidth: "600px",
-              marginBottom: "2rem",
-            }}
-          >
-            Create custom training plans, generate varied workouts, and smash
-            your real-time workouts.
-          </Text>
-        </Center>
-        <Center>
-          <Button
-            type="submit"
-            mt="sm"
-            size="lg"
-            radius="xl"
-            variant="gradient"
-            gradient={{ from: "indigo", to: "cyan" }}
-            onClick={() => {
-              sessionData?.user
-                ? router.push("/dashboard")
-                : signIn(undefined, { callbackUrl: callbackUrl });
-            }}
-          >
-            Start for free
-          </Button>
-        </Center>
+        .
+      </Text>
+      <Center>
+        <Text
+          ta="center"
+          style={{
+            fontSize: "1.4rem",
+            maxWidth: "600px",
+            marginBottom: "2rem",
+          }}
+        >
+          Create custom training plans, generate varied workouts, and smash your
+          real-time workouts.
+        </Text>
+      </Center>
+      <Center>
+        <Button
+          type="submit"
+          mt="sm"
+          size="lg"
+          radius="xl"
+          variant="gradient"
+          gradient={{ from: "indigo", to: "cyan" }}
+          onClick={() => {
+            sessionData?.user
+              ? router.push("/dashboard")
+              : signIn(undefined, { callbackUrl: callbackUrl });
+          }}
+        >
+          Start for free
+        </Button>
+      </Center>
 
-        <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "start",
-              alignItems: "center",
-              margin: "5rem",
-            }}
-          >
-            <IconPencil size={50} style={{ marginRight: "2rem" }} />
-            <Text ta="center" fz="xl" fw={700} style={{ fontSize: "1.5rem" }}>
-              Customise training plans
-            </Text>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "end",
-              alignItems: "center",
-              margin: "5rem",
-            }}
-          >
-            <IconPlus size={50} style={{ marginRight: "2rem" }} />
-            <Text ta="center" fz="xl" fw={700} style={{ fontSize: "1.5rem" }}>
-              Generate varied workouts
-            </Text>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "start",
-              alignItems: "center",
-              margin: "5rem",
-            }}
-          >
-            <IconPlayerPlay size={50} style={{ marginRight: "2rem" }} />
-            <Text ta="center" fz="xl" fw={700} style={{ fontSize: "1.5rem" }}>
-              Smash your workouts in real-time
-            </Text>
-          </div>
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "start",
+            alignItems: "center",
+            margin: "5rem",
+          }}
+        >
+          <IconPencil size={50} style={{ marginRight: "2rem" }} />
+          <Text ta="center" fz="xl" fw={700} style={{ fontSize: "1.5rem" }}>
+            Customise training plans
+          </Text>
         </div>
-      </PublicLayout>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            alignItems: "center",
+            margin: "5rem",
+          }}
+        >
+          <IconPlus size={50} style={{ marginRight: "2rem" }} />
+          <Text ta="center" fz="xl" fw={700} style={{ fontSize: "1.5rem" }}>
+            Generate varied workouts
+          </Text>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "start",
+            alignItems: "center",
+            margin: "5rem",
+          }}
+        >
+          <IconPlayerPlay size={50} style={{ marginRight: "2rem" }} />
+          <Text ta="center" fz="xl" fw={700} style={{ fontSize: "1.5rem" }}>
+            Smash your workouts in real-time
+          </Text>
+        </div>
+      </div>
     </>
   );
 };
