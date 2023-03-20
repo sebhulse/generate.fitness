@@ -39,7 +39,7 @@ const Workouts: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Plans</title>
+        <title>Workouts</title>
         <meta name="Plans" content="Dashboard to manage Plans" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

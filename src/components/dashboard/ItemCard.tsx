@@ -16,11 +16,10 @@ const useStyles = createStyles((theme) => ({
     fontWeight: 900,
     color:
       theme.colorScheme === "dark"
-        ? theme.colors.dark[1]
+        ? theme.colors.gray[0]
         : theme.colors.gray[8],
     lineHeight: 1.2,
     fontSize: 24,
-    marginTop: theme.spacing.xs,
     textTransform: "capitalize",
   },
 
@@ -43,7 +42,6 @@ type Props = {
 const ItemCard = (props: Props) => {
   const { item } = props;
   const { classes } = useStyles();
-  console.log(item);
 
   return (
     <Paper
@@ -53,13 +51,14 @@ const ItemCard = (props: Props) => {
           ? `/dashboard/plans/${item.id}`
           : `/dashboard/workouts/${item.id}`
       }
-      shadow="md"
-      p="xl"
+      withBorder
+      p="md"
       radius="md"
       className={classes.card}
     >
       <div>
         <Group position="apart">
+          <Title className={classes.title}>{item.name}</Title>
           <Text className={classes.category} size="xs">
             {`Created ${item.createdAt.toLocaleDateString(undefined, {
               weekday: "short",
@@ -103,10 +102,6 @@ const ItemCard = (props: Props) => {
             </>
           ) : null}
         </Group>
-        <Title order={3} className={classes.title}>
-          {item.name}
-        </Title>
-        <Title className={classes.title}></Title>
       </div>
     </Paper>
   );

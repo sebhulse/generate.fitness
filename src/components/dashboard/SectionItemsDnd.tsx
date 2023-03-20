@@ -29,13 +29,13 @@ const useStyles = createStyles((theme) => ({
     justifyContent: "center",
     borderRadius: theme.radius.md,
     border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
+      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
     }`,
-    padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`,
+
+    padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
     paddingLeft: theme.spacing.xl - theme.spacing.md, // to offset drag handle
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.white,
     marginBottom: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
   },
 
   itemDragging: {
@@ -43,22 +43,18 @@ const useStyles = createStyles((theme) => ({
   },
 
   name: {
-    fontSize: 30,
-    fontWeight: 700,
+    fontSize: theme.fontSizes.md,
+    marginLeft: theme.spacing.md,
+    textTransform: "capitalize",
   },
 
   dragHandle: {
     ...theme.fn.focusStyles(),
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[1]
-        : theme.colors.gray[6],
-    paddingLeft: theme.spacing.md,
-    paddingRight: theme.spacing.md,
+    justifyContent: "space-between",
+    paddingLeft: theme.spacing.xs,
+    paddingRight: theme.spacing.xs,
   },
 }));
 
@@ -151,8 +147,10 @@ const SectionItemsDnd = (props: Props) => {
                   {...provided.dragHandleProps}
                   className={classes.dragHandle}
                 >
-                  <IconGripVertical size={18} stroke={1.5} />
-                  <Text>
+                  <div style={{ width: "18px", height: "18px" }}>
+                    <IconGripVertical stroke={1.5} height={18} width={18} />
+                  </div>
+                  <Text className={classes.name}>
                     {"name" in sectionItem
                       ? sectionItem.name
                       : sectionItem.movement.name}
@@ -199,7 +197,7 @@ const SectionItemsDnd = (props: Props) => {
           )}
         </StrictModeDroppable>
       </DragDropContext>
-      <div className={cx(classes.item, {})}>
+      <div className={cx(classes.item, {})} style={{ border: "0px" }}>
         <div>
           <Button
             onClick={() => {

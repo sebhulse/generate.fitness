@@ -44,8 +44,8 @@ const Dashboard: NextPage = () => {
           <IconArrowLeft />
           <Text ml="xs">Back</Text>
         </Anchor>
-        <Group position="apart">
-          <Title mb="md" style={{ textTransform: "capitalize" }}>
+        <Group position="apart" style={{ flexWrap: "nowrap" }}>
+          <Title mb="md" mt="sm" style={{ textTransform: "capitalize" }}>
             {plan?.name}
           </Title>
           <ItemOptionMenu

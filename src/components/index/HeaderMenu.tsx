@@ -69,11 +69,9 @@ const HeaderMenu = () => {
     <Box>
       <Header height={60} px="md" withBorder={false}>
         <Group position="apart" sx={{ height: "100%" }}>
-          <Group>
-            <Link href="/" className={classes.link}>
-              generate.fitness
-            </Link>
-          </Group>
+          <Link href="/" className={classes.link}>
+            generate.fitness
+          </Link>
           <Group
             sx={{ height: "100%" }}
             spacing={0}
@@ -115,6 +113,7 @@ const HeaderMenu = () => {
         title="Navigation"
         className={classes.hiddenDesktop}
         zIndex={1000000}
+        color={theme.colorScheme === "dark" ? "white" : "black"}
       >
         <ScrollArea sx={{ height: "calc(100vh - 60px)" }} mx="-md">
           <Divider

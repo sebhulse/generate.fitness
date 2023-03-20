@@ -30,14 +30,6 @@ const Dashboard: NextPage = () => {
   const { query } = useRouter();
   const { data: workout, isLoading: isWorkoutLoading } =
     api.workout.getById.useQuery(query.id as string);
-  const items = [
-    { title: "Overview", href: "/dashboard" },
-    { title: "Workouts", href: "/dashboard/workouts" },
-  ].map((item, index) => (
-    <Anchor href={item.href} key={index}>
-      {item.title}
-    </Anchor>
-  ));
 
   if (isWorkoutLoading)
     return (
@@ -51,7 +43,7 @@ const Dashboard: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Workouts</title>
+        <title>Workout</title>
         <meta name="Workouts" content="Dashboard to manage Workouts" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -60,8 +52,8 @@ const Dashboard: NextPage = () => {
           <IconArrowLeft />
           <Text ml="xs">Back</Text>
         </Anchor>
-        <Group position="apart">
-          <Title mb="md" style={{ textTransform: "capitalize" }}>
+        <Group position="apart" style={{ flexWrap: "nowrap" }}>
+          <Title mb="xl" mt="sm" style={{ textTransform: "capitalize" }}>
             {workout?.name}
           </Title>
           <ItemOptionMenu
