@@ -8,38 +8,40 @@ type Props = {
   plan: PlanGetByIdOutput;
 };
 
+export const calculatePlanProgress = (
+  plan: PlanGetByIdOutput,
+  totalWorkouts: number
+) => {
+  let completeWorkouts = 0;
+  plan
+    ? plan.planSections.forEach((section) => {
+        section.workouts.forEach((workout) => {
+          if (workout.isDone) {
+            completeWorkouts++;
+          }
+        });
+      })
+    : null;
+  return completeWorkouts / totalWorkouts;
+};
+
+const calculateTotalWorkouts = (plan: PlanGetByIdOutput) => {
+  let totalWorkouts = 0;
+  plan
+    ? plan.planSections.forEach((section) => {
+        totalWorkouts += section.workouts.length;
+      })
+    : null;
+  return totalWorkouts;
+};
+
 const PlanInfoCard = (props: Props) => {
   const { plan } = props;
   const [totalWorkouts, setTotalWorkouts] = useState(0);
 
   useEffect(() => {
-    console.log("plan changed");
-    setTotalWorkouts(calculateTotalWorkouts());
+    setTotalWorkouts(calculateTotalWorkouts(plan));
   }, [plan]);
-
-  const calculateTotalWorkouts = () => {
-    let totalWorkouts = 0;
-    plan
-      ? plan.planSections.forEach((section) => {
-          totalWorkouts += section.workouts.length;
-        })
-      : null;
-    return totalWorkouts;
-  };
-
-  const calculatePlanProgress = () => {
-    let completeWorkouts = 0;
-    plan
-      ? plan.planSections.forEach((section) => {
-          section.workouts.forEach((workout) => {
-            if (workout.isDone) {
-              completeWorkouts++;
-            }
-          });
-        })
-      : null;
-    return completeWorkouts / totalWorkouts;
-  };
 
   return (
     <>
@@ -91,7 +93,7 @@ const PlanInfoCard = (props: Props) => {
               <tr>
                 <td colSpan={2} style={{ paddingTop: "1rem" }}>
                   <Progress
-                    value={calculatePlanProgress() * 100}
+                    value={calculatePlanProgress(plan, totalWorkouts) * 100}
                     color="cyan"
                     size="xl"
                     radius="xl"

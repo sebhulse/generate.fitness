@@ -5,7 +5,6 @@ import {
   Button,
   LoadingOverlay,
   Text,
-  Group,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";

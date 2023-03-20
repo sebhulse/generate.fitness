@@ -1,17 +1,7 @@
-import {
-  createStyles,
-  Paper,
-  Text,
-  Title,
-  Button,
-  Group,
-  Badge,
-} from "@mantine/core";
-import type { Plan, Workout } from "@prisma/client";
+import { createStyles, Paper, Text, Title, Group, Badge } from "@mantine/core";
+import type { Plan } from "@prisma/client";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
-import { RouterOutputs } from "../../utils/api";
+import type { RouterOutputs } from "../../utils/api";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -44,7 +34,7 @@ const useStyles = createStyles((theme) => ({
     fontSize: theme.fontSizes.sm,
   },
 }));
-type WorkoutGetManybyCreatedBy =
+export type WorkoutGetManybyCreatedBy =
   RouterOutputs["workout"]["getManybyCreatedBy"]["items"][0];
 type Props = {
   item: Plan | WorkoutGetManybyCreatedBy;
@@ -53,6 +43,7 @@ type Props = {
 const ItemCard = (props: Props) => {
   const { item } = props;
   const { classes } = useStyles();
+  console.log(item);
 
   return (
     <Paper
@@ -78,14 +69,38 @@ const ItemCard = (props: Props) => {
             })}`}
           </Text>
           {`duration` in item ? (
-            <Badge
-              color="gray"
-              variant="filled"
-              size="lg"
-              style={{ textTransform: "capitalize" }}
-            >
-              {item.planSection?.plan.name}
-            </Badge>
+            <>
+              {item.planSection?.plan.name ? (
+                <Badge
+                  color="gray"
+                  variant="filled"
+                  size="lg"
+                  style={{ textTransform: "capitalize" }}
+                >
+                  {item.planSection?.plan.name}
+                </Badge>
+              ) : null}
+              {item.duration ? (
+                <Badge
+                  color="blue"
+                  variant="filled"
+                  size="lg"
+                  style={{ textTransform: "capitalize" }}
+                >
+                  {`${Math.round(item.duration / 60)} minutes`}
+                </Badge>
+              ) : null}
+              {item.isDone ? (
+                <Badge
+                  color="green"
+                  variant="filled"
+                  size="lg"
+                  style={{ textTransform: "capitalize" }}
+                >
+                  Done
+                </Badge>
+              ) : null}
+            </>
           ) : null}
         </Group>
         <Title order={3} className={classes.title}>

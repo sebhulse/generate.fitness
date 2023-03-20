@@ -64,11 +64,6 @@ const Dashboard: NextPage = () => {
               <span>Logged in to dashboard as {sessionData.user?.name}</span>
             )}
           </p>
-          <CreatePlanModal
-            isCreatePlanModalOpen={isCreatePlanModalOpen}
-            setIsCreatePlanModalOpen={setIsCreatePlanModalOpen}
-          />
-
           <Group>
             <Button onClick={() => setIsCreatePlanModalOpen(true)}>
               Create Plan
@@ -78,6 +73,22 @@ const Dashboard: NextPage = () => {
             </Button>
           </Group>
         </div>
+        {isCreateWorkoutModalOpen ? (
+          <CreateWorkoutModal
+            isCreateWorkoutModalOpen={isCreateWorkoutModalOpen}
+            setIsCreateWorkoutModalOpen={setIsCreateWorkoutModalOpen}
+          />
+        ) : (
+          <></>
+        )}
+        {isCreatePlanModalOpen ? (
+          <CreatePlanModal
+            isCreatePlanModalOpen={isCreatePlanModalOpen}
+            setIsCreatePlanModalOpen={setIsCreatePlanModalOpen}
+          />
+        ) : (
+          <></>
+        )}
       </DashboardLayout>
     </>
   );

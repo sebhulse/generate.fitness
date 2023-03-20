@@ -30,6 +30,9 @@ export const planRouter = createTRPCRouter({
         where: {
           userId: ctx.session.user.id,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
         cursor: cursor ? { id: cursor } : undefined,
       });
       let nextCursor: typeof cursor | undefined = undefined;

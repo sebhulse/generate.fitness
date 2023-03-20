@@ -1,14 +1,7 @@
 import React from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import {
-  Breadcrumbs,
-  Anchor,
-  Loader,
-  Center,
-  Group,
-  Title,
-} from "@mantine/core";
+import { Anchor, Loader, Center, Group, Title, Text } from "@mantine/core";
 import { api } from "../../../utils/api";
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
@@ -16,6 +9,8 @@ import PlanInfoCard from "../../../components/dashboard/PlanInfoCard";
 import SectionsDnd from "../../../components/dashboard/SectionsDnd";
 import { useSession } from "next-auth/react";
 import ItemOptionMenu from "../../../components/dashboard/ItemOptionMenu";
+import { IconArrowLeft } from "@tabler/icons";
+import Link from "next/link";
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
@@ -27,15 +22,6 @@ const Dashboard: NextPage = () => {
   const { data: plan, isLoading: isPlanLoading } = api.plan.getById.useQuery(
     query.id as string
   );
-
-  const items = [
-    { title: "Overview", href: "/dashboard" },
-    { title: "Plans", href: "/dashboard/plans" },
-  ].map((item, index) => (
-    <Anchor href={item.href} key={index}>
-      {item.title}
-    </Anchor>
-  ));
 
   if (isPlanLoading)
     return (
@@ -54,9 +40,12 @@ const Dashboard: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <Breadcrumbs>{items}</Breadcrumbs>
+        <Anchor component={Link} href="/dashboard/plans" display="flex">
+          <IconArrowLeft />
+          <Text ml="xs">Back</Text>
+        </Anchor>
         <Group position="apart">
-          <Title mb="md" mt="md" style={{ textTransform: "capitalize" }}>
+          <Title mb="md" style={{ textTransform: "capitalize" }}>
             {plan?.name}
           </Title>
           <ItemOptionMenu

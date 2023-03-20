@@ -1,10 +1,5 @@
 import { Menu, ActionIcon } from "@mantine/core";
-import {
-  IconArrowsLeftRight,
-  IconDotsVertical,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons";
+import { IconDotsVertical, IconTrash } from "@tabler/icons";
 import { useState } from "react";
 import { api } from "../../utils/api";
 import DeleteSectionModal from "./DeleteSectionModal";
