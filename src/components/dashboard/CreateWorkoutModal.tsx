@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Modal,
   Button,
   TextInput,
   Group,
-  Checkbox,
   Text,
   Slider,
   SegmentedControl,
@@ -17,8 +16,8 @@ import { api } from "../../utils/api";
 type Props = {
   isCreateWorkoutModalOpen: boolean;
   setIsCreateWorkoutModalOpen: (value: boolean) => void;
-  parentId: string;
-  refetch: () => void;
+  parentId?: string;
+  refetch?: () => void;
 };
 const CreateWorkoutModal = (props: Props): JSX.Element => {
   const {
@@ -30,14 +29,14 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
 
   const mutationGenerate = api.workout.generate.useMutation({
     onSuccess() {
-      refetch();
+      refetch ? refetch() : null;
       form.reset();
       setIsCreateWorkoutModalOpen(false);
     },
   });
   const mutationCreate = api.workout.create.useMutation({
     onSuccess() {
-      refetch();
+      refetch ? refetch() : null;
       form.reset();
       setIsCreateWorkoutModalOpen(false);
     },
@@ -57,7 +56,7 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
       workoutTargetArea: "Core",
       workoutIntensity: "Advanced",
       usesEquipment: false,
-      duration: 0,
+      duration: 10,
       generate: "Generate",
     },
 
@@ -186,11 +185,12 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
                 mt="md"
                 variant="gradient"
                 gradient={{ from: "indigo", to: "cyan" }}
+                loading={mutationGenerate.isLoading}
               >
                 Generate
               </Button>
             ) : (
-              <Button type="submit" mt="md">
+              <Button type="submit" mt="md" loading={mutationCreate.isLoading}>
                 Create
               </Button>
             )}

@@ -1,4 +1,4 @@
-import { Modal, Text, Checkbox, Group, Button } from "@mantine/core";
+import { Modal, Text, Group, Button } from "@mantine/core";
 import React from "react";
 
 type Props = {

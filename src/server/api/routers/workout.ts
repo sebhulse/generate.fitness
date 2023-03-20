@@ -14,6 +14,15 @@ export const workoutRouter = createTRPCRouter({
         workoutSections: {
           include: { exercises: { include: { movement: true } } },
         },
+        planSection: {
+          select: {
+            plan: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
   }),
@@ -80,17 +89,22 @@ export const workoutRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const workoutCount = await ctx.prisma.workout.count({
-        where: {
-          planSectionId: input.planSectionId,
-        },
-      });
+      let workoutCount;
+      input.planSectionId
+        ? (workoutCount = await ctx.prisma.workout.count({
+            where: {
+              planSectionId: input.planSectionId,
+            },
+          }))
+        : null;
       const workout = await ctx.prisma.workout.create({
         data: {
           name: input.name,
           usesEquipment: input.usesEquipment,
-          planSection: { connect: { id: input.planSectionId } },
-          order: workoutCount,
+          planSection: input.planSectionId
+            ? { connect: { id: input.planSectionId } }
+            : undefined,
+          order: workoutCount ?? 0,
           createdBy: {
             connect: { id: ctx.session.user.id },
           },
@@ -156,12 +170,14 @@ export const workoutRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       performance.mark("generate_start");
-
-      const workoutCount = await ctx.prisma.workout.count({
-        where: {
-          planSectionId: input.planSectionId,
-        },
-      });
+      let workoutCount;
+      input.planSectionId
+        ? (workoutCount = await ctx.prisma.workout.count({
+            where: {
+              planSectionId: input.planSectionId,
+            },
+          }))
+        : null;
       performance.mark("generate_count");
       const filter = async (sectionType: string) => {
         const response = await ctx.prisma.movement.findMany({
@@ -221,8 +237,11 @@ export const workoutRouter = createTRPCRouter({
         data: {
           name: input.name,
           usesEquipment: input.usesEquipment,
-          planSection: { connect: { id: input.planSectionId } },
-          order: workoutCount,
+          planSection: input.planSectionId
+            ? { connect: { id: input.planSectionId } }
+            : undefined,
+          order: workoutCount ?? 0,
+          duration: input.duration,
           createdBy: {
             connect: { id: ctx.session.user.id },
           },

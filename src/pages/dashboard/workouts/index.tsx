@@ -1,22 +1,21 @@
+import { useState } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
-  Modal,
   Button,
   Text,
   Stack,
-  LoadingOverlay,
   Loader,
   Center,
   Title,
+  Group,
 } from "@mantine/core";
 import { api } from "../../../utils/api";
-
 import DashboardLayout from "../../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import ItemCard from "../../../components/dashboard/ItemCard";
+import CreateWorkoutModal from "../../../components/dashboard/CreateWorkoutModal";
 
 const Workouts: NextPage = () => {
   const router = useRouter();
@@ -24,6 +23,8 @@ const Workouts: NextPage = () => {
   if (status === "unauthenticated") {
     router.push("/");
   }
+  const [isCreateWorkoutModalOpen, setIsCreateWorkoutModalOpen] =
+    useState(false);
   const workoutQuery = api.workout.getManybyCreatedBy.useInfiniteQuery(
     {
       limit: 10,
@@ -43,7 +44,12 @@ const Workouts: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <Title>{totalWorkouts.data} Workouts</Title>
+        <Group position="apart">
+          <Title>{totalWorkouts.data} Workouts</Title>
+          <Button onClick={() => setIsCreateWorkoutModalOpen(true)}>
+            Create Workout
+          </Button>
+        </Group>
         <Stack mt="lg">
           {workoutQuery.data?.pages.map((page) => {
             const itemCards = page.items?.map((workout) => {
@@ -67,6 +73,15 @@ const Workouts: NextPage = () => {
           <Center mt="lg">
             <Text color={"gray"}>That&#39;s all, folks!</Text>
           </Center>
+        )}
+        {isCreateWorkoutModalOpen ? (
+          <CreateWorkoutModal
+            isCreateWorkoutModalOpen={isCreateWorkoutModalOpen}
+            setIsCreateWorkoutModalOpen={setIsCreateWorkoutModalOpen}
+            refetch={workoutQuery.refetch}
+          />
+        ) : (
+          <></>
         )}
       </DashboardLayout>
     </>

@@ -1,8 +1,9 @@
 import React from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
+import { IconArrowLeft } from "@tabler/icons";
 import {
-  Breadcrumbs,
+  Text,
   Anchor,
   Loader,
   Button,
@@ -16,6 +17,9 @@ import { useRouter } from "next/router";
 import SectionsDnd from "../../../components/dashboard/SectionsDnd";
 import { useSession } from "next-auth/react";
 import ItemOptionMenu from "../../../components/dashboard/ItemOptionMenu";
+import WorkoutInfoCard from "../../../components/dashboard/WorkoutInfoCard";
+import Link from "next/link";
+import CreateWorkoutModal from "../../../components/dashboard/CreateWorkoutModal";
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
@@ -52,9 +56,12 @@ const Dashboard: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DashboardLayout>
-        <Breadcrumbs>{items}</Breadcrumbs>
+        <Anchor component={Link} href="/dashboard/workouts" display="flex">
+          <IconArrowLeft />
+          <Text ml="xs">Back</Text>
+        </Anchor>
         <Group position="apart">
-          <Title mb="md" mt="md">
+          <Title mb="md" style={{ textTransform: "capitalize" }}>
             {workout?.name}
           </Title>
           <ItemOptionMenu
@@ -63,18 +70,24 @@ const Dashboard: NextPage = () => {
             onDelete={() => router.push("/dashboard/workouts")}
           />
         </Group>
-        <Button
-          variant="gradient"
-          gradient={{ from: "indigo", to: "cyan" }}
-          onClick={() =>
-            router.push(`/dashboard/realtime/${query.id as string}`)
-          }
-          size="lg"
-        >
-          Start workout
-        </Button>
+        <Center>
+          <Button
+            variant="gradient"
+            gradient={{ from: "indigo", to: "cyan" }}
+            onClick={() =>
+              router.push(`/dashboard/realtime/${query.id as string}`)
+            }
+            size="lg"
+          >
+            Start workout
+          </Button>
+        </Center>
 
-        {/* {workout ? <PlanInfoCard plan={workout}></PlanInfoCard> : <></>} */}
+        {workout ? (
+          <WorkoutInfoCard workout={workout}></WorkoutInfoCard>
+        ) : (
+          <></>
+        )}
         {workout?.workoutSections ? (
           <SectionsDnd parent={workout}></SectionsDnd>
         ) : (
