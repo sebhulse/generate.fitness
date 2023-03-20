@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-import { Modal, Button, Group, Notification } from "@mantine/core";
+import { Modal, Button, Group, Text } from "@mantine/core";
 import { useState, useEffect } from "react";
 import { api } from "../../utils/api";
 import DashboardLayout from "../../layouts/DashboardLayout";
@@ -59,11 +59,7 @@ const Dashboard: NextPage = () => {
       </Head>
       <DashboardLayout>
         <div>
-          <p>
-            {sessionData && (
-              <span>Logged in to dashboard as {sessionData.user?.name}</span>
-            )}
-          </p>
+          {sessionData ? <Text>Welcome, {sessionData.user?.name}</Text> : null}
           <Group>
             <Button onClick={() => setIsCreatePlanModalOpen(true)}>
               Create Plan

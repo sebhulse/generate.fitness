@@ -31,12 +31,10 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     borderRadius: theme.radius.md,
     border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
+      theme.colorScheme === "dark" ? theme.colors.dark[3] : theme.colors.gray[2]
     }`,
-    padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`,
+    padding: theme.spacing.sm,
     paddingLeft: theme.spacing.xl - theme.spacing.md, // to offset drag handle
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.white,
     marginBottom: theme.spacing.sm,
   },
 
@@ -47,6 +45,8 @@ const useStyles = createStyles((theme) => ({
   name: {
     fontSize: 30,
     fontWeight: 700,
+    marginLeft: theme.spacing.md,
+    textTransform: "capitalize",
   },
 
   dragHandle: {
@@ -55,10 +55,6 @@ const useStyles = createStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     height: "100%",
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[1]
-        : theme.colors.gray[6],
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
   },
@@ -216,7 +212,7 @@ const SectionsDnd = (props: Props) => {
           )}
         </StrictModeDroppable>
       </DragDropContext>
-      <div className={cx(classes.item, {})}>
+      <div className={cx(classes.item, {})} style={{ border: "0px" }}>
         <div
           style={{
             display: "flex",
