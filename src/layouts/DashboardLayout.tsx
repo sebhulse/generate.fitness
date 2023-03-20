@@ -188,21 +188,6 @@ const DashboardLayout = (props: Props): JSX.Element => {
                 </Link>
               </Group>
 
-              <Group>
-                <Button
-                  onClick={
-                    sessionData
-                      ? () => signOut({ callbackUrl: "/" })
-                      : () =>
-                          signIn(undefined, {
-                            callbackUrl: "/dashboard",
-                          })
-                  }
-                  className={classes.hiddenMobile}
-                >
-                  {sessionData ? "Sign out" : "Sign in"}
-                </Button>
-              </Group>
               <ActionIcon
                 variant="outline"
                 color={dark ? "yellow" : "blue"}
