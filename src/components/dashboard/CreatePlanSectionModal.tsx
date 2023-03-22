@@ -25,9 +25,22 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
     },
   });
 
+  const getPlanSectionNameSuggestion = (
+    planInterval: string,
+    parent: PlanType
+  ) => {
+    const numberOfSections = parent.planSections.length;
+    const interval =
+      planInterval.charAt(0).toUpperCase() + planInterval.slice(1).slice(0, -1);
+    return `${interval} ${numberOfSections + 1}`;
+  };
+
   const form = useForm({
     initialValues: {
-      name: "",
+      name:
+        "planSections" in parent
+          ? getPlanSectionNameSuggestion(parent.planInterval, parent)
+          : "",
     },
     validate: {
       name: (value) => (value.length < 1 ? `Please enter a Name` : null),
@@ -47,7 +60,9 @@ const CreatePlanSectionModal = (props: Props): JSX.Element => {
       <Modal
         opened={isCreateSectionModalOpen}
         onClose={() => setIsCreateSectionModalOpen(false)}
-        title={`Create ${"Plan" in parent ? "Plan" : "Workout"} Section`}
+        title={`Create ${
+          "planSections" in parent ? "Plan" : "Workout"
+        } Section`}
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput

@@ -1,14 +1,30 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-import { Modal, Button, Group, Text } from "@mantine/core";
+import {
+  Modal,
+  Button,
+  Group,
+  Text,
+  Box,
+  Paper,
+  Title,
+  Stack,
+} from "@mantine/core";
 import { useState, useEffect } from "react";
 import { api } from "../../utils/api";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import CreatePlanModal from "../../components/dashboard/CreatePlanModal";
 import CreateWorkoutModal from "../../components/dashboard/CreateWorkoutModal";
 import { useRouter } from "next/router";
-import { IconCheck, IconCross, IconX } from "@tabler/icons";
+import {
+  IconCheck,
+  IconClock,
+  IconCross,
+  IconListNumbers,
+  IconNumber,
+  IconX,
+} from "@tabler/icons";
 import { showNotification } from "@mantine/notifications";
 
 const Dashboard: NextPage = () => {
@@ -44,6 +60,12 @@ const Dashboard: NextPage = () => {
     },
   });
 
+  const { data: totalDoneWorkoutDuration } =
+    api.workout.getDoneWorkoutsTotalDurationByCreatedBy.useQuery();
+
+  const { data: totalDoneWorkoutCount } =
+    api.workout.getDoneWorkoutsCountByCreatedBy.useQuery();
+
   useEffect(() => {
     if (query.trainer !== undefined) {
       mutation.mutate({ trainerId: query.trainer as string });
@@ -59,8 +81,33 @@ const Dashboard: NextPage = () => {
       </Head>
       <DashboardLayout>
         <div>
-          {sessionData ? <Text>Welcome, {sessionData.user?.name}</Text> : null}
-          <Group>
+          <Text>Welcome, {sessionData?.user?.name}</Text>
+          {totalDoneWorkoutCount && totalDoneWorkoutDuration ? (
+            <Paper mt="md">
+              <Title>Stats</Title>
+              <Stack mt="md">
+                <Group>
+                  <IconClock />
+                  <Text>
+                    Total workout duration: {totalDoneWorkoutDuration / 60} mins
+                  </Text>
+                </Group>
+                <Group>
+                  <IconListNumbers />
+                  <Text>Total workouts: {totalDoneWorkoutCount}</Text>
+                </Group>
+              </Stack>
+            </Paper>
+          ) : (
+            <Paper mt="md">
+              <Title>Stats</Title>
+              <Text mt="md">
+                Looks like you haven&apos;t completed a workout yet! Complete a
+                workout to see your total stats here.
+              </Text>
+            </Paper>
+          )}
+          <Group mt="xl">
             <Button onClick={() => setIsCreatePlanModalOpen(true)}>
               Create Plan
             </Button>
