@@ -99,7 +99,7 @@ const DashboardLayout = (props: Props): JSX.Element => {
   const { pathname } = useRouter();
   const data = [
     { link: "/dashboard/", label: "Overview", icon: IconInfoSquare },
-    { link: "/dashboard/clients", label: "Clients", icon: IconUsers },
+    // { link: "/dashboard/clients", label: "Clients", icon: IconUsers },
     { link: "/dashboard/plans", label: "Plans", icon: IconNotes },
     { link: "/dashboard/workouts", label: "Workouts", icon: IconRun },
   ];

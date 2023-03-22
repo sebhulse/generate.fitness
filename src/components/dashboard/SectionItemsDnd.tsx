@@ -5,6 +5,7 @@ import {
   Button,
   LoadingOverlay,
   Text,
+  Group,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
@@ -44,7 +45,7 @@ const useStyles = createStyles((theme) => ({
 
   name: {
     fontSize: theme.fontSizes.md,
-    marginLeft: theme.spacing.md,
+    // marginLeft: theme.spacing.md,
     textTransform: "capitalize",
   },
 
@@ -55,6 +56,7 @@ const useStyles = createStyles((theme) => ({
     justifyContent: "space-between",
     paddingLeft: theme.spacing.xs,
     paddingRight: theme.spacing.xs,
+    width: "100%",
   },
 }));
 
@@ -142,19 +144,30 @@ const SectionItemsDnd = (props: Props) => {
                   alignItems: "center",
                 }}
               >
-                {/* <Group position="apart"> */}
                 <div
                   {...provided.dragHandleProps}
                   className={classes.dragHandle}
                 >
-                  <div style={{ width: "18px", height: "18px" }}>
-                    <IconGripVertical stroke={1.5} height={18} width={18} />
-                  </div>
-                  <Text className={classes.name}>
-                    {"name" in sectionItem
-                      ? sectionItem.name
-                      : sectionItem.movement.name}
-                  </Text>
+                  <Group style={{ flexWrap: "nowrap", marginRight: "0.5rem" }}>
+                    <div style={{ width: "18px", height: "18px" }}>
+                      <IconGripVertical stroke={1.5} height={18} width={18} />
+                    </div>
+                    <Text className={classes.name}>
+                      {"name" in sectionItem
+                        ? sectionItem.name
+                        : sectionItem.movement.name}
+                    </Text>
+                  </Group>
+                  {"movement" in sectionItem ? (
+                    <Group style={{ justifyContent: "end" }}>
+                      <Text>{sectionItem.duration}s</Text>
+                      {sectionItem.rest ? (
+                        <Text style={{ whiteSpace: "nowrap" }}>
+                          Rest {sectionItem.rest}s
+                        </Text>
+                      ) : null}
+                    </Group>
+                  ) : null}
                 </div>
 
                 <SectionItemOptionMenu
@@ -163,7 +176,6 @@ const SectionItemsDnd = (props: Props) => {
                   refetch={refetch}
                 />
               </div>
-              {/* </Group> */}
             </div>
           )}
         </Draggable>

@@ -68,23 +68,23 @@ const CreatePlanModal = (props: Props): JSX.Element => {
             inputWrapperOrder={["label", "input"]}
             {...form.getInputProps("description")}
           />
-          <DatePicker
+          {/* <DatePicker
             mt="md"
             placeholder="Pick date"
             label="Start date"
             {...form.getInputProps("startDate")}
-          />
+          /> */}
           <NativeSelect
             mt="md"
             data={["Weeks", "Months"]}
             label="Plan interval"
             {...form.getInputProps("planInterval")}
           />
-          <Switch
+          {/* <Switch
             mt="md"
             label="Allow user to edit Plan"
             {...form.getInputProps("allowEdit", { type: "checkbox" })}
-          />
+          /> */}
           <Group position="center">
             <Button type="submit" mt="md">
               Submit
