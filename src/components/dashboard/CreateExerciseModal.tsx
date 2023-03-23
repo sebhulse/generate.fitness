@@ -33,6 +33,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
       workoutIntensityId: grandparent.workoutIntensityId,
       workoutSectionTypeId: parent.workoutSectionTypeId,
     });
+  console.log(movements);
 
   const mutation = api.exercise.create.useMutation({
     onSuccess() {
@@ -58,6 +59,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
 
   return (
     <>
+      {console.log(parent.workoutSectionTypeId)}
       <Modal
         opened={isCreateExerciseModalOpen}
         onClose={() => setIsCreateExerciseModalOpen(false)}

@@ -176,8 +176,8 @@ const Realtime = () => {
         <Button
           variant="outline"
           size="lg"
-          color="gray"
           onClick={toggleAnimationOptions}
+          style={{ color: "white", borderColor: "white" }}
         >
           Options
         </Button>

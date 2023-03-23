@@ -7,7 +7,9 @@ export class WorkoutBuilder {
   private warmupMovements: string[] = [];
   private mainMovements: string[] = [];
   private cooldownMovements: string[] = [];
-  private usedWorkoutMovements: string[] = [];
+  private usedMainMovements: string[] = [];
+  private usedCooldownMovements: string[] = [];
+  private usedWarmupMovements: string[] = [];
   private exerciseRest = 0;
   private exerciseDuration = 0;
   private exerciseTransitionRest = 0;
@@ -97,11 +99,20 @@ export class WorkoutBuilder {
       this.exerciseTransitionRest = 60;
     }
   }
-  private getNewUniqueExercise(sectionMovements: string[]): string {
+  private getNewUniqueExercise(
+    sectionMovements: string[],
+    section: "Warmup" | "Main" | "Cooldown"
+  ): string {
     let movement: string | undefined, randomInt;
-    if (this.usedWorkoutMovements.length >= sectionMovements.length) {
-      randomInt = this.getRandomInt(0, this.usedWorkoutMovements.length - 1);
-      movement = this.usedWorkoutMovements[randomInt];
+    let usedSectionMovements = this.usedWarmupMovements;
+    if (section === "Main") {
+      usedSectionMovements = this.usedMainMovements;
+    } else if (section === "Cooldown") {
+      usedSectionMovements = this.usedCooldownMovements;
+    }
+    if (usedSectionMovements.length >= sectionMovements.length) {
+      randomInt = this.getRandomInt(0, usedSectionMovements.length - 1);
+      movement = usedSectionMovements[randomInt];
       if (movement === undefined) {
         throw new Error("No movements found");
       }
@@ -110,12 +121,14 @@ export class WorkoutBuilder {
       do {
         randomInt = this.getRandomInt(0, sectionMovements.length - 1);
         movement = sectionMovements[randomInt];
+        console.log(movement);
         if (movement === undefined) {
           throw new Error("No movements found");
         }
-      } while (this.usedWorkoutMovements.indexOf(movement) >= 0);
+      } while (usedSectionMovements.indexOf(movement) >= 0);
     }
-    this.usedWorkoutMovements.push(movement);
+    usedSectionMovements.push(movement);
+    console.log("returning: ", movement);
     return movement;
   }
 
@@ -133,7 +146,7 @@ export class WorkoutBuilder {
         order: exerciseNumber,
         movement: {
           connect: {
-            id: this.getNewUniqueExercise(this.mainMovements),
+            id: this.getNewUniqueExercise(this.mainMovements, "Main"),
           },
         },
       };
@@ -175,7 +188,7 @@ export class WorkoutBuilder {
         order: exerciseNumber,
         movement: {
           connect: {
-            id: this.getNewUniqueExercise(this.usedWorkoutMovements),
+            id: this.getNewUniqueExercise(this.usedMainMovements, "Main"),
           },
         },
       };
@@ -205,7 +218,7 @@ export class WorkoutBuilder {
 
   private generateWarmupCooldownWorkoutSection(
     movements: string[],
-    type: string,
+    type: "Warmup" | "Main" | "Cooldown",
     sectionNumber: number
   ) {
     const exercises = [];
@@ -220,7 +233,7 @@ export class WorkoutBuilder {
         order: exerciseNumber,
         movement: {
           connect: {
-            id: this.getNewUniqueExercise(movements),
+            id: this.getNewUniqueExercise(movements, type),
           },
         },
       };
@@ -234,16 +247,14 @@ export class WorkoutBuilder {
       }
     } while (currentFunSectionDuration < warmupCooldownSectionLength);
 
-    return [
-      {
-        name: type,
-        workoutSectionType: { connect: { name: type } },
-        order: sectionNumber,
-        exercises: {
-          create: exercises,
-        },
+    return {
+      name: type,
+      workoutSectionType: { connect: { name: type } },
+      order: sectionNumber,
+      exercises: {
+        create: exercises,
       },
-    ];
+    };
   }
   private generateMainWorkoutSection() {
     const mainWorkoutSections = [];
@@ -270,7 +281,7 @@ export class WorkoutBuilder {
       0
     );
     workoutSections.push(
-      ...warmupWorkoutSection,
+      warmupWorkoutSection,
       ...mainWorkoutSection,
       finisherWorkoutSection
     );
@@ -279,8 +290,7 @@ export class WorkoutBuilder {
       "Cooldown",
       workoutSections.length + 1
     );
-    workoutSections.push(...cooldownWorkoutSection);
-
+    workoutSections.push(cooldownWorkoutSection);
     const workoutSectionsBody = {
       create: workoutSections,
     };
