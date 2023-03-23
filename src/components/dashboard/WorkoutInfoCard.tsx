@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, Table, Alert, Badge } from "@mantine/core";
 import type { RouterOutputs } from "../../utils/api";
+import Link from "next/link";
 
 type WorkoutGetById = RouterOutputs["workout"]["getById"];
 
@@ -48,10 +49,12 @@ const WorkoutInfoCard = (props: Props) => {
                   <td>Connected plan</td>
                   <td>
                     <Badge
+                      component={Link}
+                      href={`/dashboard/plans/${workout.planSection?.plan.id}`}
                       color="gray"
                       variant="filled"
                       size="lg"
-                      style={{ textTransform: "capitalize" }}
+                      style={{ textTransform: "capitalize", cursor: "pointer" }}
                     >
                       {workout.planSection?.plan.name}
                     </Badge>

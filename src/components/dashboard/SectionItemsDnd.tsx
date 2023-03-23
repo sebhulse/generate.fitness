@@ -6,6 +6,9 @@ import {
   LoadingOverlay,
   Text,
   Group,
+  Badge,
+  Stack,
+  MediaQuery,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
@@ -152,11 +155,38 @@ const SectionItemsDnd = (props: Props) => {
                     <div style={{ width: "18px", height: "18px" }}>
                       <IconGripVertical stroke={1.5} height={18} width={18} />
                     </div>
-                    <Text className={classes.name}>
-                      {"name" in sectionItem
-                        ? sectionItem.name
-                        : sectionItem.movement.name}
-                    </Text>
+                    <MediaQuery
+                      largerThan="sm"
+                      styles={{
+                        fontSize: 20,
+                        "&:hover": { backgroundColor: "silver" },
+                      }}
+                    >
+                      {"name" in sectionItem ? (
+                        <Stack style={{ display: "inline" }}>
+                          <Text className={classes.name}>
+                            {sectionItem.name}
+                          </Text>
+                          {sectionItem.duration ? (
+                            <Badge
+                              mt="xs"
+                              color="blue"
+                              variant="filled"
+                              size="lg"
+                              style={{
+                                textTransform: "capitalize",
+                              }}
+                            >
+                              {`${sectionItem.duration / 60} mins`}
+                            </Badge>
+                          ) : null}
+                        </Stack>
+                      ) : (
+                        <Text className={classes.name}>
+                          {sectionItem.movement.name}
+                        </Text>
+                      )}
+                    </MediaQuery>
                   </Group>
                   {"movement" in sectionItem ? (
                     <Group style={{ justifyContent: "end" }}>

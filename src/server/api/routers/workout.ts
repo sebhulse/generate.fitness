@@ -19,6 +19,7 @@ export const workoutRouter = createTRPCRouter({
             plan: {
               select: {
                 name: true,
+                id: true,
               },
             },
           },
@@ -179,25 +180,41 @@ export const workoutRouter = createTRPCRouter({
         : null;
 
       const filter = async (sectionType: string) => {
-        return await ctx.prisma.movement.findMany({
-          where: {
-            workoutType: {
-              some: { name: input.workoutType },
+        if (sectionType === "Main") {
+          return await ctx.prisma.movement.findMany({
+            where: {
+              workoutType: {
+                some: { name: input.workoutType },
+              },
+              workoutTargetArea: {
+                some: { name: input.workoutTargetArea },
+              },
+              workoutIntensity: {
+                some: { name: input.workoutIntensity },
+              },
+              workoutSectionType: {
+                some: { name: sectionType },
+              },
             },
-            workoutTargetArea: {
-              some: { name: input.workoutTargetArea },
+            select: {
+              id: true,
             },
-            workoutIntensity: {
-              some: { name: input.workoutIntensity },
+          });
+        } else {
+          return await ctx.prisma.movement.findMany({
+            where: {
+              workoutTargetArea: {
+                some: { name: input.workoutTargetArea },
+              },
+              workoutSectionType: {
+                some: { name: sectionType },
+              },
             },
-            workoutSectionType: {
-              some: { name: sectionType },
+            select: {
+              id: true,
             },
-          },
-          select: {
-            id: true,
-          },
-        });
+          });
+        }
       };
 
       const warmupMovementsRes = await filter("Warmup");
@@ -214,7 +231,7 @@ export const workoutRouter = createTRPCRouter({
       const cooldownMovements = cooldownMovementsRes?.map((movement) => {
         return movement.id;
       });
-
+      console.log("cooldownMovements", cooldownMovements);
       const generated = new WorkoutBuilder(
         input.name,
         input.duration,
