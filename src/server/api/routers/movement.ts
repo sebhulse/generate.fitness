@@ -1,5 +1,3 @@
-import { InputLabel } from "@mantine/core/lib/Input/InputLabel/InputLabel";
-import { Workout } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";

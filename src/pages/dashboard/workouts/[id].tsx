@@ -19,7 +19,6 @@ import { useSession } from "next-auth/react";
 import ItemOptionMenu from "../../../components/dashboard/ItemOptionMenu";
 import WorkoutInfoCard from "../../../components/dashboard/WorkoutInfoCard";
 import Link from "next/link";
-import CreateWorkoutModal from "../../../components/dashboard/CreateWorkoutModal";
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
