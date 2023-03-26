@@ -48,7 +48,6 @@ const useStyles = createStyles((theme) => ({
 
   name: {
     fontSize: theme.fontSizes.md,
-    // marginLeft: theme.spacing.md,
     textTransform: "capitalize",
   },
 
@@ -155,13 +154,7 @@ const SectionItemsDnd = (props: Props) => {
                     <div style={{ width: "18px", height: "18px" }}>
                       <IconGripVertical stroke={1.5} height={18} width={18} />
                     </div>
-                    <MediaQuery
-                      largerThan="sm"
-                      styles={{
-                        fontSize: 20,
-                        "&:hover": { backgroundColor: "silver" },
-                      }}
-                    >
+                    <MediaQuery largerThan="sm">
                       {"name" in sectionItem ? (
                         <Stack style={{ display: "inline" }}>
                           <Text className={classes.name}>
