@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { WorkoutBuilder } from "../generators/workout";
-import { api } from "../../../utils/api";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
