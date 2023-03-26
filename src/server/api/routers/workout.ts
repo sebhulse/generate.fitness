@@ -12,7 +12,10 @@ export const workoutRouter = createTRPCRouter({
       },
       include: {
         workoutSections: {
-          include: { exercises: { include: { movement: true } } },
+          include: {
+            workoutSectionType: { select: { name: true } },
+            exercises: { include: { movement: true } },
+          },
         },
         planSection: {
           select: {
@@ -231,7 +234,6 @@ export const workoutRouter = createTRPCRouter({
       const cooldownMovements = cooldownMovementsRes?.map((movement) => {
         return movement.id;
       });
-      console.log("cooldownMovements", cooldownMovements);
       const generated = new WorkoutBuilder(
         input.name,
         input.duration,

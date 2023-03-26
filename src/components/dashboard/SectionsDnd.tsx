@@ -62,6 +62,9 @@ const useStyles = createStyles((theme) => ({
 
 export type WorkoutType = Workout & {
   workoutSections: (WorkoutSection & {
+    workoutSectionType: {
+      name: string;
+    };
     exercises: (Exercise & {
       movement: Movement;
     })[];
@@ -75,6 +78,9 @@ export type PlanType = Plan & {
 };
 
 export type WorkoutSectionType = WorkoutSection & {
+  workoutSectionType: {
+    name: string;
+  };
   exercises: (Exercise & {
     movement: Movement;
   })[];

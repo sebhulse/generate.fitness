@@ -5,6 +5,7 @@ import {
   Select,
   NumberInput,
   NativeSelect,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { api } from "../../utils/api";
@@ -27,13 +28,19 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
   } = props;
 
   const { data: movements, isLoading: isMovementsLoading } =
-    api.movement.filter.useQuery({
-      workoutTypeId: grandparent.workoutTypeId,
-      workoutTargetAreaId: grandparent.workoutTargetAreaId,
-      workoutIntensityId: grandparent.workoutIntensityId,
-      workoutSectionTypeId: parent.workoutSectionTypeId,
-    });
-  console.log(movements);
+    parent.workoutSectionType.name === "Main"
+      ? api.movement.filter.useQuery({
+          workoutTypeId: grandparent.workoutTypeId,
+          workoutTargetAreaId: grandparent.workoutTargetAreaId,
+          workoutIntensityId: grandparent.workoutIntensityId,
+          workoutSectionTypeId: parent.workoutSectionTypeId,
+        })
+      : api.movement.filter.useQuery({
+          workoutTargetAreaId: grandparent.workoutTargetAreaId,
+          workoutSectionTypeId: parent.workoutSectionTypeId,
+        });
+
+  console.log(parent.workoutSectionType.name);
 
   const mutation = api.exercise.create.useMutation({
     onSuccess() {
@@ -59,12 +66,12 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
 
   return (
     <>
-      {console.log(parent.workoutSectionTypeId)}
       <Modal
         opened={isCreateExerciseModalOpen}
         onClose={() => setIsCreateExerciseModalOpen(false)}
         title="Create Exercise"
       >
+        <LoadingOverlay visible={isMovementsLoading} />
         <form onSubmit={form.onSubmit(handleSubmit)}>
           {movements ? (
             <Select
@@ -76,9 +83,9 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
               data={movements.map(({ name }) => {
                 return { value: name, label: name };
               })}
-              filter={(value, item) =>
-                item.value.toLowerCase().includes(value.toLowerCase().trim())
-              }
+              // filter={(value, item) =>
+              //   item.value.toLowerCase().includes(value.toLowerCase().trim())
+              // }
               {...form.getInputProps("movement")}
             />
           ) : null}

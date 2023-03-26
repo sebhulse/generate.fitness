@@ -121,14 +121,12 @@ export class WorkoutBuilder {
       do {
         randomInt = this.getRandomInt(0, sectionMovements.length - 1);
         movement = sectionMovements[randomInt];
-        console.log(movement);
         if (movement === undefined) {
           throw new Error("No movements found");
         }
       } while (usedSectionMovements.indexOf(movement) >= 0);
     }
     usedSectionMovements.push(movement);
-    console.log("returning: ", movement);
     return movement;
   }
 
