@@ -40,8 +40,6 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
           workoutSectionTypeId: parent.workoutSectionTypeId,
         });
 
-  console.log(parent.workoutSectionType.name);
-
   const mutation = api.exercise.create.useMutation({
     onSuccess() {
       refetch();
@@ -83,9 +81,6 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
               data={movements.map(({ name }) => {
                 return { value: name, label: name };
               })}
-              // filter={(value, item) =>
-              //   item.value.toLowerCase().includes(value.toLowerCase().trim())
-              // }
               {...form.getInputProps("movement")}
             />
           ) : null}
