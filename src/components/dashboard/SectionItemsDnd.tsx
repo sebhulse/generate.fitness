@@ -154,7 +154,7 @@ const SectionItemsDnd = (props: Props) => {
                     <div style={{ width: "18px", height: "18px" }}>
                       <IconGripVertical stroke={1.5} height={18} width={18} />
                     </div>
-                    <MediaQuery largerThan="sm">
+                    <MediaQuery largerThan="sm" styles={{}}>
                       {"name" in sectionItem ? (
                         <Stack style={{ display: "inline" }}>
                           <Text className={classes.name}>
