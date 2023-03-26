@@ -250,7 +250,7 @@ const SectionItemsDnd = (props: Props) => {
           </Button>
         </div>
       </div>
-      {"workouts" in parent ? (
+      {"workouts" in parent && isCreateSectionItemModalOpen ? (
         <CreateWorkoutModal
           isCreateWorkoutModalOpen={isCreateSectionItemModalOpen}
           setIsCreateWorkoutModalOpen={setIsCreateSectionItemModalOpen}
@@ -258,7 +258,9 @@ const SectionItemsDnd = (props: Props) => {
           refetch={refetch}
         />
       ) : null}
-      {"exercises" in parent && "workoutSections" in grandparent ? (
+      {"exercises" in parent &&
+      "workoutSections" in grandparent &&
+      isCreateSectionItemModalOpen ? (
         <CreateExerciseModal
           grandparent={grandparent}
           isCreateExerciseModalOpen={isCreateSectionItemModalOpen}
