@@ -1,6 +1,5 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import HeaderMenu from "../components/index/HeaderMenu";
 import { Button, Center, Text } from "@mantine/core";
 import { IconPencil, IconPlus, IconPlayerPlay } from "@tabler/icons";
 import { signIn, useSession } from "next-auth/react";

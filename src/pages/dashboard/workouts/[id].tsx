@@ -30,6 +30,12 @@ const Dashboard: NextPage = () => {
   const { data: workout, isLoading: isWorkoutLoading } =
     api.workout.getById.useQuery(query.id as string);
 
+  const isNotTimebasedWorkout = workout?.workoutSections?.some((section) =>
+    section.exercises?.some(
+      (exercise) => exercise.durationInterval !== "Seconds"
+    )
+  );
+
   if (isWorkoutLoading)
     return (
       <DashboardLayout>
@@ -38,6 +44,8 @@ const Dashboard: NextPage = () => {
         </Center>
       </DashboardLayout>
     );
+
+  if (!workout) return <></>;
 
   return (
     <>
@@ -61,18 +69,22 @@ const Dashboard: NextPage = () => {
             onDelete={() => router.push("/dashboard/workouts")}
           />
         </Group>
-        <Center>
-          <Button
-            variant="gradient"
-            gradient={{ from: "indigo", to: "cyan" }}
-            onClick={() =>
-              router.push(`/dashboard/realtime/${query.id as string}`)
-            }
-            size="lg"
-          >
-            Start workout
-          </Button>
-        </Center>
+        {!isNotTimebasedWorkout ? (
+          <Center>
+            <Button
+              variant="gradient"
+              gradient={{ from: "indigo", to: "cyan" }}
+              onClick={() =>
+                router.push(`/dashboard/realtime/${query.id as string}`)
+              }
+              size="lg"
+            >
+              Start workout
+            </Button>
+          </Center>
+        ) : (
+          <></>
+        )}
 
         {workout ? (
           <WorkoutInfoCard workout={workout}></WorkoutInfoCard>

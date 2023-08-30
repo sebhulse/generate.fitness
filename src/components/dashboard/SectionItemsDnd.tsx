@@ -183,7 +183,14 @@ const SectionItemsDnd = (props: Props) => {
                   </Group>
                   {"movement" in sectionItem ? (
                     <Group style={{ justifyContent: "end" }}>
-                      <Text>{sectionItem.duration}s</Text>
+                      <Text>
+                        {sectionItem.duration}
+                        {sectionItem.durationInterval === "Seconds"
+                          ? "s"
+                          : sectionItem.durationInterval === "Reps"
+                          ? " Reps"
+                          : "m"}
+                      </Text>
                       {sectionItem.rest ? (
                         <Text style={{ whiteSpace: "nowrap" }}>
                           Rest {sectionItem.rest}s
