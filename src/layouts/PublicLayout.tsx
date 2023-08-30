@@ -128,32 +128,6 @@ const DashboardLayout = (): JSX.Element => {
 
   return (
     <>
-      {opened ? (
-        <Drawer
-          opened={opened}
-          onClose={() => setOpened(false)}
-          title="Menu"
-          padding="md"
-          size="md"
-        >
-          {links}
-          <Button
-            mt="xl"
-            style={{ width: "100%" }}
-            onClick={
-              sessionData
-                ? () => signOut({ callbackUrl: "/" })
-                : () =>
-                    signIn(undefined, {
-                      callbackUrl: "/dashboard",
-                    })
-            }
-          >
-            {sessionData ? "Sign out" : "Sign in"}
-          </Button>
-        </Drawer>
-      ) : null}
-
       <Header height={60} px="md">
         <div
           style={{
@@ -162,12 +136,12 @@ const DashboardLayout = (): JSX.Element => {
             height: "100%",
           }}
         >
-          <Group position="apart" sx={{ height: "100%", width: "100%" }}>
-            <Group>
-              <Link href="/" className={classes.link}>
-                generate.fitness
-              </Link>
-            </Group>
+          <Group position="left">
+            <Link href="/" className={classes.link}>
+              generate.fitness
+            </Link>
+          </Group>
+          <Group position="right" sx={{ height: "100%", width: "100%" }}>
             {sessionData?.user ? (
               <Group className={classes.hiddenMobile}>
                 <Link className={classes.link} href="/" key="Home">
@@ -182,7 +156,7 @@ const DashboardLayout = (): JSX.Element => {
                 </Link>
               </Group>
             ) : null}
-            <Group>
+            <Group position="apart">
               <ActionIcon
                 variant="outline"
                 onClick={() => toggleColorScheme()}
@@ -216,6 +190,30 @@ const DashboardLayout = (): JSX.Element => {
           </Group>
         </div>
       </Header>
+      {opened ? (
+        <Navbar
+          p="md"
+          hiddenBreakpoint="sm"
+          hidden={!opened}
+          width={{ sm: 200, lg: 300 }}
+          color={dark ? "black" : "white"}
+        >
+          {links}
+          <Button
+            mt="xl"
+            onClick={
+              sessionData
+                ? () => signOut({ callbackUrl: "/" })
+                : () =>
+                    signIn(undefined, {
+                      callbackUrl: "/dashboard",
+                    })
+            }
+          >
+            {sessionData ? "Sign out" : "Sign in"}
+          </Button>
+        </Navbar>
+      ) : null}
     </>
   );
 };

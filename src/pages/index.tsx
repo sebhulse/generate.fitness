@@ -26,7 +26,7 @@ const Home: NextPage = () => {
         ta="center"
         fz="xl"
         fw={700}
-        style={{ fontSize: "3rem", marginTop: "10rem", marginBottom: "1rem" }}
+        style={{ fontSize: "3rem", marginTop: "5rem", marginBottom: "1rem" }}
       >
         Organise your fitness journey <br />
         with{" "}
