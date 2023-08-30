@@ -187,7 +187,7 @@ const Realtime = () => {
           variant="outline"
           size="lg"
           onClick={toggleAnimationOptions}
-          style={{ color: "white", borderColor: "white" }}
+          style={{ color: "black", borderColor: "black" }}
         >
           Options
         </Button>
@@ -206,8 +206,8 @@ const Realtime = () => {
           style={{
             width: "100%",
             height: "100%",
-            fill: "white",
-            opacity: 0.2,
+            fill: "black",
+            opacity: 0.5,
           }}
         ></rect>
         <rect
@@ -215,8 +215,8 @@ const Realtime = () => {
           style={{
             width: "100%",
             height: "100%",
-            fill: "cyan",
-            opacity: 0.3,
+            fill: "#015e5e",
+            opacity: 0.6,
           }}
         ></rect>
       </svg>
