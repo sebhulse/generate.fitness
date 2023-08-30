@@ -46,6 +46,16 @@ const Realtime = () => {
     workoutTimerTl.current.paused(!workoutTimerTl.current.paused());
   };
 
+  const getTotalDuration = () => {
+    console.log((exerciseTimerTl.current as any).totalProgress());
+    return (
+      (
+        (((exerciseTimerTl.current as any).totalDuration() / 60) *
+          (1 - (exerciseTimerTl.current as any).totalProgress())) as number
+      ).toFixed(0) + " min"
+    );
+  };
+
   const exitAnimation = () => {
     router.push(`/dashboard/workouts/${query.id as string}`);
   };
@@ -239,6 +249,7 @@ const Realtime = () => {
             >
               Exit
             </Button>
+            <p>Remaining time: {getTotalDuration()}</p>
           </Center>
         </Overlay>
       ) : null}
