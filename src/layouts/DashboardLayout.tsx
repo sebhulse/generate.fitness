@@ -22,6 +22,7 @@ import {
   IconNotes,
   IconRun,
   IconUsers,
+  IconSettings,
 } from "@tabler/icons";
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -102,6 +103,7 @@ const DashboardLayout = (props: Props): JSX.Element => {
     // { link: "/dashboard/clients", label: "Clients", icon: IconUsers },
     { link: "/dashboard/plans", label: "Plans", icon: IconNotes },
     { link: "/dashboard/workouts", label: "Workouts", icon: IconRun },
+    { link: "/dashboard/settings", label: "Settings", icon: IconSettings },
   ];
   const setLinkActive = () => {
     const urlWords = pathname.split("/");
