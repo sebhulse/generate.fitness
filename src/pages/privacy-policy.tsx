@@ -17,7 +17,7 @@ const Privacy: NextPage = () => {
       <PublicLayout />
       <div style={{ padding: "2rem" }}>
         <h1>Privacy Policy</h1>
-        <p>Last updated: August 30, 2023</p>
+        <p>Last updated: August 31, 2023</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the
           collection, use and disclosure of Your information when You use the
@@ -303,11 +303,6 @@ const Privacy: NextPage = () => {
             </p>
           </li>
         </ul>
-        <p>
-          For more information about the cookies we use and your choices
-          regarding cookies, please visit our Cookies Policy or the Cookies
-          section of our Privacy Policy.
-        </p>
         <h2>Use of Your Personal Data</h2>
         <p>The Company may use Personal Data for the following purposes:</p>
         <ul>
@@ -552,7 +547,7 @@ const Privacy: NextPage = () => {
           of any changes by posting the new Privacy Policy on this page.
         </p>
         <p>
-          We will let You know via email and/or a prominent notice on Our
+          We may let You know via email and/or a prominent notice on Our
           Service, prior to the change becoming effective and update the
           &quot;Last updated&quot; date at the top of this Privacy Policy.
         </p>
