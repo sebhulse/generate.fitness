@@ -1,12 +1,15 @@
 import { type NextPage } from "next";
 import Image from "next/image";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
-import { Modal, Button, Group, Text, Title } from "@mantine/core";
+import { signOut, useSession } from "next-auth/react";
+import { Button, Group, Text, Title } from "@mantine/core";
 import { useState } from "react";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { useRouter } from "next/router";
 import DeleteAccountModal from "../../components/dashboard/DeleteAccountModal";
+import { api } from "../../utils/api";
+import { showNotification } from "@mantine/notifications";
+import { IconCheck, IconX } from "@tabler/icons";
 
 const Dashboard: NextPage = () => {
   const router = useRouter();
@@ -16,6 +19,36 @@ const Dashboard: NextPage = () => {
   }
   const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] =
     useState(false);
+
+  const mutationDeleteUser = api.user.deleteUser.useMutation({
+    async onSuccess() {
+      setIsDeleteAccountModalOpen(false);
+      showNotification({
+        id: "account-deleted",
+        autoClose: false,
+        title: "Account deleted",
+        message: `Your account and all data was successfully deleted.`,
+        color: "green",
+        icon: <IconCheck />,
+      });
+      await new Promise((r) => setTimeout(r, 3000));
+      signOut();
+    },
+    onError() {
+      showNotification({
+        id: "account-delete-error",
+        autoClose: false,
+        title: "Delete account error",
+        message: `There was an error while attempting to delete your account. Please try again later.`,
+        color: "red",
+        icon: <IconX />,
+      });
+    },
+  });
+
+  const handleDelete = () => {
+    mutationDeleteUser.mutate();
+  };
 
   return (
     <>
@@ -45,24 +78,18 @@ const Dashboard: NextPage = () => {
           onClick={() => setIsDeleteAccountModalOpen(true)}
           mt="md"
         >
-          Delete
+          Delete account
         </Button>
         {isDeleteAccountModalOpen ? (
           <DeleteAccountModal
+            onClick={handleDelete}
+            isLoading={mutationDeleteUser.isLoading}
             isDeleteAccountModalOpen={isDeleteAccountModalOpen}
             setIsDeleteAccountModalOpen={setIsDeleteAccountModalOpen}
           />
         ) : (
           <></>
         )}
-        {/* {isCreatePlanModalOpen ? (
-          <CreatePlanModal
-            isCreatePlanModalOpen={isCreatePlanModalOpen}
-            setIsCreatePlanModalOpen={setIsCreatePlanModalOpen}
-          />
-        ) : (
-          <></>
-        )} */}
       </DashboardLayout>
     </>
   );

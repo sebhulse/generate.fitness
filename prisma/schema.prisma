@@ -29,7 +29,7 @@ model Account {
     scope             String?
     id_token          String? @db.Text
     session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@unique([provider, providerAccountId])
     @@index([userId])
@@ -40,7 +40,7 @@ model Session {
     sessionToken String   @unique
     userId       String
     expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@index([userId])
 }
@@ -88,8 +88,8 @@ model User {
 
 model UserTag {
     id String @id @default(cuid())
-    createdBy User @relation("UserTagCreatedBy", fields: [userId], references: [id])
-    userId String
+    createdBy User? @relation("UserTagCreatedBy", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId String?
     name String @unique
     users User[]
 
@@ -104,8 +104,8 @@ enum PlanInterval {
 model Plan {
     id String @id @default(cuid()) 
     displayUsers User[] @relation("DisplayUsers")
-    createdBy User @relation("PlanCreatedBy", fields: [userId], references: [id])
-    userId String
+    createdBy User? @relation("PlanCreatedBy", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+    userId String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
@@ -121,10 +121,10 @@ model Plan {
 
 model PlanTag {
     id String @id @default(cuid())
-    createdBy User @relation("PlanTagCreatedBy", fields: [userId], references: [id])
-    userId String
-    plan Plan @relation(fields: [planId], references: [id])
-    planId String
+    createdBy User? @relation("PlanTagCreatedBy", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId String?
+    plan Plan? @relation(fields: [planId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    planId String?
     name String @unique
 
     @@index([planId])
@@ -133,7 +133,7 @@ model PlanTag {
 
 model PlanSection {
     id String @id @default(cuid())  
-    plan Plan @relation(fields: [planId], references: [id])
+    plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     planId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -146,10 +146,10 @@ model PlanSection {
 
 model Workout {
     id String @id @default(cuid())
-    planSection PlanSection? @relation(fields: [planSectionId], references: [id])
+    planSection PlanSection? @relation(fields: [planSectionId], references: [id], onDelete: Cascade)
     planSectionId String?
-    createdBy User @relation("WorkoutCreatedBy", fields: [userId], references: [id])
-    userId String
+    createdBy User? @relation("WorkoutCreatedBy", fields: [userId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+    userId String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name String
@@ -157,12 +157,12 @@ model Workout {
     tags WorkoutTag[]
     duration Int?
     usesEquipment Boolean @default(false)
-    workoutType WorkoutType @relation(fields: [workoutTypeId], references: [id])
-    workoutTypeId String
-    workoutTargetArea WorkoutTargetArea @relation(fields: [workoutTargetAreaId], references: [id])
-    workoutTargetAreaId String
-    workoutIntensity WorkoutIntensity @relation(fields: [workoutIntensityId], references: [id])
-    workoutIntensityId String
+    workoutType WorkoutType? @relation(fields: [workoutTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    workoutTypeId String?
+    workoutTargetArea WorkoutTargetArea? @relation(fields: [workoutTargetAreaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    workoutTargetAreaId String?
+    workoutIntensity WorkoutIntensity? @relation(fields: [workoutIntensityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    workoutIntensityId String?
     allowDisplayUserEdit Boolean @default(false)
     workoutSections WorkoutSection[]
     isDone Boolean @default(false)
@@ -176,10 +176,10 @@ model Workout {
 
 model WorkoutTag {
     id String @id @default(cuid())
-    createdBy User @relation("WorkoutTagCreatedBy", fields: [userId], references: [id])
-    userId String
-    workout Workout @relation(fields: [workoutId], references: [id])
-    workoutId String
+    createdBy User? @relation("WorkoutTagCreatedBy", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId String?
+    workout Workout? @relation(fields: [workoutId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    workoutId String?
     name String @unique
 
     @@index([workoutId])
@@ -218,9 +218,9 @@ model WorkoutIntensity {
 
 model WorkoutSection {
     id String @id @default(cuid())  
-    workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+    workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     workoutId String
-    workoutSectionType WorkoutSectionType @relation(fields: [workoutSectionTypeId], references: [id])
+    workoutSectionType WorkoutSectionType @relation(fields: [workoutSectionTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     workoutSectionTypeId String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -234,9 +234,9 @@ model WorkoutSection {
 
 model Exercise {
     id String @id @default(cuid())  
-    workoutSection WorkoutSection @relation(fields: [workoutSectionId], references: [id], onDelete: Cascade)
+    workoutSection WorkoutSection @relation(fields: [workoutSectionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     workoutSectionId String
-    movement Movement @relation(fields: [movementId], references: [id])
+    movement Movement @relation(fields: [movementId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     movementId String
     duration Int
     order Int
@@ -257,7 +257,7 @@ model Movement {
     workoutSectionType WorkoutSectionType[]
     exercises Exercise[]
     combinationMovement Boolean @default(false)
-    equipment Equipment? @relation(fields: [equipmentId], references: [id])
+    equipment Equipment? @relation(fields: [equipmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     equipmentId String?
     equipmentIntensity EquipmentIntensity?
     
