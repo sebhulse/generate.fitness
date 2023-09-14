@@ -1,47 +1,44 @@
 import React from "react";
-import {
-  Modal,
-  Button,
-  TextInput,
-  Group,
-  Text,
-  Slider,
-  SegmentedControl,
-  Badge,
-  Input,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { api } from "../../utils/api";
+import { Modal, Button, Group, Text } from "@mantine/core";
 
 type Props = {
   isDeleteAccountModalOpen: boolean;
   setIsDeleteAccountModalOpen: (value: boolean) => void;
+  onClick: () => void;
+  isLoading: boolean;
 };
 const DeleteAccountModal = (props: Props): JSX.Element => {
-  const { isDeleteAccountModalOpen, setIsDeleteAccountModalOpen } = props;
-
-  //   const mutationGenerate = api.workout.generate.useMutation({
-  //     onSuccess() {
-  //       refetch ? refetch() : null;
-  //       form.reset();
-  //       setIsDeleteAccountModalOpen(false);
-  //     },
-  //   });
-  //   const mutationCreate = api.workout.create.useMutation({
-  //     onSuccess() {
-  //       refetch ? refetch() : null;
-  //       form.reset();
-  //       setIsDeleteAccountModalOpen(false);
-  //     },
-  //   });
+  const {
+    isDeleteAccountModalOpen,
+    setIsDeleteAccountModalOpen,
+    onClick,
+    isLoading,
+  } = props;
 
   return (
     <>
       <Modal
         opened={isDeleteAccountModalOpen}
         onClose={() => setIsDeleteAccountModalOpen(false)}
-        title="Create Workout"
-      ></Modal>
+        title="Delete Account"
+      >
+        <Text>
+          Are you sure you want to delete your account? This action is
+          immediate, irreversible, and you will be signed out.
+        </Text>
+        <Group position="apart">
+          <Button
+            variant="outline"
+            onClick={() => setIsDeleteAccountModalOpen(false)}
+            mt="md"
+          >
+            Cancel
+          </Button>
+          <Button color={"red"} onClick={onClick} mt="md" loading={isLoading}>
+            Delete
+          </Button>
+        </Group>
+      </Modal>
     </>
   );
 };
