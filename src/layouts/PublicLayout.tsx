@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  AppShell,
   createStyles,
   Navbar,
   Header,
@@ -10,12 +9,12 @@ import {
   Burger,
   Group,
   Button,
-  Drawer,
 } from "@mantine/core";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { IconSun, IconMoonStars, IconRun, IconHome } from "@tabler/icons";
+import Footer from "../components/index/Footer";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -83,7 +82,12 @@ const useStyles = createStyles((theme, _params, getRef) => {
   };
 });
 
-const DashboardLayout = (): JSX.Element => {
+type Props = {
+  children: JSX.Element | JSX.Element[];
+};
+
+const DashboardLayout = (props: Props): JSX.Element => {
+  const { children } = props;
   const { classes, cx } = useStyles();
   const { pathname } = useRouter();
   const data = [
@@ -214,6 +218,8 @@ const DashboardLayout = (): JSX.Element => {
           </Button>
         </Navbar>
       ) : null}
+      {children}
+      <Footer />
     </>
   );
 };
