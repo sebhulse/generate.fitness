@@ -30,9 +30,9 @@ const HomeOpenSource = () => {
           padding: "2rem",
         }}
       >
-        At generate.fitness, we believe in the power of collaboration. That's
-        why we've chosen to open source our platform. It's about transparency,
-        flexibility, and community.
+        At Generate.Fitness, we believe in the power of collaboration.
+        That&#39;s why we&#39;ve chosen to open source our platform. It&#39;s
+        about transparency, flexibility, and community.
       </Text>
       <Text ta="center" size="xl" mb="xl">
         What does this mean for you?
