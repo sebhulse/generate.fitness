@@ -6,14 +6,19 @@ export const movementRouter = createTRPCRouter({
   filter: protectedProcedure
     .input(
       z.object({
-        workoutTypeId: z.string().optional(),
-        workoutTargetAreaId: z.string(),
-        workoutIntensityId: z.string().optional(),
-        workoutSectionTypeId: z.string(),
+        workoutTypeId: z.string().nullable(),
+        workoutTargetAreaId: z.string().nullable(),
+        workoutIntensityId: z.string().nullable(),
+        workoutSectionTypeId: z.string().nullable(),
       })
     )
     .query(({ ctx, input }) => {
-      if (input.workoutTypeId && input.workoutIntensityId) {
+      if (
+        input.workoutTypeId &&
+        input.workoutIntensityId &&
+        input.workoutTargetAreaId &&
+        input.workoutSectionTypeId
+      ) {
         return ctx.prisma.movement.findMany({
           where: {
             workoutType: {
@@ -30,7 +35,7 @@ export const movementRouter = createTRPCRouter({
             },
           },
         });
-      } else {
+      } else if (input.workoutTargetAreaId && input.workoutSectionTypeId) {
         return ctx.prisma.movement.findMany({
           where: {
             workoutTargetArea: {
