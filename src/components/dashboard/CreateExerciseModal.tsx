@@ -38,6 +38,8 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
       : api.movement.filter.useQuery({
           workoutTargetAreaId: grandparent.workoutTargetAreaId,
           workoutSectionTypeId: parent.workoutSectionTypeId,
+          workoutTypeId: null,
+          workoutIntensityId: null,
         });
 
   const mutation = api.exercise.create.useMutation({
