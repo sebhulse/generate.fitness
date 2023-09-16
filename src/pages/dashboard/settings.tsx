@@ -22,6 +22,7 @@ const Dashboard: NextPage = () => {
 
   const mutationDeleteUser = api.user.deleteUser.useMutation({
     async onSuccess() {
+      // send email to confirm account deletion?
       setIsDeleteAccountModalOpen(false);
       showNotification({
         id: "account-deleted",
