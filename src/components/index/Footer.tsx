@@ -51,6 +51,7 @@ const links = [
   { label: "Privacy", link: "/privacy-policy" },
   { label: "Terms", link: "/terms" },
   { label: "Contact", link: "mailto:hi@generate.fitness" },
+  { label: "GitHub", link: "" },
 ];
 
 const Footer = () => {
