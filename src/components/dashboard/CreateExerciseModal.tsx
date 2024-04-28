@@ -1,40 +1,46 @@
 import {
   Modal,
   Button,
-  TextInput,
   Group,
-  Checkbox,
   Select,
   NumberInput,
   NativeSelect,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import type { Workout } from "@prisma/client";
 import { api } from "../../utils/api";
-import type { PlanType, WorkoutSectionType, WorkoutType } from "./SectionsDnd";
+import type { WorkoutSectionType, WorkoutType } from "./SectionsDnd";
 
 type Props = {
   grandparent: WorkoutType;
   isCreateExerciseModalOpen: boolean;
   setIsCreateExerciseModalOpen: (value: boolean) => void;
-  parentId: string;
+  parent: WorkoutSectionType;
   refetch: () => void;
 };
 const CreateExerciseModal = (props: Props): JSX.Element => {
   const {
     isCreateExerciseModalOpen,
     setIsCreateExerciseModalOpen,
-    parentId,
+    parent,
     grandparent,
     refetch,
   } = props;
 
   const { data: movements, isLoading: isMovementsLoading } =
-    api.movement.filter.useQuery({
-      workoutTypeId: grandparent.workoutTypeId,
-      workoutTargetAreaId: grandparent.workoutTargetAreaId,
-      workoutIntensityId: grandparent.workoutIntensityId,
-    });
+    parent.workoutSectionType.name === "Main"
+      ? api.movement.filter.useQuery({
+          workoutTypeId: grandparent.workoutTypeId,
+          workoutTargetAreaId: grandparent.workoutTargetAreaId,
+          workoutIntensityId: grandparent.workoutIntensityId,
+          workoutSectionTypeId: parent.workoutSectionTypeId,
+        })
+      : api.movement.filter.useQuery({
+          workoutTargetAreaId: grandparent.workoutTargetAreaId,
+          workoutSectionTypeId: parent.workoutSectionTypeId,
+          workoutTypeId: null,
+          workoutIntensityId: null,
+        });
 
   const mutation = api.exercise.create.useMutation({
     onSuccess() {
@@ -46,7 +52,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
 
   const form = useForm({
     initialValues: {
-      workoutSectionId: parentId,
+      workoutSectionId: parent.id,
       movement: "",
       duration: 30,
       interval: "Seconds",
@@ -65,6 +71,7 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
         onClose={() => setIsCreateExerciseModalOpen(false)}
         title="Create Exercise"
       >
+        <LoadingOverlay visible={isMovementsLoading} />
         <form onSubmit={form.onSubmit(handleSubmit)}>
           {movements ? (
             <Select
@@ -76,9 +83,6 @@ const CreateExerciseModal = (props: Props): JSX.Element => {
               data={movements.map(({ name }) => {
                 return { value: name, label: name };
               })}
-              filter={(value, item) =>
-                item.value.toLowerCase().includes(value.toLowerCase().trim())
-              }
               {...form.getInputProps("movement")}
             />
           ) : null}

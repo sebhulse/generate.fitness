@@ -30,6 +30,7 @@ export const workoutSectionRouter = createTRPCRouter({
       z.object({
         name: z.string(),
         workoutId: z.string(),
+        workoutSectionType: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -44,6 +45,9 @@ export const workoutSectionRouter = createTRPCRouter({
           order: workoutSectionCount,
           workout: {
             connect: { id: input.workoutId },
+          },
+          workoutSectionType: {
+            connect: { name: input.workoutSectionType },
           },
         },
       });

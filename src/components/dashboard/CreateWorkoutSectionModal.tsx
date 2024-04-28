@@ -1,4 +1,4 @@
-import { Modal, Button, TextInput, Group } from "@mantine/core";
+import { Modal, Button, TextInput, Group, NativeSelect } from "@mantine/core";
 import { useForm, type TransformedValues } from "@mantine/form";
 import { api } from "../../utils/api";
 import type { WorkoutType, PlanType } from "./SectionsDnd";
@@ -17,13 +17,6 @@ const CreateSectionModal = (props: Props): JSX.Element => {
     refetch,
   } = props;
 
-  const mutationCreatePlanSection = api.planSection.create.useMutation({
-    onSuccess() {
-      refetch();
-      form.reset();
-      setIsCreateSectionModalOpen(false);
-    },
-  });
   const mutationCreateWorkoutSection = api.workoutSection.create.useMutation({
     onSuccess() {
       refetch();
@@ -35,23 +28,20 @@ const CreateSectionModal = (props: Props): JSX.Element => {
   const form = useForm({
     initialValues: {
       name: "",
+      workoutSectionType: "Warmup",
     },
     validate: {
       name: (value) => (value.length < 1 ? `Please enter a Name` : null),
     },
-    transformValues: (values) =>
-      "planSections" in parent
-        ? {
-            ...values,
-            planId: parent.id,
-          }
-        : { ...values, workoutId: parent.id },
+    transformValues: (values) => ({
+      name: values.name,
+      workoutId: parent.id,
+      workoutSectionType: values.workoutSectionType,
+    }),
   });
 
   const handleSubmit = (values: TransformedValues<typeof form>) => {
-    "planId" in values
-      ? mutationCreatePlanSection.mutate({ ...values })
-      : mutationCreateWorkoutSection.mutate({ ...values });
+    mutationCreateWorkoutSection.mutate({ ...values });
   };
 
   return (
@@ -68,6 +58,14 @@ const CreateSectionModal = (props: Props): JSX.Element => {
             withAsterisk
             {...form.getInputProps("name")}
           />
+          {"planSections" in parent ? null : (
+            <NativeSelect
+              mt="md"
+              data={["Warmup", "Main", "Cooldown"]}
+              label="Section Type"
+              {...form.getInputProps("workoutSectionType")}
+            />
+          )}
           <Group position="center">
             <Button type="submit" mt="md">
               Submit
