@@ -3,37 +3,39 @@ import React from "react";
 
 type Props = {
   onClick: () => void;
+  isLoading: boolean;
   message: string;
   title: string;
-  isDeleteSectionModalOpen: boolean;
-  setIsDeleteSectionModalOpen: (value: boolean) => void;
+  isDeleteItemModalOpen: boolean;
+  setIsDeleteItemModalOpen: (value: boolean) => void;
 };
 
-const DeleteSectionModal = (props: Props) => {
+const DeleteItemModal = (props: Props) => {
   const {
     onClick,
+    isLoading,
     message,
     title,
-    isDeleteSectionModalOpen,
-    setIsDeleteSectionModalOpen,
+    isDeleteItemModalOpen,
+    setIsDeleteItemModalOpen,
   } = props;
   return (
     <>
       <Modal
-        opened={isDeleteSectionModalOpen}
-        onClose={() => setIsDeleteSectionModalOpen(false)}
+        opened={isDeleteItemModalOpen}
+        onClose={() => setIsDeleteItemModalOpen(false)}
         title={title}
       >
         <Text>{message}</Text>
         <Group position="apart">
           <Button
             variant="outline"
-            onClick={() => setIsDeleteSectionModalOpen(false)}
+            onClick={() => setIsDeleteItemModalOpen(false)}
             mt="md"
           >
             Cancel
           </Button>
-          <Button color={"red"} onClick={onClick} mt="md">
+          <Button color={"red"} onClick={onClick} mt="md" loading={isLoading}>
             Delete
           </Button>
         </Group>
@@ -41,4 +43,4 @@ const DeleteSectionModal = (props: Props) => {
     </>
   );
 };
-export default DeleteSectionModal;
+export default DeleteItemModal;

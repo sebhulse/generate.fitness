@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  AppShell,
   createStyles,
   Navbar,
   Header,
@@ -10,20 +9,12 @@ import {
   Burger,
   Group,
   Button,
-  useMantineTheme,
 } from "@mantine/core";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import {
-  IconSun,
-  IconMoonStars,
-  IconInfoSquare,
-  IconNotes,
-  IconRun,
-  IconUsers,
-  IconSettings,
-} from "@tabler/icons";
+import { IconSun, IconMoonStars, IconRun, IconHome } from "@tabler/icons";
+import Footer from "../components/index/Footer";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -94,55 +85,116 @@ const useStyles = createStyles((theme, _params, getRef) => {
 type Props = {
   children: JSX.Element | JSX.Element[];
 };
+
 const DashboardLayout = (props: Props): JSX.Element => {
   const { children } = props;
   const { classes, cx } = useStyles();
   const { pathname } = useRouter();
   const data = [
-    { link: "/dashboard/", label: "Overview", icon: IconInfoSquare },
-    // { link: "/dashboard/clients", label: "Clients", icon: IconUsers },
-    { link: "/dashboard/plans", label: "Plans", icon: IconNotes },
-    { link: "/dashboard/workouts", label: "Workouts", icon: IconRun },
-    { link: "/dashboard/settings", label: "Settings", icon: IconSettings },
+    { link: "/", label: "Home", icon: IconHome },
+    { link: "/dashboard/", label: "Dashboard", icon: IconRun },
   ];
   const setLinkActive = () => {
     const urlWords = pathname.split("/");
     let label = "Overview";
-    data.map((item) => {
-      if (urlWords.indexOf(item.label.toLowerCase()) > 0) {
-        label = item.label;
-      }
-    });
+    if (urlWords[0] === "") {
+      label = "Home";
+    }
+    if (urlWords.indexOf("Dashboard") > 0) {
+      label = "Dashboard";
+    }
     return label;
   };
+
   const [active, setActive] = useState(setLinkActive());
   const { data: sessionData } = useSession();
 
-  const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
 
-  const links = data.map((item) => (
-    <Link
-      className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
-      })}
-      href={item.link}
-      key={item.label}
-      onClick={() => setActive(item.label)}
-    >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
-    </Link>
-  ));
+  const links = data.map((item) =>
+    item.label === "Dashboard" && !sessionData?.user ? null : (
+      <Link
+        className={cx(classes.link, {
+          [classes.linkActive]: item.label === active,
+        })}
+        href={item.link}
+        key={item.label}
+        onClick={() => setActive(item.label)}
+      >
+        <item.icon className={classes.linkIcon} stroke={1.5} />
+        <span>{item.label}</span>
+      </Link>
+    )
+  );
 
   return (
-    <AppShell
-      navbarOffsetBreakpoint="sm"
-      asideOffsetBreakpoint="sm"
-      navbar={
+    <>
+      <Header height={60} px="md">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <Group position="left">
+            <Link href="/" className={classes.link}>
+              generate.fitness
+            </Link>
+          </Group>
+          <Group position="right" sx={{ height: "100%", width: "100%" }}>
+            {sessionData?.user ? (
+              <Group className={classes.hiddenMobile}>
+                <Link className={classes.link} href="/" key="Home">
+                  <span>Home</span>
+                </Link>
+                <Link
+                  className={classes.link}
+                  href="/dashboard"
+                  key="Dashboard"
+                >
+                  <span>Dashboard</span>
+                </Link>
+              </Group>
+            ) : null}
+            <Group position="apart">
+              <ActionIcon
+                variant="outline"
+                onClick={() => toggleColorScheme()}
+                title="Toggle color scheme"
+              >
+                {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
+              </ActionIcon>
+              <Button
+                onClick={
+                  sessionData
+                    ? () => signOut({ callbackUrl: "/" })
+                    : () =>
+                        signIn(undefined, {
+                          callbackUrl: "/dashboard",
+                        })
+                }
+                className={classes.hiddenMobile}
+              >
+                {sessionData ? "Sign out" : "Sign in"}
+              </Button>
+            </Group>
+
+            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+              <Burger
+                opened={opened}
+                onClick={() => setOpened((o) => !o)}
+                size="sm"
+                mr="xs"
+              />
+            </MediaQuery>
+          </Group>
+        </div>
+      </Header>
+      {opened ? (
         <Navbar
           p="md"
           hiddenBreakpoint="sm"
@@ -165,46 +217,10 @@ const DashboardLayout = (props: Props): JSX.Element => {
             {sessionData ? "Sign out" : "Sign in"}
           </Button>
         </Navbar>
-      }
-      header={
-        <Header height={60} px="md">
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <Group position="apart" sx={{ height: "100%", width: "100%" }}>
-              <Group>
-                <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-                  <Burger
-                    opened={opened}
-                    onClick={() => setOpened((o) => !o)}
-                    size="sm"
-                    mr="xs"
-                  />
-                </MediaQuery>
-                <Link href="/" className={classes.link}>
-                  generate.fitness
-                </Link>
-              </Group>
-
-              <ActionIcon
-                variant="outline"
-                color={dark ? "yellow" : "blue"}
-                onClick={() => toggleColorScheme()}
-                title="Toggle color scheme"
-              >
-                {dark ? <IconSun size={18} /> : <IconMoonStars size={18} />}
-              </ActionIcon>
-            </Group>
-          </div>
-        </Header>
-      }
-    >
+      ) : null}
       {children}
-    </AppShell>
+      <Footer />
+    </>
   );
 };
 export default DashboardLayout;

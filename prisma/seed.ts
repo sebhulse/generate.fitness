@@ -33,12 +33,7 @@ interface bodyWeightMovementType {
 }
 
 const workoutTargetAreas = ["Full Body", "Upper Body", "Lower Body", "Core"];
-const workoutIntensitys = [
-  "Beginner",
-  "Intermediate",
-  "Advanced",
-  "All Levels",
-];
+const workoutIntensitys = ["Beginner", "Intermediate", "Advanced"];
 const workoutSectionTypes = ["Warmup", "Main", "Cooldown"];
 const workoutTypes = ["Strength", "Cardio"];
 
@@ -53,7 +48,6 @@ const WorkoutIntensitysToVariant = {
   ["beginner"]: "Beginner",
   ["intermediate"]: "Intermediate",
   ["advanced"]: "Advanced",
-  ["all"]: "All Levels",
 } as const;
 
 const WorkoutTypesToVariant = {

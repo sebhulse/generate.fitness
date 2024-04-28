@@ -24,7 +24,7 @@ const useStyles = createStyles((theme) => ({
     textDecoration: "none",
     color: theme.colorScheme === "dark" ? theme.white : theme.black,
     fontWeight: 500,
-    fontSize: theme.fontSizes.sm,
+    fontSize: theme.fontSizes.md,
 
     [theme.fn.smallerThan("sm")]: {
       height: 42,
@@ -67,13 +67,11 @@ const HeaderMenu = () => {
 
   return (
     <Box>
-      <Header height={60} px="md">
+      <Header height={60} px="md" withBorder={false}>
         <Group position="apart" sx={{ height: "100%" }}>
-          <Group>
-            <Link href="/" className={classes.link}>
-              Fitness.live
-            </Link>
-          </Group>
+          <Link href="/" className={classes.link}>
+            generate.fitness
+          </Link>
           <Group
             sx={{ height: "100%" }}
             spacing={0}
@@ -115,6 +113,7 @@ const HeaderMenu = () => {
         title="Navigation"
         className={classes.hiddenDesktop}
         zIndex={1000000}
+        color={theme.colorScheme === "dark" ? "white" : "black"}
       >
         <ScrollArea sx={{ height: "calc(100vh - 60px)" }} mx="-md">
           <Divider

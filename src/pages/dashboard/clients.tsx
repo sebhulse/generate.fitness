@@ -1,12 +1,16 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Modal, Button, Group } from "@mantine/core";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
+import { useRouter } from "next/router";
 
 const Dashboard: NextPage = () => {
+  const router = useRouter();
+  const { status } = useSession();
+  if (status === "unauthenticated") {
+    router.push("/");
+  }
   return (
     <>
       <Head>

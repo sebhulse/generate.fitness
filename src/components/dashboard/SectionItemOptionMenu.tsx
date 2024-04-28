@@ -1,10 +1,5 @@
 import { Menu, ActionIcon } from "@mantine/core";
-import {
-  IconArrowsLeftRight,
-  IconDotsVertical,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons";
+import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons";
 import { useState } from "react";
 import { api } from "../../utils/api";
 import DeleteSectionItemModal from "./DeleteSectionItemModal";
@@ -45,7 +40,7 @@ const SectionOptionMenu = (props: Props) => {
 
   return (
     <>
-      <Menu shadow="md" width={200} position="left">
+      <Menu shadow="md" width={150} position="left">
         <Menu.Target>
           <ActionIcon>
             <IconDotsVertical size={18} stroke={1.5} />

@@ -1,5 +1,11 @@
 import React from "react";
-import { MjmlColumn, MjmlSection, MjmlSpacer, MjmlWrapper } from "mjml-react";
+import {
+  MjmlColumn,
+  MjmlSection,
+  MjmlSpacer,
+  MjmlWrapper,
+  MjmlText,
+} from "mjml-react";
 import BaseLayout from "./components/BaseLayout";
 import Button from "./components/Button";
 import Footer from "./components/Footer";
@@ -35,9 +41,10 @@ const welcomeStyle = `
 type WelcomeProps = {
   firstName?: string;
   includeUnsubscribe?: boolean;
+  url: string;
 };
 
-const UserWelcome = ({ includeUnsubscribe, firstName }: WelcomeProps) => {
+const VerifyEmail = ({ includeUnsubscribe, firstName, url }: WelcomeProps) => {
   return (
     <BaseLayout width={600} style={welcomeStyle}>
       <Header />
@@ -47,10 +54,10 @@ const UserWelcome = ({ includeUnsubscribe, firstName }: WelcomeProps) => {
             <Heading maxWidth={420} cssClass="h1">
               {`${
                 firstName
-                  ? `Welcome, ${
+                  ? `Hi, ${
                       firstName.charAt(0).toUpperCase() + firstName.slice(1)
                     }`
-                  : `Welcome`
+                  : `Hi`
               }`}
             </Heading>
           </MjmlColumn>
@@ -58,35 +65,22 @@ const UserWelcome = ({ includeUnsubscribe, firstName }: WelcomeProps) => {
         <MjmlSection paddingBottom={spacing.s11} cssClass="gutter">
           <MjmlColumn>
             <Heading cssClass="h2" paddingBottom={spacing.s6}>
-              Let&apos;s start moving!
+              Verify your email address
             </Heading>
             <Text
               cssClass="p"
               fontSize={fontSize.md}
               paddingBottom={spacing.s7}
             >
-              Begin by generating and customising your fitness training plans
-              and workouts to help you stay on track. Visit your dashboard to
-              get started.
+              Please follow this magic link to verify your email address and
+              sign in to Generate.Fitness:
             </Text>
-
-            <Button
-              href="https://generate.fitness/dashboard"
-              backgroundColor={colors.green300}
-              align="right"
-              cssClass="sm-hidden"
-            >
-              Let&apos;s go
-            </Button>
             <MjmlSpacer height={spacing.s3} cssClass="lg-hidden" />
-            <Button
-              href="https://generate.fitness/dashboard"
-              backgroundColor={colors.green300}
-              align="right"
-              cssClass="lg-hidden"
-            >
-              Let&apos;s go
-            </Button>
+            <MjmlText>
+              <a href={url} target="_blank" rel="noreferrer">
+                {url}
+              </a>
+            </MjmlText>
           </MjmlColumn>
         </MjmlSection>
       </MjmlWrapper>
@@ -94,5 +88,4 @@ const UserWelcome = ({ includeUnsubscribe, firstName }: WelcomeProps) => {
     </BaseLayout>
   );
 };
-// UserWelcome.subject = "Welcome to generate.fitness";
-export default UserWelcome;
+export default VerifyEmail;

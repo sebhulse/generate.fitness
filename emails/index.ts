@@ -24,7 +24,7 @@ const transport = nodemailer.createTransport({
 
 const sendMail = buildSendMail({
   transport,
-  defaultFrom: "hi@sebhulse.com",
+  defaultFrom: "hi@generate.fitness",
   configPath: "../mailing.config.json",
 });
 

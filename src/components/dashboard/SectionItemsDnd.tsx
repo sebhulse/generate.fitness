@@ -6,6 +6,9 @@ import {
   LoadingOverlay,
   Text,
   Group,
+  Badge,
+  Stack,
+  MediaQuery,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
@@ -30,13 +33,13 @@ const useStyles = createStyles((theme) => ({
     justifyContent: "center",
     borderRadius: theme.radius.md,
     border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
+      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
     }`,
-    padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`,
+
+    padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
     paddingLeft: theme.spacing.xl - theme.spacing.md, // to offset drag handle
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.white,
     marginBottom: theme.spacing.sm,
+    marginTop: theme.spacing.sm,
   },
 
   itemDragging: {
@@ -44,22 +47,18 @@ const useStyles = createStyles((theme) => ({
   },
 
   name: {
-    fontSize: 30,
-    fontWeight: 700,
+    fontSize: theme.fontSizes.md,
+    textTransform: "capitalize",
   },
 
   dragHandle: {
     ...theme.fn.focusStyles(),
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[1]
-        : theme.colors.gray[6],
-    paddingLeft: theme.spacing.md,
-    paddingRight: theme.spacing.md,
+    justifyContent: "space-between",
+    paddingLeft: theme.spacing.xs,
+    paddingRight: theme.spacing.xs,
+    width: "100%",
   },
 }));
 
@@ -147,17 +146,58 @@ const SectionItemsDnd = (props: Props) => {
                   alignItems: "center",
                 }}
               >
-                {/* <Group position="apart"> */}
                 <div
                   {...provided.dragHandleProps}
                   className={classes.dragHandle}
                 >
-                  <IconGripVertical size={18} stroke={1.5} />
-                  <Text>
-                    {"name" in sectionItem
-                      ? sectionItem.name
-                      : sectionItem.movement.name}
-                  </Text>
+                  <Group style={{ flexWrap: "nowrap", marginRight: "0.5rem" }}>
+                    <div style={{ width: "18px", height: "18px" }}>
+                      <IconGripVertical stroke={1.5} height={18} width={18} />
+                    </div>
+                    <MediaQuery largerThan="sm" styles={{}}>
+                      {"name" in sectionItem ? (
+                        <Stack style={{ display: "inline" }}>
+                          <Text className={classes.name}>
+                            {sectionItem.name}
+                          </Text>
+                          {sectionItem.duration ? (
+                            <Badge
+                              mt="xs"
+                              color="blue"
+                              variant="filled"
+                              size="lg"
+                              style={{
+                                textTransform: "capitalize",
+                              }}
+                            >
+                              {`${sectionItem.duration / 60} mins`}
+                            </Badge>
+                          ) : null}
+                        </Stack>
+                      ) : (
+                        <Text className={classes.name}>
+                          {sectionItem.movement.name}
+                        </Text>
+                      )}
+                    </MediaQuery>
+                  </Group>
+                  {"movement" in sectionItem ? (
+                    <Group style={{ justifyContent: "end" }}>
+                      <Text>
+                        {sectionItem.duration}
+                        {sectionItem.durationInterval === "Seconds"
+                          ? "s"
+                          : sectionItem.durationInterval === "Reps"
+                          ? " Reps"
+                          : "m"}
+                      </Text>
+                      {sectionItem.rest ? (
+                        <Text style={{ whiteSpace: "nowrap" }}>
+                          Rest {sectionItem.rest}s
+                        </Text>
+                      ) : null}
+                    </Group>
+                  ) : null}
                 </div>
 
                 <SectionItemOptionMenu
@@ -166,7 +206,6 @@ const SectionItemsDnd = (props: Props) => {
                   refetch={refetch}
                 />
               </div>
-              {/* </Group> */}
             </div>
           )}
         </Draggable>
@@ -200,7 +239,7 @@ const SectionItemsDnd = (props: Props) => {
           )}
         </StrictModeDroppable>
       </DragDropContext>
-      <div className={cx(classes.item, {})}>
+      <div className={cx(classes.item, {})} style={{ border: "0px" }}>
         <div>
           <Button
             onClick={() => {
@@ -211,7 +250,7 @@ const SectionItemsDnd = (props: Props) => {
           </Button>
         </div>
       </div>
-      {"workouts" in parent ? (
+      {"workouts" in parent && isCreateSectionItemModalOpen ? (
         <CreateWorkoutModal
           isCreateWorkoutModalOpen={isCreateSectionItemModalOpen}
           setIsCreateWorkoutModalOpen={setIsCreateSectionItemModalOpen}
@@ -219,12 +258,14 @@ const SectionItemsDnd = (props: Props) => {
           refetch={refetch}
         />
       ) : null}
-      {"workoutSections" in grandparent ? (
+      {"exercises" in parent &&
+      "workoutSections" in grandparent &&
+      isCreateSectionItemModalOpen ? (
         <CreateExerciseModal
           grandparent={grandparent}
           isCreateExerciseModalOpen={isCreateSectionItemModalOpen}
           setIsCreateExerciseModalOpen={setIsCreateSectionItemModalOpen}
-          parentId={parent.id}
+          parent={parent}
           refetch={refetch}
         />
       ) : null}

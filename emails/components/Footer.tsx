@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  MjmlSection,
-  MjmlWrapper,
-  MjmlColumn,
-  MjmlText,
-  MjmlImage,
-  MjmlGroup,
-} from "mjml-react";
+import { MjmlSection, MjmlWrapper, MjmlColumn, MjmlText } from "mjml-react";
 import Link from "./Link";
 import { colors, fontSize, fontWeight } from "../theme";
 import { EMAIL_PREFERENCES_URL } from "mailing-core";
@@ -18,41 +11,28 @@ type FooterProps = {
 export default function Footer({ includeUnsubscribe = false }: FooterProps) {
   return (
     <>
-      <MjmlWrapper
-        backgroundColor={colors.gray800}
-        borderBottom={`2px solid ${colors.black}`}
-      >
-        <MjmlSection>
-          <MjmlColumn
-            padding={"30px 0"}
-            borderRight={`2px solid ${colors.black}`}
-          >
+      <MjmlWrapper backgroundColor={colors.gray800}>
+        <MjmlSection paddingTop={24} paddingBottom={24} cssClass="gutter">
+          <MjmlColumn padding={"16px 0"}>
             <MjmlText
               align="center"
               fontSize={fontSize.xs}
               color={colors.slate400}
               fontWeight={fontWeight.bold}
-              paddingBottom={8}
               textTransform="uppercase"
             >
               Help & Bugs
             </MjmlText>
-            <MjmlText align="center">
+            <MjmlText align="center" paddingBottom={16}>
               <Link
                 color={colors.white}
                 fontSize={fontSize.sm}
-                href="mailto:hi@sebhulse.com"
+                href="mailto:hi@generate.fitness"
               >
-                hi@sebhulse.com
+                hi@generate.fitness
               </Link>
             </MjmlText>
-          </MjmlColumn>
-        </MjmlSection>
-      </MjmlWrapper>
 
-      <MjmlWrapper backgroundColor={colors.gray800}>
-        <MjmlSection paddingTop={32} paddingBottom={24} cssClass="gutter">
-          <MjmlColumn>
             <MjmlText
               align="center"
               fontSize={fontSize.xs}
@@ -60,15 +40,15 @@ export default function Footer({ includeUnsubscribe = false }: FooterProps) {
               fontWeight={fontWeight.bold}
               textTransform="uppercase"
             >
-              Fitness.live {new Date().getFullYear()}
+              generate.fitness {new Date().getFullYear()}
             </MjmlText>
             <MjmlText align="center">
               <Link
                 color={colors.white}
                 fontSize={fontSize.sm}
-                href="https://fitness.live"
+                href="https://generate.fitness"
               >
-                fitness.live
+                generate.fitness
               </Link>
             </MjmlText>
 
