@@ -1,7 +1,7 @@
+import React from "react";
+import { Button, Center, Text } from "@mantine/core";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Button, Card, Center, Group, Text } from "@mantine/core";
-import { IconPencil, IconPlus, IconPlayerPlay } from "@tabler/icons";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import PublicLayout from "../layouts/PublicLayout";
