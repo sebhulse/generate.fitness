@@ -11,6 +11,7 @@ import {
   Input,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useRouter } from "next/router";
 import { api } from "../../utils/api";
 
 type Props = {
@@ -26,19 +27,21 @@ const CreateWorkoutModal = (props: Props): JSX.Element => {
     parentId,
     refetch,
   } = props;
-
+  const router = useRouter();
   const mutationGenerate = api.workout.generate.useMutation({
-    onSuccess() {
+    onSuccess(data) {
       refetch ? refetch() : null;
       form.reset();
       setIsCreateWorkoutModalOpen(false);
+      router.push(`/dashboard/workouts/${data.id}`);
     },
   });
   const mutationCreate = api.workout.create.useMutation({
-    onSuccess() {
+    onSuccess(data) {
       refetch ? refetch() : null;
       form.reset();
       setIsCreateWorkoutModalOpen(false);
+      router.push(`/dashboard/workouts/${data.id}`);
     },
   });
 
