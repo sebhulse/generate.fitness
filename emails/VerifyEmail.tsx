@@ -7,7 +7,6 @@ import {
   MjmlText,
 } from "mjml-react";
 import BaseLayout from "./components/BaseLayout";
-import Button from "./components/Button";
 import Footer from "./components/Footer";
 import Heading from "./components/Heading";
 import Header from "./components/Header";
@@ -73,7 +72,7 @@ const VerifyEmail = ({ includeUnsubscribe, firstName, url }: WelcomeProps) => {
               paddingBottom={spacing.s7}
             >
               Please follow this magic link to verify your email address and
-              sign in to Generate.Fitness:
+              sign in to generate.fitness:
             </Text>
             <MjmlSpacer height={spacing.s3} cssClass="lg-hidden" />
             <MjmlText>
