@@ -1,0 +1,15 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: generate_fitness
+
+volumes:
+  mysql-data:
