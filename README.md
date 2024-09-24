@@ -1,28 +1,18 @@
-# Create T3 App
+This app is based on the [T3 teck stack](https://create.t3.gg/en/introduction).
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Initial installation steps:
+- create `.env` file from the `.env.example` file (basically just copy and rename the file - the DATABASE_URL should be correct if you use docker-compose as described below)
+- install docker
+- run `docker compose up`
+- run `yarn install && yarn prisma generate && yarn prisma db push && yarn db-seed` (installs packages, generates database schema, creates initial database tables from generated schema, and seeds the empty database with some initial data)
+  
+To run this project each time after the initial installation steps:
+- ensure your mysql database is up (run `docker compose up`)
+- open new terminal for each of these services:
+    - run `yarn dev` (required for NEXTJS)
+    - run `yarn mailing` (required for intercepting emails - mainly for email auth)
+    - run `yarn prisma studio` (nice-to-have for browsing the database)
 
-## What's next? How do I make an app with this?
+These steps will allow you to create/log into accounts via email. If you also want to log in via discord on your local machine, you'll need to [create a new application](https://create.t3.gg/en/usage/next-auth#setting-up-the-default-discordprovider) in the discord developer portal.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
-
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+If you encounter any problems with installation/local machine setup, let me know by creating an issue!
