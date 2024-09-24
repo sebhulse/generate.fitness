@@ -13,9 +13,9 @@ jobs:
       matrix:
         include:
           - dockerfile: ./Dockerfile
-            image: ${{ secrets.DOCKERHUB_USERNAME }}/generate.fitness
+            image: sebhulse/generate.fitness
           - dockerfile: ./Dockerfile.deploy
-            image: ${{ secrets.DOCKERHUB_USERNAME }}/generate.fitness.deploy
+            image: sebhulse/generate.fitness.deploy
     environment: production
     steps:
       - name: Set up Docker Buildx
