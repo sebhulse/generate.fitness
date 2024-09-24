@@ -43,7 +43,11 @@ type WelcomeProps = {
   url: string;
 };
 
-const VerifyEmail = ({ includeUnsubscribe, firstName, url }: WelcomeProps) => {
+const MagicLinkEmail = ({
+  includeUnsubscribe,
+  firstName,
+  url,
+}: WelcomeProps) => {
   return (
     <BaseLayout width={600} style={welcomeStyle}>
       <Header />
@@ -64,15 +68,14 @@ const VerifyEmail = ({ includeUnsubscribe, firstName, url }: WelcomeProps) => {
         <MjmlSection paddingBottom={spacing.s11} cssClass="gutter">
           <MjmlColumn>
             <Heading cssClass="h2" paddingBottom={spacing.s6}>
-              Verify your email address
+              Your magic link has arrived
             </Heading>
             <Text
               cssClass="p"
               fontSize={fontSize.md}
               paddingBottom={spacing.s7}
             >
-              Please follow this magic link to verify your email address and
-              sign in to generate.fitness:
+              Just follow this link to sign in to generate.fitness:
             </Text>
             <MjmlSpacer height={spacing.s3} cssClass="lg-hidden" />
             <MjmlText>
@@ -87,4 +90,4 @@ const VerifyEmail = ({ includeUnsubscribe, firstName, url }: WelcomeProps) => {
     </BaseLayout>
   );
 };
-export default VerifyEmail;
+export default MagicLinkEmail;
