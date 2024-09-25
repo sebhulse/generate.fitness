@@ -12,9 +12,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - file: ./file
+          - context: .
+            file: ./Dockerfile
             image: sebhulse/generate.fitness
-          - file: ./Dockerfile.deploy
+          - context: .
+            file: ./Dockerfile.deploy
             image: sebhulse/generate.fitness.deploy
     environment: production
     steps:
