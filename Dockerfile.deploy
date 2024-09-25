@@ -19,4 +19,4 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-CMD ["yarn", "prisma", "generate", "&&", "yarn", "prisma", "db", "push"]
+CMD ["yarn", "prisma", "generate", "&&", "yarn", "prisma", "migrate", "deploy"]
