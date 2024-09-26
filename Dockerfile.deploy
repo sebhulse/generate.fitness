@@ -2,8 +2,7 @@
 
 ##### DEPENDENCIES
 
-FROM --platform=linux/amd64 node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat openssl
+FROM --platform=linux/amd64 node:22-alpine as deps
 WORKDIR /app
 
 # Install Prisma Client - remove if not using Prisma
@@ -13,10 +12,18 @@ COPY prisma ./
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml\* ./
 
 RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile && yarn cache clean --all; \
   elif [ -f package-lock.json ]; then npm ci; \
   elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
-CMD ["yarn", "prisma", "generate", "&&", "yarn", "prisma", "db", "push"]
+##### BUILDER
+
+FROM --platform=linux/amd64 node:22-alpine AS builder
+
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+CMD ["sh", "-c", "yarn prisma generate && yarn prisma migrate deploy"]
