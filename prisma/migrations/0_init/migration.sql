@@ -1,5 +1,3 @@
-yarn run v1.22.17
-$ /Users/Seb/Documents/GitHub/generate.fitness/node_modules/.bin/prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script
 -- CreateTable
 CREATE TABLE `Account` (
     `id` VARCHAR(191) NOT NULL,
@@ -294,5 +292,3 @@ CREATE TABLE `_MovementToWorkoutSectionType` (
     UNIQUE INDEX `_MovementToWorkoutSectionType_AB_unique`(`A`, `B`),
     INDEX `_MovementToWorkoutSectionType_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-Done in 0.46s.
