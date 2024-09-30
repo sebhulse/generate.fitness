@@ -247,6 +247,7 @@ export const workoutRouter = createTRPCRouter({
       return await ctx.prisma.workout.create({
         data: {
           name: input.name,
+          isGenerated: true,
           usesEquipment: input.usesEquipment,
           planSection: input.planSectionId
             ? { connect: { id: input.planSectionId } }
